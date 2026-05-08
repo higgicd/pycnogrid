@@ -25,7 +25,7 @@ You can install the development version of `pycnogrid` from GitHub:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("YOUR_GITHUB_NAME/pycnogrid")
+remotes::install_github("higgicd/pycnogrid")
 ```
 
 ## Example

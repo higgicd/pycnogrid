@@ -16,7 +16,7 @@ You can install the development version of `pycnogrid` from GitHub:
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("YOUR_GITHUB_NAME/pycnogrid")
+remotes::install_github("higgicd/pycnogrid")
 ```
 
 ## Example
@@ -38,10 +38,10 @@ head(out)
 #> # A tibble: 6 × 7
 #>   h3      source_id cell_area density pycno_populationE pycno_density pycno_iter
 #>   <chr>   <chr>         <dbl>   <dbl>             <dbl>         <dbl>      <int>
-#> 1 892a10… 36061009…   105891. 0.0449              4751.       0.0449           5
-#> 2 892a10… 36061009…   105885. 0.0135              1430.       0.0135           5
-#> 3 892a10… 36061007…   105885. 0.0232              2455        0.0232           5
-#> 4 892a10… 36061008…   105890. 0.0172              1821.       0.0172           5
-#> 5 892a10… 36061008…   105885. 0.0304              3217.       0.0304           5
-#> 6 892a10… 36061010…   105891. 0.00698              739.       0.00698          5
+#> 1 892a10… 36061009…   105885. 1.35e-2            1430.       0.0135            5
+#> 2 892a10… 36061009…   105891. 4.49e-2            4751.       0.0449            5
+#> 3 892a10… 36061005…   105880. 1.98e-2            2092.       0.0198            5
+#> 4 892a10… 36061008…   105875. 3.05e-2            3231.       0.0305            5
+#> 5 892a10… 36061010…   105896. 1.14e-2            1209.       0.0114            5
+#> 6 892a10… 36061011…   105901. 8.70e-4              92.2      0.000870          5
 ```

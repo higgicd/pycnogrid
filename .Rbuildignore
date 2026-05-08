@@ -2,3 +2,8 @@
 ^\.Rproj\.user$
 ^\.positai$
 ^\.claude$
+^README\.Rmd$
+^vignettes/\.quarto$
+^vignettes/*_files$
+^data-raw$
+^LICENSE\.md$

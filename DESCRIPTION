@@ -1,11 +1,30 @@
 Package: pycnogrid
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Pycnophylactic Interpolation to H3 Grids
+Version: 0.1.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Christopher", "Higgins", , "cd.higgins@utoronto.ca", role = c("aut", "cre"))
+Description: Provides tools for pycnophylactic interpolation of polygon totals
+    to discrete global grid systems while preserving mass. The initial release
+    supports interpolation to H3 grids using duckh3, returning
+    either H3 cell identifiers or simple feature geometries.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends: 
+    R (>= 3.5)
+Imports: 
+    DBI,
+    dbplyr,
+    dplyr,
+    duckh3,
+    rlang,
+    sf
+Suggests: 
+    knitr,
+    quarto,
+    testthat (>= 3.0.0),
+    tmap
+VignetteBuilder: quarto
+Config/testthat/edition: 3
+LazyData: true

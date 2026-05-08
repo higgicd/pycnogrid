@@ -1,0 +1,44 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# pycnogrid
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+`pycnogrid` provides tools for pycnophylactic interpolation of polygon
+totals to H3 grids while preserving mass.
+
+## Installation
+
+You can install the development version of `pycnogrid` from GitHub:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("YOUR_GITHUB_NAME/pycnogrid")
+```
+
+## Example
+
+```{r example}
+library(pycnogrid)
+
+out <- to_h3(
+  source = nyc_ct_small,
+  value_col = populationE,
+  id_col = id,
+  resolution = 9
+)
+
+head(out)
+```

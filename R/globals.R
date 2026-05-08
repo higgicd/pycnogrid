@@ -1,0 +1,15 @@
+utils::globalVariables(c(
+  ".source_value",
+  "source_id",
+  "source_value",
+  "total",
+  "wkt",
+  "n",
+  "h3",
+  "cell_area",
+  "density",
+  "neighbour_h3",
+  "neighbour_density",
+  "est_value",
+  "density_before"
+))

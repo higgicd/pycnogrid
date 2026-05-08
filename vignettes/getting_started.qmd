@@ -1,0 +1,27 @@
+---
+title: "getting_started"
+vignette: >
+  %\VignetteIndexEntry{getting_started}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| label: setup
+library(dplyr)
+library(sf)
+library(tmap)
+library(pycnogrid)
+```
+
+
+```{r}
+#nyc_counties <- 
+
+#census_bg_nyc <- tidycensus::get_acs()
+```
+

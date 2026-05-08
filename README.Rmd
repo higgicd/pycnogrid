@@ -31,14 +31,22 @@ remotes::install_github("higgicd/pycnogrid")
 ## Example
 
 ```{r example}
+library(dplyr)
 library(pycnogrid)
+```
 
+```{r}
 out <- to_h3(
   source = nyc_ct_small,
   value_col = populationE,
   id_col = id,
-  resolution = 9
+  resolution = 9,
+  output_type = "sf"
 )
-
-head(out)
 ```
+
+
+```{r}
+out |> glimpse()
+```
+

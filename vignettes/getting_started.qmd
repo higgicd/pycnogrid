@@ -20,8 +20,26 @@ library(pycnogrid)
 
 
 ```{r}
-#nyc_counties <- 
-
-#census_bg_nyc <- tidycensus::get_acs()
+out <- to_h3(
+  source = nyc_ct_small,
+  value_col = populationE,
+  id_col = id,
+  resolution = 10,
+  output_type = "sf"
+)
 ```
 
+```{r}
+tm_shape(out) + tm_fill(
+  fill = "pycno_populationE",
+  fill.scale = tm_scale_intervals(
+    values = "viridis",
+    style = "jenks",
+    n = 6,
+    label.format = tm_label_format(big.num.abbr = c("K" = 3))
+  ),
+  fill_alpha = .75,
+  fill.legend = tm_legend(title = "Interpolated \nPopulation", frame = FALSE)
+) +
+  tm_shape(nyc_ct_small) + tm_lines(col = "grey35")
+```

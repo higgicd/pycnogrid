@@ -22,26 +22,41 @@ remotes::install_github("higgicd/pycnogrid")
 ## Example
 
 ``` r
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 library(pycnogrid)
+```
 
+``` r
 out <- to_h3(
   source = nyc_ct_small,
   value_col = populationE,
   id_col = id,
-  resolution = 9
+  resolution = 9,
+  output_type = "sf"
 )
 #> Warning: Missing values are always removed in SQL aggregation functions.
 #> Use `na.rm = TRUE` to silence this warning
 #> This warning is displayed once every 8 hours.
+```
 
-head(out)
-#> # A tibble: 6 × 7
-#>   h3      source_id cell_area density pycno_populationE pycno_density pycno_iter
-#>   <chr>   <chr>         <dbl>   <dbl>             <dbl>         <dbl>      <int>
-#> 1 892a10… 36061009…   105885. 1.35e-2            1430.       0.0135            5
-#> 2 892a10… 36061009…   105891. 4.49e-2            4751.       0.0449            5
-#> 3 892a10… 36061005…   105880. 1.98e-2            2092.       0.0198            5
-#> 4 892a10… 36061008…   105875. 3.05e-2            3231.       0.0305            5
-#> 5 892a10… 36061010…   105896. 1.14e-2            1209.       0.0114            5
-#> 6 892a10… 36061011…   105901. 8.70e-4              92.2      0.000870          5
+``` r
+out |> glimpse()
+#> Rows: 43
+#> Columns: 8
+#> $ h3                <chr> "892a100d257ffff", "892a100d203ffff", "892a100d273ff…
+#> $ source_id         <chr> "36061009100", "36061005600", "36061005400", "360610…
+#> $ cell_area         <dbl> 105880.3, 105874.6, 105869.8, 105895.9, 105890.8, 10…
+#> $ density           <dbl> 0.0608706180, 0.0384511483, 0.0445925150, 0.00125622…
+#> $ pycno_populationE <dbl> 6445.00000, 4071.00000, 4721.00000, 133.02955, 1183.…
+#> $ pycno_density     <dbl> 0.0608706180, 0.0384511483, 0.0445925150, 0.00125622…
+#> $ pycno_iter        <int> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…
+#> $ geometry          <POLYGON [°]> POLYGON ((-73.99414 40.7461..., POLYGON ((-7…
 ```

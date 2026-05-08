@@ -7,3 +7,5 @@
 ^vignettes/*_files$
 ^data-raw$
 ^LICENSE\.md$
+^doc$
+^Meta$

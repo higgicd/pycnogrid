@@ -11,6 +11,7 @@
 #'   or `"sf"` for polygon geometries.
 #' @param k H3 neighbourhood distance used for smoothing.
 #' @param max_iter Maximum number of pycnophylactic smoothing iterations.
+#'   If `0`, returns the initial area-based allocation without smoothing.
 #' @param tolerance Convergence tolerance based on relative mean density change.
 #' @param include_self Logical. Should each H3 cell include itself in smoothing?
 #' @param missing_policy How to handle source polygons that receive no H3
@@ -161,8 +162,8 @@ to_h3 <- function(source,
   }
 
   # check convergence parameters
-  if (!rlang::is_scalar_integerish(max_iter) || max_iter < 1) {
-    rlang::abort("`max_iter` must be a positive integer.")
+  if (!rlang::is_scalar_integerish(max_iter) || max_iter < 0) {
+    rlang::abort("`max_iter` must be a non-negative integer.")
   }
 
   if (!rlang::is_scalar_double(tolerance) || tolerance <= 0) {
@@ -266,7 +267,7 @@ to_h3 <- function(source,
   ## if polygons overlap, assign duplicated H3 cells to the smallest source_id.
   cells_assigned <- cells_raw |>
     dplyr::group_by(h3) |>
-    dplyr::summarise(source_id = min(source_id), .groups = "drop") |>
+    dplyr::summarise(source_id = min(source_id, na.rm = TRUE), .groups = "drop") |>
     dplyr::compute(name = "pycno_cells_assigned", temporary = FALSE)
 
   ## check - if empty output generated after assignment back to polygons
@@ -375,6 +376,65 @@ to_h3 <- function(source,
     dplyr::compute(name = "pycno_cells", temporary = FALSE)
 
   #cells_df <- cells |> as.data.frame()
+
+  # ---------------------------------------------------------------------------
+  # 3b. return unsmoothed areal allocation if requested
+  # ---------------------------------------------------------------------------
+
+  if (max_iter == 0) {
+
+    input_total <- source_values |>
+      dplyr::summarise(total = sum(source_value, na.rm = TRUE)) |>
+      dplyr::pull(total)
+
+    out <- dplyr::tbl(db_conn, "pycno_cells") |>
+      dplyr::mutate(
+        !!out_name := as.numeric(density * cell_area),
+        pycno_density = as.numeric(density),
+        pycno_iter = 0
+      )
+
+    output_total <- out |>
+      dplyr::summarise(total = sum(.data[[out_name]], na.rm = TRUE)) |>
+      dplyr::pull(total)
+
+    mass_error <- abs(output_total - input_total)
+    mass_relative_error <- mass_error / max(abs(input_total), .Machine$double.eps, na.rm = TRUE)
+
+    if (mass_relative_error > tolerance) {
+      rlang::warn(
+        paste0(
+          "Output total differs from input total. ",
+          "Relative mass error: ", signif(mass_relative_error, 4), "."
+        )
+      )
+    }
+
+    if (output_type == "h3") {
+      out <- out |>
+        dplyr::collect()
+    } else {
+      out <- out |>
+        dplyr::mutate(
+          geometry = dbplyr::sql("h3_cell_to_boundary_wkt(h3_string_to_h3(h3))")
+        ) |>
+        dplyr::collect() |>
+        sf::st_as_sf(wkt = "geometry", crs = 4326)
+    }
+
+    attr(out, "iterations") <- 0
+    attr(out, "relative_mean_change") <- NA_real_
+    attr(out, "h3_resolution") <- resolution
+    attr(out, "neighbour_k") <- k
+    attr(out, "input_total_original") <- input_total_original
+    attr(out, "input_total_represented") <- input_total_represented
+    attr(out, "missing_mass") <- input_total_original - input_total_represented
+    attr(out, "missing_mass_relative") <-
+      (input_total_original - input_total_represented) /
+      max(abs(input_total_original), .Machine$double.eps, na.rm = TRUE)
+
+    return(out)
+  }
 
   # ---------------------------------------------------------------------------
   # 4. build H3 neighbour list
@@ -538,22 +598,39 @@ to_h3 <- function(source,
 
 
     # when to stop? get change statistics
-    change <- corrected |>
-      dplyr::left_join(cells_before, by = "h3") |>
-      # get abs changes in density now versus before
-      dplyr::summarise(
-        max_abs_change = max(abs(density - density_before), na.rm = TRUE),
-        mean_abs_change = mean(abs(density - density_before), na.rm = TRUE),
+    #change <- corrected |>
+    #  dplyr::left_join(cells_before, by = "h3") |>
+    #  # get abs changes in density now versus before
+    #  dplyr::summarise(
+    #    max_abs_change = max(abs(density - density_before), na.rm = TRUE),
+    #    mean_abs_change = mean(abs(density - density_before), na.rm = TRUE),
         # relative mean change probably best for convergence?
         # less sensitive to original units
-        rel_mean_change = mean(abs(density - density_before) /
-                                 pmax(abs(density_before), 1e-12), na.rm = TRUE),
+    #    rel_mean_change = mean(abs(density - density_before) /
+    #                             pmax(abs(density_before), 1e-12), na.rm = TRUE),
+    #    .groups = "drop"
+    #  ) |>
+    #  dplyr::collect()
+
+    change <- corrected |>
+      dplyr::left_join(cells_before, by = "h3") |>
+      dplyr::mutate(
+        abs_change = abs(density - density_before),
+        denom = dplyr::case_when(
+          abs(density_before) > 1e-12 ~ abs(density_before),
+          TRUE ~ 1e-12
+        )
+      ) |>
+      dplyr::summarise(
+        max_abs_change = max(abs_change, na.rm = TRUE),
+        mean_abs_change = mean(abs_change, na.rm = TRUE),
+        rel_mean_change = mean(abs_change / denom, na.rm = TRUE),
         .groups = "drop"
       ) |>
       dplyr::collect()
 
     #last_error <- change$max_abs_change
-    last_error <- change$rel_mean_change
+    last_error <- change |> pull("rel_mean_change")
 
     # drop original pycno cells and rename next
     DBI::dbExecute(db_conn, "DROP TABLE IF EXISTS pycno_cells")
@@ -595,7 +672,7 @@ to_h3 <- function(source,
 
   ## get the difference pre-post pycno
   mass_error <- abs(output_total - input_total)
-  mass_relative_error <- mass_error / max(abs(input_total), .Machine$double.eps)
+  mass_relative_error <- mass_error / max(abs(input_total), .Machine$double.eps, na.rm = TRUE)
 
   if (mass_relative_error > tolerance) {
     rlang::warn(
@@ -633,7 +710,7 @@ to_h3 <- function(source,
   attr(out, "missing_mass") <- input_total_original - input_total_represented
   attr(out, "missing_mass_relative") <-
     (input_total_original - input_total_represented) /
-    max(abs(input_total_original), .Machine$double.eps)
+    max(abs(input_total_original), .Machine$double.eps, na.rm = TRUE)
 
   # let's go!
   out

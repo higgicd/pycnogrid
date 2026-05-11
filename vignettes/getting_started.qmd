@@ -25,7 +25,8 @@ out <- to_h3(
   value_col = populationE,
   id_col = id,
   resolution = 10,
-  output_type = "sf"
+  output_type = "sf",
+  max_iter = 500
 )
 ```
 
@@ -43,3 +44,53 @@ tm_shape(out) + tm_fill(
 ) +
   tm_shape(nyc_ct_small) + tm_lines(col = "grey35")
 ```
+
+
+```{r}
+tm_shape(out) + tm_fill(
+  fill = "pycno_populationE",
+  fill.scale = tm_scale_intervals(
+    values = "viridis",
+    style = "jenks",
+    n = 6,
+    label.format = tm_label_format(big.num.abbr = c("K" = 3))
+  ),
+  fill_alpha = .75,
+  fill.legend = tm_legend(title = "Interpolated \nPopulation", frame = FALSE)
+) +
+  tm_shape(nyc_ct_small) + tm_lines(col = "grey35")
+```
+
+iterate
+
+```{r}
+iter_seq <- seq(0, 30, by = 1)
+
+out_iters <- purrr::map_dfr(iter_seq, ~ pycnogrid::to_h3(
+  source = nyc_ct_small,
+  value_col = populationE,
+  id_col = id,
+  resolution = 10,
+  output_type = "sf",
+  max_iter = .x
+))
+```
+
+```{r}
+out_iters_maps <- tm_shape(out_iters) + tm_fill(
+  fill = "pycno_populationE",
+  fill.scale = tm_scale_intervals(
+    values = "viridis",
+    style = "jenks",
+    n = 6,
+    label.format = tm_label_format(big.num.abbr = c("K" = 3))
+  ),
+  fill_alpha = .75,
+  fill.legend = tm_legend(title = "Interpolated \nPopulation", frame = FALSE)
+) +
+  tm_facets(along = "pycno_iter") +
+  tm_shape(nyc_ct_small) + tm_lines(col = "grey35") 
+  
+testmaps <-  tmap_animation(out_iters_maps, delay=100, outer.margins = 0)
+```
+

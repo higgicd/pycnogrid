@@ -1,4 +1,4 @@
-# `{pycnogrid}`: Flexible pycnophylactic interpolation to disgrete global and raster grid systems
+# `{pycnogrid}`: Flexible pycnophylactic interpolation to disgrete global and local grid systems
 
 ## Introduction
 
@@ -66,11 +66,11 @@ Building on these foundations, the primary contribution of
 pycnophylactic algorithm for users of the R computing language, but
 rather a more flexible implementation that extends pycnophylactic
 interpolation beyond regular raster lattices to a range of DGGS spatial
-grids. Capitalizing on the contemporary simple features library
-([sf](https://r-spatial.github.io/sf/) ([Pebesma
-2018](#ref-pebesma2018))) and the neighbour relationships and spatial
-weights matrices that underpin much of modern spatial analysis and
-econometrics ([Anselin 1988](#ref-anselin1988)) (through the
+grids. Capitalizing on the contemporary simple features
+[sf](https://r-spatial.github.io/sf/) ([Pebesma 2018](#ref-pebesma2018))
+library and the neighbour relationships and spatial weights matrices
+that underpin much of modern spatial analysis and econometrics ([Anselin
+1988](#ref-anselin1988)) (through the
 [spdep](https://github.com/r-spatial/spdep/) ([Bivand
 2022](#ref-bivand2022)) and [sfdep](https://sfdep.josiahparry.com)
 ([Parry and Locke 2024](#ref-sfdep2024)) packages),
@@ -456,7 +456,7 @@ matrix $`\mathbf{A}`$, where each element $`a_{ij}`$ is the area of
 intersection between a source zone $`i`$ and target cell $`j`$:
 
 ``` math
-a_{ij} = \mathrm{Area}(S_i \cap T_j).
+a_{ij} = \mathrm{Area}(S_i \cap T_j)
 ```
 
 For the example source zones and target cells, these overlap areas (in
@@ -511,22 +511,21 @@ The initial target cell estimates are obtained by applying these weights
 to the source values in $`\mathbf{y}`$:
 
 ``` math
-\mathbf{x}^{(0)} = \mathbf{W}^{\top}\mathbf{y} 
+\mathbf{x}^{(0)} = \mathbf{W}^{\top}\mathbf{y}
 ```
 
 which yields the areally-interpolated value estimates for each of the
 five target cells:
 
 ``` math
-\mathbf{x}^{(0)}
-=
-\begin{bmatrix}
-4439.057 \\
-2518.565 \\
-2363.417 \\
-4016.554 \\
-3231.407
-\end{bmatrix}
+\mathbf{x}^{(0)} =
+  \begin{bmatrix}
+    4439.057 \\
+    2518.565 \\
+    2363.417 \\
+    4016.554 \\
+    3231.407
+  \end{bmatrix}
 ```
 
 From this, the source zone value total allocated within the system
@@ -610,9 +609,12 @@ estimates before correction. This operation reduces abrupt differences
 between neighbouring cells by replacing each cell’s density with the
 average density of its neighbourhood. For target zone 1:
 
-\$\$\tilde{d}\_{1}^{(t+1)} = 0.20(0.0443) + 0.20(0.0290) +
-0.20(0.0277) + 0.20(0.0416) + 0.20(0.0430), \\ \tilde{d}\_{1}^{(t+1)} =
-0.0371\$\$
+``` math
+\tilde{d}_{1}^{(t+1)} = 0.20(0.0443) + 0.20(0.0290) + 0.20(0.0277) + 0.20(0.0416) + 0.20(0.0430)
+```
+``` math
+\tilde{d}_{1}^{(t+1)} = 0.0371
+```
 
 However, smoothing alone does not always preserve the original
 source-zone totals. After smoothing, the implied source-zone total

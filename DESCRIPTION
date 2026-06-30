@@ -23,6 +23,7 @@ Imports:
     terra,
     tibble
 Suggests: 
+    forcats,
     gt,
     knitr,
     quarto,

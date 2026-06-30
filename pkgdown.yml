@@ -1,0 +1,9 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  getting_started: getting_started.html
+last_built: 2026-06-30T17:17Z
+urls:
+  reference: https://higgicd.github.io/pycnogrid/reference
+  article: https://higgicd.github.io/pycnogrid/articles

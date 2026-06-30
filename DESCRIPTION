@@ -1,5 +1,5 @@
 Package: pycnogrid
-Title: Flexible pycnophylactic interpolation to disgrete global and raster grid systems
+Title: Flexible pycnophylactic interpolation to disgrete global and local grid systems
 Version: 0.1.0
 Authors@R: 
     person("Christopher", "Higgins", , "cd.higgins@utoronto.ca", role = c("aut", "cre"))

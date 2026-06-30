@@ -1,5 +1,5 @@
 ---
-title: "`{pycnogrid}`: Flexible pycnophylactic interpolation to disgrete global and raster grid systems"
+title: "`{pycnogrid}`: Flexible pycnophylactic interpolation to disgrete global and local grid systems"
 author:
   - name: "Christopher D. Higgins"
     orcid: "0000-0002-3551-7750"
@@ -34,7 +34,7 @@ Among areal interpolation methods for extensive data, Tobler’s pycnophylactic 
 
 Several implementations of Tobler's pycnophylactic interpolation exist for popular computing languages, including `{pycno}` [@pycno2025] for R and within the `{tobler}` package [@eliknaap2026] for Python, which is part of the larger Python Spatial Analysis Library (PySAL) [@sergiorey2026]. These existing implementations have largely followed Tobler's initial formulation of pycnophylactic interpolation from source zones to target raster cells. For example, the `pycno()` function from the `{pycno}` package converts source polygons to a regular grid and initializes a density surface by assigning a uniform density to all grid cells within each source zone. The density surface is then iteratively smoothed across neighbouring grid cells while correction steps ensure that the integrated target values within each source polygon remain equal to their original observed total. Built on the legacy `{sp}` framework, the package requires `SpatialPolygonsDataFrame` inputs and outputs a `SpatialGridDataFrame`. The PySAL `tobler` implementation follows a similar raster-based philosophy but performs smoothing through convolution-based operations on an array, with repeated correction steps used to preserve source-zone totals in the target cells.
 
-Building on these foundations, the primary contribution of `{pycnogrid}` is not a new pycnophylactic algorithm for users of the R computing language, but rather a more flexible implementation that extends pycnophylactic interpolation beyond regular raster lattices to a range of DGGS spatial grids. Capitalizing on the contemporary simple features library (`{sf}` [@pebesma2018]) and the neighbour relationships and spatial weights matrices that underpin much of modern spatial analysis and econometrics [@anselin1988] (through the `{spdep}` [@bivand2022] and `{sfdep}` [@sfdep2024] packages), `{pycnogrid}` implements pycnophylactic interpolation as a generalized neighbourhood-based smoothing problem. Rather than restricting smoothing to a regular raster lattice, values are smoothed using the neighbourhood structure defined by the underlying grid, allowing the method to be applied consistently across grid systems including H3, A5, S2, and various ISEA apertures, as well as traditional raster grids. This flexibility enables users to select a grid system whose geometric properties are better aligned with the requirements of subsequent analyses.
+Building on these foundations, the primary contribution of `{pycnogrid}` is not a new pycnophylactic algorithm for users of the R computing language, but rather a more flexible implementation that extends pycnophylactic interpolation beyond regular raster lattices to a range of DGGS spatial grids. Capitalizing on the contemporary simple features `{sf}` [@pebesma2018] library and the neighbour relationships and spatial weights matrices that underpin much of modern spatial analysis and econometrics [@anselin1988] (through the `{spdep}` [@bivand2022] and `{sfdep}` [@sfdep2024] packages), `{pycnogrid}` implements pycnophylactic interpolation as a generalized neighbourhood-based smoothing problem. Rather than restricting smoothing to a regular raster lattice, values are smoothed using the neighbourhood structure defined by the underlying grid, allowing the method to be applied consistently across grid systems including H3, A5, S2, and various ISEA apertures, as well as traditional raster grids. This flexibility enables users to select a grid system whose geometric properties are better aligned with the requirements of subsequent analyses.
 
 ## Example Workflow
 
@@ -305,6 +305,7 @@ tm_shape(sample_grids |> st_transform(crs = 3347)) +
 With source data collected, the pycnophylactic smoothing can now be run. In this example case, an H3 grid at a resolution of 10 is used:
 
 ```{r}
+#| label: run to_grid
 pycno_nyc_ct_small <- nyc_ct_small |>
   pycnogrid::to_grid(
     value_col = "populationE",
@@ -573,12 +574,14 @@ tm_shape(source_polys) +
 
 Within this scenario, the three source zones are indexed as $i = 1, \ldots, n = 3$ and have the following observed populations:
 
-$$\mathbf{y} =
+$$
+\mathbf{y} =
   \begin{bmatrix}
   6445 \\
   4412 \\
   5712
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
 with a total population $\sum_i y_i = 16569$.
 
@@ -586,7 +589,9 @@ with a total population $\sum_i y_i = 16569$.
 
 These source population values will be interpolated to the five target H3 grid cells indexed as $j = 1, \ldots, m = 5$.. The first step is to determine the spatial relationships between the source zones and target cells. Using the default `cell_allocation` based on `"area"`, this relationship is represented by the calculation of an areal overlap matrix $\mathbf{A}$, where each element $a_{ij}$ is the area of intersection between a source zone $i$ and target cell $j$:
 
-$$a_{ij} = \mathrm{Area}(S_i \cap T_j).$$
+$$
+a_{ij} = \mathrm{Area}(S_i \cap T_j)
+$$
 
 For the example source zones and target cells, these overlap areas (in $m^2$) are:
 
@@ -656,12 +661,14 @@ source_cell_weights <- pycnogrid:::prepare_source_cell_weights(
 #V_matrix == source_cell_weights$V_matrix
 ```
 
-$$\mathbf{A}=
+$$
+\mathbf{A}=
   \begin{bmatrix}
   98741.439 &  5558.235 &  2253.077 &  1419.009 & 36725.10 \\
   1506.071 & 77478.171 & 83178.843 & 0 & 0 \\   
    0 & 3919.766 & 0 & 95050.580 & 38363.57
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
 The rows of $\mathbf{A}$ sum to the total area of each source zone covered by target cells within the source-target intersection, that is $c_i = \sum_j a_{ij}$. With some grid cells not perfectly overlapping the source zones due to the use of centroid-based cell inclusion criteria in this example, the total covered area $c_i$ is less than the total area of a zone as defined by its geometry.
 
@@ -669,16 +676,20 @@ Similarly, the column sums of $\mathbf{A}$, calculated as $c_j = \sum_i a_{ij}$,
 
 Next, the overlap areas for each source zone are converted to areal interpolation weights by row-standardization:
 
-$$w_{ij} = \frac{a_{ij}}{c_i}$$
+$$
+w_{ij} = \frac{a_{ij}}{c_i}
+$$
 
 The resulting source zone to target cell weight matrix is:
 
-$$\mathbf{W}=
+$$
+\mathbf{W}=
   \begin{bmatrix}
   0.682 & 0.038 & 0.016 & 0.010 & 0.254 \\
   0.009 & 0.478 & 0.513 & 0 & 0 \\   
   0 & 0.029 & 0 & 0.692 & 0.279
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
 Because each row of $\mathbf{W}$ sums to one (e.g. $\sum_j w_{ij}=1$), these weights ensure that the entire total from each source zone is distributed across the target cells while preserving the original total of the source values in the system.
 
@@ -696,27 +707,33 @@ x <- as.numeric(Matrix::t(W_matrix) %*% y)
 ```
 
 $$ 
-\mathbf{x}^{(0)} = \mathbf{W}^{\top}\mathbf{y} $$
+\mathbf{x}^{(0)} = \mathbf{W}^{\top}\mathbf{y}
+$$
 
 which yields the areally-interpolated value estimates for each of the five target cells:
 
-$$\mathbf{x}^{(0)}
-=
-\begin{bmatrix}
-4439.057 \\
-2518.565 \\
-2363.417 \\
-4016.554 \\
-3231.407
-\end{bmatrix}$$
+$$
+\mathbf{x}^{(0)} =
+  \begin{bmatrix}
+    4439.057 \\
+    2518.565 \\
+    2363.417 \\
+    4016.554 \\
+    3231.407
+  \end{bmatrix}
+$$
 
 From this, the source zone value total allocated within the system remains unchanged:
 
-$$\sum_i^3 y_i = 16569 = \sum_j^5 x_j^{(0)}$$
+$$
+\sum_i^3 y_i = 16569 = \sum_j^5 x_j^{(0)}
+$$
 
 Because pycnophylactic interpolation works with densities, these allocated totals are converted to density estimates by dividing each target cell's allocated population by its covered area in the source zone-target cell intersection $c_j$ (which are the column sums of $A$):
 
-$$d_j^{(0)} = \frac{x_j^{(0)}}{c_j}$$
+$$
+d_j^{(0)} = \frac{x_j^{(0)}}{c_j}
+$$
 
 Resulting in the vector of initial target cell densities:
 
@@ -725,14 +742,16 @@ Resulting in the vector of initial target cell densities:
 density <- x / col_sums
 ```
 
-$$\mathbf d^{(0)} =
+$$
+\mathbf d^{(0)} =
   \begin{bmatrix}
     0.0443 \\
     0.0290 \\
     0.0277 \\
     0.0416 \\
     0.0430
-  \end{bmatrix}$$
+  \end{bmatrix}
+$$
 
 These densities represent the estimated population density over the portion of each target cell covered by the source polygons. Using area-based cell allocation, density is calculated for cells that extend beyond the source-zone boundaries using only the covered area represented in the source-target intersection. By extension, when a source zone is not fully covered by target cells, as is the case when using centroid-based cell inclusion criteria in this analysis, the incomplete spatial support results in the entire source value total for a zone being distributed across the cells that intersect it. Consequently, the procedure preserves source totals within the represented spatial support, even when that support differs from the original source geometry.
 
@@ -749,14 +768,16 @@ S_matrix <- pycnogrid:::build_smoothing_matrix(
 
 Once the initial density estimates have been obtained for the target cells, pycnophylactic smoothing proceeds iteratively. The first step is to define the neighbourhood relationships among target cells. Using a typical first-order Queen contiguity for the five target cells in this example, the neighbourhood structure is represented by the row-standardized sparse spatial weights matrix:
 
-$$\mathbf{S} = 
+$$
+\mathbf{S} = 
   \begin{bmatrix}
     0.20 & 0.20 & 0.20 & 0.20 & 0.20 \\
     0.25 & 0.25 & 0.25 & 0.25 &  .   \\
     0.33 & 0.33 & 0.33 &  .   &  .   \\        
     0.25 & 0.25 &  .   & 0.25 & 0.25 \\
     0.33 &  .   &  .   & 0.33 & 0.33
-  \end{bmatrix}$$
+  \end{bmatrix}
+$$
 
 Each row in $\mathbf{S}$ describes the cells contributing to the smoothed density estimate of a target cell. Because the matrix is row-standardized, each row sums to one and the smoothing operation computes a local weighted average of neighbouring densities.
 
@@ -767,12 +788,18 @@ The first smoothing step ($t+1$) involves multiplying the initial density vector
 d_smooth <- as.numeric(S_matrix %*% density) 
 ```
 
-$$\tilde{\mathbf{d}}^{(t + 1)} = \mathbf{S} \mathbf{d}^{(0)}$$
+$$
+\tilde{\mathbf{d}}^{(t + 1)} = \mathbf{S} \mathbf{d}^{(0)}
+$$
 
 Here, the $\tilde{\mathbf{d}}$ denotes these are the smoothed density estimates before correction. This operation reduces abrupt differences between neighbouring cells by replacing each cell’s density with the average density of its neighbourhood. For target zone 1:
 
-$$\tilde{d}_{1}^{(t+1)} = 0.20(0.0443) + 0.20(0.0290) + 0.20(0.0277) + 0.20(0.0416) + 0.20(0.0430), \\
-\tilde{d}_{1}^{(t+1)} = 0.0371$$
+$$
+\tilde{d}_{1}^{(t+1)} = 0.20(0.0443) + 0.20(0.0290) + 0.20(0.0277) + 0.20(0.0416) + 0.20(0.0430)
+$$
+$$
+\tilde{d}_{1}^{(t+1)} = 0.0371
+$$
 
 However, smoothing alone does not always preserve the original source-zone totals. After smoothing, the implied source-zone total estimates are calculated by multiplying the 3 by 5 overlap matrix (which contains information on how much of each target cell's area is within the system defined by source zone-target cell spatial relationship) and the 5 by 1 column vector of smoothed densities:
 
@@ -781,7 +808,9 @@ However, smoothing alone does not always preserve the original source-zone total
 source_est <- as.numeric(A_matrix %*% density)
 ```
 
-$$\tilde{\mathbf{y}}^{(t + 1)} = \mathbf{A} \tilde{\mathbf{d}}^{(t + 1)}$$
+$$
+\tilde{\mathbf{y}}^{(t + 1)} = \mathbf{A} \tilde{\mathbf{d}}^{(t + 1)}
+$$
 
 The resulting source values contained within the 3 by 1 column vector $\tilde{\mathbf{y}}^{(t + 1)}$ generally differ from their observed source totals ($\mathbf{y}$). To restore the original source-zone populations, a correction factor is calculated for each source zone:
 
@@ -790,16 +819,20 @@ The resulting source values contained within the 3 by 1 column vector $\tilde{\m
 r_ratio <- y / source_est
 ```
 
-$$\mathbf{r} = \frac{\mathbf{y}}{\tilde{\mathbf{y}}^{(t + 1)}}$$
+$$
+\mathbf{r} = \frac{\mathbf{y}}{\tilde{\mathbf{y}}^{(t + 1)}}
+$$
 
 Resulting in this column vector of ratios:
 
-$$\mathbf{r}^{(t + 1)} =
+$$
+\mathbf{r}^{(t + 1)} =
   \begin{bmatrix}
     1.034 \\
     0.957 \\
     0.998 
-  \end{bmatrix}$$
+  \end{bmatrix}
+$$
 
 The correction factor compares the observed source total to the total implied by the smoothed density surface. A value of $r_{i} = 1$ indicates that smoothing preserved the source-zone total exactly, so no adjustment is required. A value of $r_i > 1$ indicates that the smoothed density surface underestimates the observed population in source zone i, requiring the densities within that source zone to be increased. Conversely, a value of $r_i < 1$ indicates that smoothing overestimates the source-zone population, requiring the densities to be decreased.
 
@@ -812,7 +845,9 @@ These source-zone correction factors are then redistributed back to target cells
 q_correction <- as.numeric(Matrix::t(V_matrix) %*% r_ratio)
 ```
 
-$$\mathbf{q}^{(t + 1)} = \mathbf{V}^\top \mathbf{r}^{(t + 1)}$$
+$$
+\mathbf{q}^{(t + 1)} = \mathbf{V}^\top \mathbf{r}^{(t + 1)}
+$$
 
 From this, each target cell receives a weighted average of the correction factors from the source zones that it intersects. These correction factors can now be applied to adjust the smoothed densities for each target cell for the first iteration:
 
@@ -821,11 +856,15 @@ From this, each target cell receives a weighted average of the correction factor
 density_t_plus_one <- density * q_correction
 ```
 
-$$\mathbf{d}^{(t+1)} = \tilde{\mathbf d}^{(t+1)} \odot \mathbf q^{(t+1)}$$
+$$
+\mathbf{d}^{(t+1)} = \tilde{\mathbf d}^{(t+1)} \odot \mathbf q^{(t+1)}
+$$
 
 Or, using scalar notation:
 
-$$d_{j}^{(t+1)} = \tilde{d}_{j}^{(t+1)} q_{j}^{(t+1)}$$
+$$
+d_{j}^{(t+1)} = \tilde{d}_{j}^{(t+1)} q_{j}^{(t+1)}
+$$
 
 In this way, pycnophylactic smoothing uses the original source zone polygons to ensure the total mass is preserved on the smoothed surface. The corrected densities form the starting point for the next iteration $t+2$. Smoothing and correction continue until the relative change in target-cell densities between successive iterations falls below a specified tolerance. In this case, the convergence criterion is defined by calculating the mean relative change in target cell densities across the current and previous iterations:
 
@@ -836,10 +875,12 @@ denom <- pmax(abs(density), 1e-12)
 last_error <- mean(abs_change / denom, na.rm = TRUE)
 ```
 
-$$\epsilon^{(t+1)}
+$$
+\epsilon^{(t+1)}
 = \frac{1}{m} \sum_{j=1}^{m} 
     \frac{\left| d_j^{(t+1)} - d_j^{(t)} \right|}
-    {\max\!\left(d_j^{(t)},\delta\right)}$$
+    {\max\!\left(d_j^{(t)},\delta\right)}
+$$
 
 with $\delta=10^{-12}$ used to prevent any division by zero in the denominator. Iteration stops when $\epsilon^{(t+1)}$ is less than the convergence tolerance, which is set at a default of $10^{-4}$. For the present case, the error from the first iteration is `r round(last_error, 4)`, suggesting further rounds of smoothing are required to reach convergence.
 

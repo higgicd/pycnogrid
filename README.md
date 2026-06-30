@@ -7,12 +7,41 @@
 
 <!-- badges: end -->
 
-`pycnogrid` provides tools for pycnophylactic interpolation of polygon
-totals to H3 grids while preserving mass.
+`{pycnogrid}` provides tools for interpolating more aggregate
+polygon-level extensive data (e.g. population, employment, or event
+counts) to a range of alternative grid types using pycnophylactic
+interpolation.
+
+Often administrative and statistical reporting units do not align with
+the geographic supports needed for analysis. They can also introduce
+sensitivity to the scale and zoning of spatial units, which are central
+to the modifiable areal unit problem (MAUP). Tobler’s pycnophylactic
+interpolation method can potentially help to address this mismatch by
+transferring polygon totals to an alternative regular grid while
+preserving represented source totals and smoothing estimates across
+neighbouring cells.
+
+Existing implementations of [Tobler’s pycnophylactic
+interpolation](https://doi.org/10.1080%2F01621459.1979.10481647) include
+the `{pycno}` [package](https://doi.org/10.32614/CRAN.package.pycno) for
+R and the `{tobler}` [module](https://doi.org/10.5281/ZENODO.3386576)
+within the larger Python Spatial Analysis Library (PySAL). These
+implementations focus on transferring source data to target raster
+cells. {pynogrid} extends Tobler’s pycnophylactic interpolation approach
+beyond regular raster lattices and supports a range of discrete global
+grid systems (DGGSs), including H3, A5, S2, and ISEA grids, as well as
+rasters and other local grids. The flexibility of the underlying
+interpolation approach makes it possible to create spatially smooth,
+mass-preserving representations of aggregate data with area or shape
+preserving geographic supports.
+
+For a full introduction to the interpolation workflow, grid options, and
+output interpretation, see the [getting started
+vignette](https://higgicd.github.io/pycnogrid/articles/getting_started.html).
 
 ## Installation
 
-You can install the development version of `pycnogrid` from GitHub:
+You can install the development version of `{pycnogrid}` from GitHub:
 
 ``` r
 # install.packages("remotes")
@@ -20,6 +49,9 @@ remotes::install_github("higgicd/pycnogrid")
 ```
 
 ## Example
+
+This example interpolates census tract population counts for a small
+area of New York City to an H3 grid at resolution 10:
 
 ``` r
 library(dplyr)
@@ -37,7 +69,87 @@ out <- nyc_ct_small |>
   )
 ```
 
-The returned object:
+The returned object is an {sf} object containing the target-cell
+geometries, the interpolated count, an estimated density, and the
+proportion of each cell covered by the source geography. The map below
+shows the interpolated population counts:
+
+<figure>
+<img src="README_files/figure-gfm/fig-pycno-nyc-ct-small-1.png"
+alt="Census tract population counts interpolated to an H3 grid." />
+<figcaption aria-hidden="true">Census tract population counts
+interpolated to an H3 grid.</figcaption>
+</figure>
+
+## How it works
+
+For a polygon layer containing source totals, `{pycnogrid}`:
+
+1.  creates a target grid covering the source geography;
+2.  allocates each source total to intersecting target cells;
+3.  smooths estimated densities across neighbouring cells; and
+4.  repeatedly rescales the estimates so that the original source totals
+    are preserved.
+
+The resulting grid can be used in downstream mapping, accessibility,
+spatial modelling, and sensitivity analyses.
+
+### Key arguments
+
+The main function, `to_grid()`, provides several options for specifying
+the target geography and interpolation process:
+
+- `source` is the source {sf} polygon layer containing the totals to be
+  interpolated. Given the geometry calculations performed by the tool,
+  only inputs with projected coordinate reference systems are accepted.
+- `value_col` is the column in `source` containing the count variable to
+  be smoothed and preserved
+- `id_col` is an optional column uniquely identifying each source
+  polygon, if omitted, an internal identifier is created
+- `grid_type` specifies the target grid system. Supported options are
+  H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived
+  polygon cells
+- `resolution` controls the size of the target grid cells. Its
+  interpretation depends on the selected grid type
+- `cell_inclusion` defines how candidate grid cells are selected for
+  interpolation. With “intersect”, cells are included if they intersect
+  a source polygon. With “centroid”, cells are included only when their
+  centroid falls inside a source polygon.
+- `cell_allocation` defines how source totals are allocated to grid
+  cells. With “area”, values are allocated in proportion to the area of
+  overlap between source polygons and grid cells. With “centroid”, each
+  grid cell is assigned to the source polygon containing its centroid.
+- `nb_order` specifies the neighbourhood order used during smoothing. A
+  value of 1 uses immediately adjacent cells, while larger values extend
+  the smoothing neighbourhood outwards from a given cell.
+- `max_iter` sets the maximum number of smoothing iterations. If set to
+  0, the function returns the initial allocation without iterative
+  smoothing.
+- `tolerance` defines the convergence threshold. Iteration stops when
+  the relative change in estimated cell densities falls below this
+  value.
+- `include_self` controls whether each cell includes its own current
+  value when calculating the neighbourhood mean during smoothing.
+- `missing_policy` determines how the function handles source polygons
+  that receive no target grid cells, which might arise due to a mismatch
+  in source polygon sizes and target grid cell resolutions. “abort”
+  stops with an error, “warn” returns a warning, and “ignore” proceeds
+  silently.
+
+For most applications, `cell_inclusion = "intersect"` and
+`cell_allocation = "area"` provide the most geographically complete
+initial representation because all source–target intersections are
+retained and source totals are allocated according to their area of
+overlap.
+
+### Interpreting the output
+
+Interpolated values are estimates of the amount of the source total
+associated with each target cell. With `cell_allocation = "area"`, the
+output for partially covered target cells represents the amount
+estimated within the portion of the cell that overlaps the source
+geography. In this sense, the method does not extrapolate counts beyond
+source boundaries. The output includes:
 
 ``` r
 out |> glimpse()
@@ -52,11 +164,38 @@ out |> glimpse()
 #> $ pycno_iter        <int> 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, …
 ```
 
-The results of this interpolation are shown in @fig-pycno_nyc_ct_small:
+with:
 
-<figure>
-<img src="README_files/figure-gfm/fig-pycno_nyc_ct_small-1.png"
-alt="Census tract population counts interpolated to an H3 grid" />
-<figcaption aria-hidden="true">Census tract population counts
-interpolated to an H3 grid</figcaption>
-</figure>
+- `pycno_<value_col>`: the interpolated extensive value for each target
+  cell
+- `pycno_density`: the estimated density used during the smoothing
+  process
+- `pycno_coverage`: the proportion of the target-cell area covered by
+  the source geography
+- `pycno_iter`: the number of smoothing iterations used
+
+Additional information about convergence, represented input totals,
+missing source areas, grid settings, and neighbourhood settings is
+stored as attributes on the returned object.
+
+## Important considerations
+
+The pycnophylactic interpolation algorithm implemented in `{pycnogrid}`
+is intended for extensive variables: quantities that can be meaningfully
+divided and summed across space, such as population, households, jobs,
+trips, or service counts.
+
+It should not be used to directly interpolate intensive variables such
+as median income, percentages, rates, or averages. Where appropriate,
+interpolate the underlying numerator and denominator separately, then
+calculate the rate or ratio on the resulting grid.
+
+Grid choice remains an analytical decision. Different grids vary in cell
+area, shape, orientation, hierarchy, adjacency structure, and
+suitability for tasks such as spatial aggregation, indexing,
+visualization, or accessibility analysis. Moreover, options related to
+cell inclusion, allocation, neighbourhood order, etc., can all
+meaningfully shape the nature of the interpolation and smoothing.
+`{pycnogrid}` facilitates comparison across these alternative spatial
+support systems and modelling choices rather than treating any single
+grid as universally optimal.

@@ -4,60 +4,32 @@
 \alias{to_h3}
 \title{Pycnophylactic interpolation to an H3 grid}
 \usage{
-to_h3(
-  source,
-  value_col,
-  id_col = NULL,
-  resolution,
-  output_type = c("h3", "sf"),
-  k = 1,
-  max_iter = 500,
-  tolerance = 1e-04,
-  include_self = TRUE,
-  missing_policy = c("abort", "warn", "ignore"),
-  db_conn = NULL
-)
+to_h3(source, value_col, resolution, ...)
 }
 \arguments{
 \item{source}{An \code{sf} polygon object.}
 
-\item{value_col}{Unquoted column containing non-negative source totals.}
+\item{value_col}{Column containing the values to interpolate. May be
+supplied as an unquoted column name or a character string.}
 
-\item{id_col}{Optional unique identifier column for source polygons.}
+\item{resolution}{A5 resolution level (0--15). Higher values produce smaller cells
+and many more output polygons. For typical urban analyses, values around
+9--12 are usually more practical.}
 
-\item{resolution}{H3 resolution (0--15).}
-
-\item{output_type}{Output format: \code{"h3"} for a tibble of H3 cell IDs
-or \code{"sf"} for polygon geometries.}
-
-\item{k}{H3 neighbourhood distance used for smoothing.}
-
-\item{max_iter}{Maximum number of pycnophylactic smoothing iterations.}
-
-\item{tolerance}{Convergence tolerance based on relative mean density change.}
-
-\item{include_self}{Logical. Should each H3 cell include itself in smoothing?}
-
-\item{missing_policy}{How to handle source polygons that receive no H3
-cells. One of \code{"abort"}, \code{"warn"}, or \code{"ignore"}.}
-
-\item{db_conn}{Optional DuckDB connection. If \code{NULL}, a temporary in-memory
-database is created automatically.}
+\item{...}{Additional arguments passed to \code{\link[=to_grid]{to_grid()}}.}
 }
 \value{
-A tibble containing H3 cell IDs and interpolated values when
-\code{output_type = "h3"}, or an \code{sf} object of H3 polygons when
-\code{output_type = "sf"}.
+An \code{sf} object containing H3 cells and interpolated values.
 }
 \description{
-Interpolates polygon totals to an H3 grid while preserving mass
-over the represented H3 cells.
+Interpolates polygon counts to an H3 grid while preserving source-zone
+totals.
 }
 \details{
-Source polygons are converted to H3 cells using centroid assignment via
-\code{duckh3}. Initial densities are computed from the total area of assigned
-H3 cells rather than the exact source polygon area.
+H3 is a hierarchical global discrete grid system composed primarily of
+hexagonal cells. Higher resolution levels produce smaller cells and a larger
+number of output cells. H3 resolutions range from 0 to 15, but high
+resolutions may be impractical for large study areas.
 
-H3 cells are not equal area. Cell areas are computed directly using the
-H3 library in square metres.
+Calls \code{\link[=to_grid]{to_grid()}} with \code{grid_type = "h3"}.
 }

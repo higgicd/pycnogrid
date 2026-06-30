@@ -23,40 +23,40 @@ remotes::install_github("higgicd/pycnogrid")
 
 ``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 library(pycnogrid)
+library(sf)
+library(tmap)
 ```
 
 ``` r
-out <- to_h3(
-  source = nyc_ct_small,
-  value_col = populationE,
-  id_col = id,
-  resolution = 9,
-  output_type = "sf"
-)
-#> Warning: Missing values are always removed in SQL aggregation functions.
-#> Use `na.rm = TRUE` to silence this warning
-#> This warning is displayed once every 8 hours.
+out <- nyc_ct_small |>
+  pycnogrid::to_grid(
+    value_col = "populationE",
+    grid_type = "h3",
+    resolution = 10
+  )
 ```
+
+The returned object:
 
 ``` r
 out |> glimpse()
-#> Rows: 43
-#> Columns: 8
-#> $ h3                <chr> "892a100d257ffff", "892a100d203ffff", "892a100d273ff…
-#> $ source_id         <chr> "36061009100", "36061005600", "36061005400", "360610…
-#> $ cell_area         <dbl> 105880.3, 105874.6, 105869.8, 105895.9, 105890.8, 10…
-#> $ density           <dbl> 0.0608706180, 0.0384511483, 0.0445925150, 0.00125622…
-#> $ pycno_populationE <dbl> 6445.00000, 4071.00000, 4721.00000, 133.02955, 1183.…
-#> $ pycno_density     <dbl> 0.0608706180, 0.0384511483, 0.0445925150, 0.00125622…
-#> $ pycno_iter        <int> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…
-#> $ geometry          <POLYGON [°]> POLYGON ((-73.99414 40.7461..., POLYGON ((-7…
+#> Rows: 336
+#> Columns: 7
+#> $ h3                <chr> "8a2a100d2db7fff", "8a2a100d2d97fff", "8a2a100d2d87f…
+#> $ geometry          <POLYGON [m]> POLYGON ((585062.6 4511955,..., POLYGON ((58…
+#> $ .tid              <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…
+#> $ pycno_populationE <dbl> 103.085325, 183.514968, 32.247510, 11.821690, 41.908…
+#> $ pycno_density     <dbl> 0.0068098960, 0.0121233098, 0.0021303414, 0.00078095…
+#> $ pycno_coverage    <dbl> 1.0000000, 1.0000000, 1.0000000, 1.0000000, 1.000000…
+#> $ pycno_iter        <int> 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, …
 ```
+
+The results of this interpolation are shown in @fig-pycno_nyc_ct_small:
+
+<figure>
+<img src="README_files/figure-gfm/fig-pycno_nyc_ct_small-1.png"
+alt="Census tract population counts interpolated to an H3 grid" />
+<figcaption aria-hidden="true">Census tract population counts
+interpolated to an H3 grid</figcaption>
+</figure>

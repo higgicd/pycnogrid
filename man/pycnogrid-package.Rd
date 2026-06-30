@@ -11,4 +11,9 @@ Provides tools for pycnophylactic interpolation of polygon totals to discrete gl
 \author{
 \strong{Maintainer}: Christopher Higgins \email{cd.higgins@utoronto.ca}
 
+Authors:
+\itemize{
+  \item Christopher Higgins \email{cd.higgins@utoronto.ca}
+}
+
 }

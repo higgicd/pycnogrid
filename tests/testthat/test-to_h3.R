@@ -1,7 +1,7 @@
 # tests
 ## is expected output generated with defaults?
-test_that("to_h3 returns expected output", {
-  out <- to_h3(
+test_that("to_grid returns expected output", {
+  out <- to_grid(
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
@@ -16,10 +16,10 @@ test_that("to_h3 returns expected output", {
 })
 
 ## mass preservation test
-test_that("to_h3 approximately preserves mass", {
+test_that("to_grid approximately preserves mass", {
   input_total <- sum(nyc_ct_small$populationE, na.rm = TRUE)
 
-  out <- to_h3(
+  out <- to_grid(
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
@@ -37,13 +37,12 @@ test_that("to_h3 approximately preserves mass", {
 })
 
 ## can has sf output?
-test_that("to_h3 can return sf output", {
-  out <- to_h3(
+test_that("to_grid can return sf output", {
+  out <- to_grid(
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
     resolution = 9,
-    output_type = "sf",
     max_iter = 5
   )
 
@@ -52,12 +51,12 @@ test_that("to_h3 can return sf output", {
 })
 
 ## errors/warnings
-test_that("to_h3 errors on negative values", {
+test_that("to_grid errors on negative values", {
   bad <- nyc_ct_small
   bad$populationE[1] <- -1
 
   expect_error(
-    to_h3(
+    to_grid(
       bad,
       value_col = populationE,
       id_col = id,

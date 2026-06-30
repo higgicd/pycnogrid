@@ -30,23 +30,47 @@ remotes::install_github("higgicd/pycnogrid")
 
 ## Example
 
-```{r example}
+```{r example, message=FALSE}
 library(dplyr)
 library(pycnogrid)
+library(sf)
+library(tmap)
 ```
 
 ```{r}
-out <- to_h3(
-  source = nyc_ct_small,
-  value_col = populationE,
-  id_col = id,
-  resolution = 9,
-  output_type = "sf"
-)
+out <- nyc_ct_small |>
+  pycnogrid::to_grid(
+    value_col = "populationE",
+    grid_type = "h3",
+    resolution = 10
+  )
 ```
 
+The returned object:
 
 ```{r}
 out |> glimpse()
 ```
 
+The results of this interpolation are shown in @fig-pycno_nyc_ct_small:
+
+```{r}
+#| label: fig-pycno_nyc_ct_small
+#| fig-cap: "Census tract population counts interpolated to an H3 grid"
+#| echo: false
+tm_shape(out) + tm_fill(
+  fill = "pycno_populationE",
+  fill.scale = tm_scale_intervals(
+    values = "viridis",
+    style = "jenks",
+    n = 6,
+    label.format = tm_label_format(big.num.abbr = c("K" = 3))
+  ),
+  fill_alpha = .75,
+  fill.legend = tm_legend(title = "Interpolated \nPopulation", frame = FALSE)
+) +
+  tm_shape(nyc_ct_small) + tm_lines(col = "grey45") +
+  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  #tm_crs(nyc_laea) + 
+  tm_layout(frame = FALSE)
+```

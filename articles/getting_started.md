@@ -13,18 +13,19 @@ with the geographic frame associated with particular research questions
 or analyses. This mismatch lies at the heart of the modifiable areal
 unit problem (MAUP) ([Openshaw 1979](#ref-openshaw1979)), which
 recognizes that observed spatial patterns and statistical relationships
-may vary according to the zoning system used to aggregate data.
-Researchers and practitioners therefore frequently face the challenge of
-transferring information from source zones to alternative target
-geographies, creating a longstanding need for areal interpolation
-methods. At the same time, the growing use of regular grids and discrete
-global grid systems (DGGSs) for spatial analysis has increased the
-demand for methods capable of redistributing aggregated data to
-alternative spatial tessellations while preserving known source-zone
-totals.
+may vary according to the zoning system used to aggregate data. This
+includes the scale effect, related to the size of geographic units, and
+the zoning effect related to how the polygons are drawn. In response,
+researchers and practitioners may look to methods for transferring or
+interpolating information from source zones to more standardized target
+geographies while preserving known source zone totals. At the same time,
+the development of area or shape preserving hierarchical discrete global
+grid systems (DGGSs) and alternative local grid options presents an
+opportunity to extend traditional interpolation methods to accommodate
+different grid types.
 
-Among areal interpolation methods for extensive data, Tobler’s
-pycnophylactic interpolation ([Tobler 1979](#ref-tobler1979)) is
+Among areal interpolation methods for extensive data, Tobler
+([1979](#ref-tobler1979))’s pycnophylactic interpolation is
 distinguished by its emphasis on mass or volume preservation and spatial
 smoothing. Rather than assuming constant distributions of the source
 zone values across the target cells, pycnophylactic interpolation
@@ -34,11 +35,11 @@ fine target geometries, the result is a continuous spatial surface that
 preserves known aggregate quantities while reducing the abrupt
 discontinuities across zones introduced by administrative boundaries. In
 doing so, the method acknowledges that spatial aggregation obscures
-local variation and seeks to recover a *plausible* representation at a
-finer alternative level of geography. The resulting surface embodies the
-intuition that nearby locations are expected to exhibit greater
-similarity than more distant locations ([Tobler 1970](#ref-tobler1970);
-[Tobler 2004](#ref-tobler2004)).
+local variation and seeks to recover a *plausible* representation of the
+spatial phenomena at a finer alternative level of geography. The
+resulting surface embodies the intuition that nearby locations are
+expected to exhibit greater similarity than more distant locations
+([Tobler 1970](#ref-tobler1970); [Tobler 2004](#ref-tobler2004)).
 
 Several implementations of Tobler’s pycnophylactic interpolation exist
 for popular computing languages, including `{pycno}` ([Brunsdon
@@ -80,9 +81,9 @@ smoothing problem. Rather than restricting smoothing to a regular raster
 lattice, values are smoothed using the neighbourhood structure defined
 by the underlying grid, allowing the method to be applied consistently
 across grid systems including H3, A5, S2, and various ISEA apertures, as
-well as traditional raster grids. This flexibility enables users to
-select a grid system whose geometric properties are better aligned with
-the requirements of subsequent analyses.
+well as traditional rasters and other local grids. This flexibility
+enables users to select a grid system whose geometric properties are
+better aligned with the requirements of subsequent analyses.
 
 ## Example Workflow
 
@@ -126,13 +127,14 @@ where
 - `resolution` controls the size of the target grid cells. Its
   interpretation depends on the selected grid type
 - `cell_inclusion` defines how candidate grid cells are selected for
-  interpolation. With “intersect”, cells are included if they intersect
-  a source polygon. With “centroid”, cells are included only when their
-  centroid falls inside a source polygon.
+  interpolation. With `"intersect"`, cells are included if they
+  intersect a source polygon. With `"centroid"`, cells are included only
+  when their centroid falls inside a source polygon.
 - `cell_allocation` defines how source totals are allocated to grid
-  cells. With “area”, values are allocated in proportion to the area of
-  overlap between source polygons and grid cells. With “centroid”, each
-  grid cell is assigned to the source polygon containing its centroid.
+  cells. With `"area"`, values are allocated in proportion to the area
+  of overlap between source polygons and grid cells. With `"centroid"`,
+  each grid cell is assigned to the source polygon containing its
+  centroid.
 - `nb_order` specifies the neighbourhood order used during smoothing. A
   value of 1 uses immediately adjacent cells, while larger values extend
   the smoothing neighbourhood outwards from a given cell.

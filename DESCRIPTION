@@ -1,6 +1,6 @@
 Package: pycnogrid
 Title: Flexible Pycnophylactic Interpolation to Discrete Global and Local Grid Systems
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person("Christopher", "Higgins", , "cd.higgins@utoronto.ca", role = c("aut", "cre"))
 Description: Provides tools for pycnophylactic interpolation of polygon totals

@@ -1,4 +1,4 @@
-# pycnogrid (development version)
+# pycnogrid 0.2.0
 
 # pycnogrid 0.1.0
 

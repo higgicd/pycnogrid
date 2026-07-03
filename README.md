@@ -26,7 +26,7 @@ include the `{pycno}`
 [package](https://doi.org/10.32614/CRAN.package.pycno) for R and the
 `{tobler}` [module](https://doi.org/10.5281/ZENODO.3386576) within the
 larger Python Spatial Analysis Library (PySAL). These implementations
-focus on transferring source data to target raster cells. {pynogrid}
+focus on transferring source data to target raster cells. {pycnogrid}
 extends Tobler’s pycnophylactic interpolation approach beyond regular
 raster lattices and supports a range of discrete global grid systems
 (DGGSs), including H3, A5, S2, and ISEA grids, as well as rasters and

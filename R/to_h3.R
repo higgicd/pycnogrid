@@ -12,7 +12,7 @@
 #' Calls [to_grid()] with `grid_type = "h3"`.
 #'
 #' @inheritParams to_grid
-#' @param resolution A5 resolution level (0--15). Higher values produce smaller cells
+#' @param resolution H3 resolution level (0--15). Higher values produce smaller cells
 #'   and many more output polygons. For typical urban analyses, values around
 #'   9--12 are usually more practical.
 #' @param ... Additional arguments passed to [to_grid()].

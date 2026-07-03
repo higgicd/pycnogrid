@@ -1,5 +1,5 @@
 ---
-title: "`{pycnogrid}`: Flexible pycnophylactic interpolation to disgrete global and local grid systems"
+title: "`{pycnogrid}`: Flexible pycnophylactic interpolation to discrete global and local grid systems"
 author:
   - name: "Christopher D. Higgins"
     orcid: "0000-0002-3551-7750"

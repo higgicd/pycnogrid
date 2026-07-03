@@ -6,6 +6,9 @@
 
 ## Citation
 
+Source:
+[`DESCRIPTION`](https://github.com/higgicd/pycnogrid/blob/master/DESCRIPTION)
+
 Higgins C (2026). *pycnogrid: Flexible Pycnophylactic Interpolation to
 Discrete Global and Local Grid Systems*. R package version 0.2.0,
 <https://higgicd.github.io/pycnogrid/>.

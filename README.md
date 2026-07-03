@@ -15,25 +15,25 @@ interpolation.
 Often administrative and statistical reporting units do not align with
 the geographic supports needed for analysis. They can also introduce
 sensitivity to the scale and zoning of spatial units, which are central
-to the modifiable areal unit problem (MAUP). Tobler’s pycnophylactic
-interpolation method can potentially help to address this mismatch by
-transferring polygon totals to an alternative regular grid while
-preserving represented source totals and smoothing estimates across
-neighbouring cells.
+to the modifiable areal unit problem (MAUP). Waldo Tobler’s
+pycnophylactic interpolation method can potentially help to address this
+mismatch by transferring polygon totals to an alternative regular grid
+while preserving represented source totals and smoothing estimates
+across neighbouring cells.
 
-Existing implementations of [Tobler’s pycnophylactic
-interpolation](https://doi.org/10.1080%2F01621459.1979.10481647) include
-the `{pycno}` [package](https://doi.org/10.32614/CRAN.package.pycno) for
-R and the `{tobler}` [module](https://doi.org/10.5281/ZENODO.3386576)
-within the larger Python Spatial Analysis Library (PySAL). These
-implementations focus on transferring source data to target raster
-cells. {pynogrid} extends Tobler’s pycnophylactic interpolation approach
-beyond regular raster lattices and supports a range of discrete global
-grid systems (DGGSs), including H3, A5, S2, and ISEA grids, as well as
-rasters and other local grids. The flexibility of the underlying
-interpolation approach makes it possible to create spatially smooth,
-mass-preserving representations of aggregate data with area or shape
-preserving geographic supports.
+Existing implementations of Tobler’s pycnophylactic interpolation
+include the `{pycno}`
+[package](https://doi.org/10.32614/CRAN.package.pycno) for R and the
+`{tobler}` [module](https://doi.org/10.5281/ZENODO.3386576) within the
+larger Python Spatial Analysis Library (PySAL). These implementations
+focus on transferring source data to target raster cells. {pynogrid}
+extends Tobler’s pycnophylactic interpolation approach beyond regular
+raster lattices and supports a range of discrete global grid systems
+(DGGSs), including H3, A5, S2, and ISEA grids, as well as rasters and
+other local grids. The flexibility of the underlying interpolation
+approach makes it possible to create spatially smooth, mass-preserving
+representations of aggregate data with area or shape preserving
+geographic supports.
 
 For a full introduction to the interpolation workflow, grid options, and
 output interpretation, see the [getting started
@@ -74,12 +74,15 @@ geometries, the interpolated count, an estimated density, and the
 proportion of each cell covered by the source geography. The map below
 shows the interpolated population counts:
 
-<figure>
-<img src="README_files/figure-gfm/fig-pycno-nyc-ct-small-1.png"
-alt="Census tract population counts interpolated to an H3 grid." />
-<figcaption aria-hidden="true">Census tract population counts
-interpolated to an H3 grid.</figcaption>
-</figure>
+<div class="figure">
+
+<img src="./man/figures/out_map.jpg" alt="Census tract population counts interpolated to an H3 grid." width="2077" />
+<p class="caption">
+
+Census tract population counts interpolated to an H3 grid.
+</p>
+
+</div>
 
 ## How it works
 

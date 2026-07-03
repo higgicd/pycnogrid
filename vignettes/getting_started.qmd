@@ -50,7 +50,7 @@ pcynogrid::to_grid(
   source,
   value_col,
   id_col = NULL,
-  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "isea7h", "raster"),
+  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
   cell_allocation = c("area", "centroid"),
@@ -67,8 +67,8 @@ where
 - `source` is the source {sf} polygon layer containing the totals to be interpolated. Given the geometry calculations performed by the tool, only inputs with projected coordinate reference systems are accepted.
 - `value_col` is the column in `source` containing the count variable to be smoothed and preserved
 - `id_col` is an optional column uniquely identifying each source polygon, if omitted, an internal identifier is created
-- `grid_type` specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived polygon cells
-- `resolution` controls the size of the target grid cells. Its interpretation depends on the selected grid type
+- `grid_type` specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived polygon cells
+- `resolution` controls the size of the target grid cells; its interpretation depends on the selected grid type
 - `cell_inclusion` defines how candidate grid cells are selected for interpolation. With `"intersect"`, cells are included if they intersect a source polygon. With `"centroid"`, cells are included only when their centroid falls inside a source polygon.
 - `cell_allocation` defines how source totals are allocated to grid cells. With `"area"`, values are allocated in proportion to the area of overlap between source polygons and grid cells. With `"centroid"`, each grid cell is assigned to the source polygon containing its centroid.
 - `nb_order` specifies the neighbourhood order used during smoothing. A value of 1 uses immediately adjacent cells, while larger values extend the smoothing neighbourhood outwards from a given cell.
@@ -88,13 +88,6 @@ The first part of a pycnophylactic workflow is to obtain more aggregate source d
 #| fig-cap: "Sample population count data for Lower Manhattan"
 #| warning: false
 #| echo: false
-nyc_ct_small <- nyc_ct_small |>
-  mutate(
-    area_m2 = st_area(geometry),
-    area_km2 = units::set_units(area_m2, km^2),
-    pop_density = populationE / area_km2
-  )
-
 tm_shape(nyc_ct_small) + tm_fill(
   fill = "populationE",
   fill.scale = tm_scale_intervals(
@@ -106,13 +99,17 @@ tm_shape(nyc_ct_small) + tm_fill(
   fill_alpha = .75,
   fill.legend = tm_legend(title = "Population Count", frame = FALSE)
 ) +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_layout(frame = FALSE)
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(
+    frame = FALSE,
+    bg.color = "grey90"
+  )
 ```
 
 ### Target Grid Systems
 
-The choice of a target grid system is not merely a computational consideration as different grid systems prioritize different geometric and analytical properties, including equal-area representation, shape preservation, neighbourhood structure, hierarchical indexing, and scalable spatial computation (@tbl-grids). Sample grids generated at different resolution levels to cover the census tracts for Lower Manhattan from @fig-sample_population_count are shown in @fig-sample_grids.
+The choice of a target grid system is not merely a computational consideration as different grid systems prioritize different geometric and analytical properties, including equal-area representation, shape preservation, neighbourhood structure, hierarchical indexing, and scalable spatial computation (@tbl-grids).
 
 ```{r}
 #| label: tbl-grids
@@ -123,14 +120,6 @@ tibble::tribble(
   ~grid_system, ~cell_geometry, ~area_property, ~extent_and_hierarchy,
   ~subdivision_or_aperture, ~neighbour_topology, ~analytical_implication,
 
-  "Raster",
-  "Rectangular cells in a projected CRS",
-  "Equal-area only when constructed in an appropriate projected CRS",
-  "Usually regional or local; hierarchy is not intrinsic",
-  "Resolution specified directly in map units",
-  "Four- or eight-neighbour structure, depending on rook or queen contiguity",
-  "Simple and familiar benchmark, but geometric properties depend on the selected projection and resolution",
-
   "H3",
   "Mostly hexagons, with twelve pentagons",
   "Approximately equal-area",
@@ -139,11 +128,11 @@ tibble::tribble(
   "Usually six edge-neighbours; pentagons have five",
   "Strong indexing and neighbourhood structure, particularly useful for mobility, accessibility, and spatial aggregation",
 
-  "ISEA3H, ISEA4H, ISEA7H",
+  "ISEA3H, ISEA4H", # ISEA7H",
   "Mostly hexagons, with twelve pentagons on an icosahedral projection",
   "Equal-area",
   "Global discrete grid with a nested hierarchy",
-  "Aperture-3, Aperture-4, and Aperture-7 hierarchies",
+  "Aperture-3 and Aperture-4 hierarchies, #, and Aperture-7 hierarchies",
   "Usually six edge-neighbours; pentagons have five",
   "Equal-area hexagonal option with relatively fine-grained hierarchical scaling between resolutions",
 
@@ -185,7 +174,23 @@ tibble::tribble(
   "Global discrete grid with a nested hierarchy",
   "Quadtree subdivision: each cell has four children",
   "Variable topology across cube-face boundaries",
-  "Strong global indexing and web-mapping infrastructure, but cell areas vary substantially across locations"
+  "Strong global indexing and web-mapping infrastructure, but cell areas vary substantially across locations",
+  
+  "Local Raster",
+  "Rectangular cells in a projected CRS",
+  "Equal-area only when constructed in an appropriate projected CRS",
+  "Usually regional or local; hierarchy is not intrinsic",
+  "Resolution specified directly in map units",
+  "Four- or eight-neighbour structure, depending on rook or queen contiguity",
+  "Simple and familiar benchmark, but geometric properties depend on the selected projection and resolution",
+  
+  "Local Hex",
+  "Regular hexagonal cells in a projected CRS",
+  "Equal-area only when constructed in an appropriate projected CRS",
+  "Usually regional or local; hierarchy is not intrinsic",
+  "Resolution specified directly in map units",
+  "Usually six edge-neighbours in a complete tessellation",
+  "Local hexagonal support with six symmetric first-order neighbours, but geometric properties depend on the selected projection and resolution"
 ) |>
   gt::gt() |>
   gt::cols_label(
@@ -203,34 +208,24 @@ tibble::tribble(
   )
 ```
 
-Of the currently supported grid types, raster grids are the most familiar, representing geographic space as a regular lattice of equally sized cells. Their simplicity has made them the dominant representation for continuous spatial phenomena and the traditional support for pycnophylactic interpolation. However, raster grids are inherently planar, which requires projection choices, and neighbourhood relationships depend on user-specified contiguity definitions (e.g., rook or queen adjacency). In terms of indexing, raster cells are not uniquely identified by a global index and any hierarchical relationships among cells of different resolutions would have to be manually specified. The neighbourhood structure is also anisotropic, with greater distances required to traverse cells diagonally than horizontally or vertically. Support for rasters in `{pycnogrid}` is offered through the `{terra}` [@terra2026] package.
+Sample discrete global and local grids generated at different resolution levels to cover the census tracts for Lower Manhattan from @fig-sample_population_count are shown in @fig-sample_dggs_grids and @fig-sample_local_grids.
 
-The H3 grid system is a global-scale spatial indexing system developed by Uber to support routing and mobility analytics. It is a hierarchical hexagonal (mostly -- twelve pentagonal cells are required to accommodate the topology of a spherical surface) DGGS built on an icosahedral projection of the Earth with 16 resolution levels. H3 offers scalable hierarchical spatial indexing as each cell at a given level of the hierarchy can be sub-divided into a set of 7 child sells, although the cell tesselations rotate slightly at each resolution level. Compared to raster cells, the hexagonal tesselation also offers consistent neighbourhood relationships and more isotropic traversal pathways between neighbouring cells with approximately equal distances to all first-order neighbours. Because H3 is built on a gnomonic projection, hexagons tend to preserve their shape in projected spatial analytical workflows. However, because of this projection, H3 cells distort globally and are not equal area. While they may be approximately equal at the urban scale, cells compared at the global scale can differ in area quite significantly. Support for H3 in `{pycnogrid}` is offered through the `{h3o}` [@h3o2025] package.
+Among the DGGSs, the H3 grid system is a global-scale spatial indexing system developed by Uber to support routing and mobility analytics. It is a hierarchical hexagonal (mostly -- twelve pentagonal cells are required to accommodate the topology of a spherical surface) DGGS built on an icosahedral projection of the Earth with 16 resolution levels. H3 offers scalable hierarchical spatial indexing as each cell at a given level of the hierarchy can be sub-divided into a set of 7 child sells, although the cell tesselations rotate slightly at each resolution level. Compared to raster cells, the hexagonal tesselation also offers consistent neighbourhood relationships and more isotropic traversal pathways between neighbouring cells with approximately equal distances to all first-order neighbours. Because H3 is built on a gnomonic projection, hexagons tend to preserve their shape in projected spatial analytical workflows. However, because of this projection, H3 cells distort globally and are not equal area. While they may be approximately equal at the urban scale, cells compared at the global scale can differ in area quite significantly. Support for H3 in `{pycnogrid}` is offered through the `{h3o}` [@h3o2025] package.
 
-The Icosahedral Snyder Equal Area (ISEA) grid system partitions the globe into equal area hexagons with 31 supported resolution levels. Similar to H3, twelve pentagonal cells are required. In contrast to H3, where cells are approximately equal area, ISEA grids prioritize identical cell areas with more aligned nesting. This comes at the cost of shape preservation, with ISEA hexagons appearing more elongated than H3 when represented in conventional geographic or local projected coordinate systems. The ISEA grid supports several different apertures, including Aperture-3, 4, 7, and 4/3 mixed. At aperture-3, parent cells divide into 3 child cells, while at aperture 7 the ISEA grid behaves similar to H3 with each cell splitting into 7 across resolution levels. Support for ISEA grids is offered through the `{hexify}` [@hexify2026] package.
+The Icosahedral Snyder Equal Area (ISEA) grid system partitions the globe into equal area hexagons with 31 supported resolution levels. Similar to H3, twelve pentagonal cells are required. In contrast to H3, where cells are approximately equal area, ISEA grids prioritize identical cell areas with more aligned nesting. This comes at the cost of shape preservation, with ISEA hexagons appearing more elongated than H3 when represented in conventional geographic or local projected coordinate systems. The ISEA grid supports several different apertures, including Aperture-3, 4, 7, and 4/3 mixed. At Aperture-3, parent cells divide into 3 child cells, while at Aperture-7 the ISEA grid behaves similar to H3 with each cell splitting into 7 across resolution levels. Support for ISEA grids is currently limited to Aperture-3 and 4 and offered through the `{hexify}` [@hexify2026] package. 
 
 The A5 grid system is a recent DGGS that is explicitly designed to be equal area across the globe. Based on pentagons and 31 different resolution levels, A5 cells at a given resolution sub-divide into 5 child cells. The primary motivation behind A5 is spatial analysis as the equal area properties of the grid system greatly simplify comparisons of densities, rates, and other aggregated quantities over space. However, the subdivision of parent into child cells is not regular with cell shapes becoming more elongated at higher resolutions, meaning the distance between cell centroids is not uniform. With these slightly elongated pentagonal shapes, A5 cells are more anisotropic than H3 cells, although the extent to which impacts traversal pathways across the equal area cell topology has not yet studied. Support for the A5 grid system is offered through the `{a5R}` [@a5R2026] package.
 
-S2 was developed by Google for global-scale spatial indexing and geometric computation. S2 begins by projecting the Earth onto the flat planes of a cube. Within a 31-level resolution hierarchy, each cell sub-divides into 4 child cells. While use of H3 and A5 might be motivated by neighbourhood regularity and equal-area representation, respectively, S2 emphasizes hierarchical spatial indexing and efficient spherical geometry operations. Consequently, the use of S2 within {pycnogrid} may be attractive when interpolated data are intended for integration with large-scale geospatial databases, distributed computing environments, or workflows that already rely on S2 indexing. Support for S2 in `{pycnogrid}` is offered through the `{s2}` [@s22025] package.
+S2 was developed by Google for global-scale spatial indexing and geometric computation. S2 begins by projecting the Earth onto the flat planes of a cube. Within a 31-level resolution hierarchy, each cell sub-divides into 4 child cells. While use of H3 and A5 might be motivated by neighbourhood regularity and equal-area representation, respectively, S2 emphasizes hierarchical spatial indexing and efficient spherical geometry operations. Consequently, the use of S2 within {pycnogrid} may be attractive when interpolated data are intended for integration with large-scale geospatial databases, distributed computing environments, or workflows that already rely on S2 indexing. Support for S2 in `{pycnogrid}` is offered through the `{s2}` [@s22025] package. 
 
 ```{r}
-#| label: fig-sample_grids
-#| fig-cap: "Sample grid hierarchies at different resolutions"
+#| label: fig-sample_dggs_grids
+#| fig-cap: "Sample DGGS hierarchies at different resolutions"
 #| fig-height: 6
 #| fig-width: 9
 #| warning: false
 #| echo: false
-sample_grids <- bind_rows(
-  raster_grids <- purrr::map_dfr(
-    list(1000, 500, 250),
-    ~ pycnogrid:::prepare_target_cells(
-      source_polys = nyc_ct_small,
-      grid_type = "raster",
-      resolution = .x,
-      cell_inclusion = "intersect"
-    ) |> 
-      mutate(grid_type = "raster", cell_resolution = .x, zorder = 1/cell_resolution)
-  ),
+sample_dggs_grids <- bind_rows(
   
   h3_grids <- purrr::map_dfr(
     list(8, 9, 10),
@@ -282,26 +277,92 @@ sample_grids <- bind_rows(
     ) |> mutate(grid_type = "s2", cell_resolution = .x, zorder = cell_resolution)
   )
 ) |>
-  mutate(grid_type = forcats::fct_relevel(grid_type, "h3", "isea3h", "isea4h", "a5", "s2", "raster")) |> 
+  mutate(grid_type = forcats::fct_relevel(grid_type, "h3", "isea3h", "isea4h", "a5", "s2")) |> 
   arrange(desc(zorder))
 
-tm_shape(sample_grids) +
+tm_shape(sample_dggs_grids) +
   tm_lines(
     col = "cell_resolution",
     col.scale = tm_scale_categorical(),
     col.free = TRUE,
     col.legend = tm_legend(title = "resolution", frame = FALSE)
   ) +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
   tm_facets(by = "grid_type",
             ncol = 3,
             free.coords = FALSE) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
   tm_layout(
     panel.label.frame = FALSE,
     panel.label.bg = FALSE,
-    frame = FALSE
+    frame = FALSE,
+    bg.color = "grey90"
   )
 ```
+
+Of the supported local grid types in @fig-sample_local_grids, raster grids are the most familiar, representing geographic space as a regular lattice of equally sized cells. Their simplicity has made them the dominant representation for continuous spatial phenomena and the traditional support for pycnophylactic interpolation. However, raster grids are inherently planar, which requires projection choices, and neighbourhood relationships depend on user-specified contiguity definitions (e.g., rook or queen adjacency). In terms of indexing, raster cells are not uniquely identified by a global index and any hierarchical relationships among cells of different resolutions would have to be manually specified. The neighbourhood structure is also anisotropic, with greater distances required to traverse cells diagonally than horizontally or vertically. Support for rasters in `{pycnogrid}` is offered through the `{terra}` [@terra2026] package.
+
+Finally, users can also generate local regular hexagonal tessellations. Unlike the global DGGS options, these grids are defined within the coordinate reference system of the input data and have no intrinsic global index or hierarchical structure. Their area and shape properties therefore depend on selecting an appropriate projected CRS, while their alignment and resolution are specified directly in the map units of that CRS. Built on the {sf} [@pebesma2018] package, this option provides a familiar local hexagonal support for analyses focused on a particular region or study area.
+
+```{r}
+#| label: fig-sample_local_grids
+#| fig-cap: "Sample local grid hierarchies at different resolutions"
+#| fig-height: 3
+#| fig-width: 9
+#| message: false
+#| echo: false
+sample_local_grids <- dplyr::bind_rows(
+  raster_grids <- purrr::map_dfr(
+    list(1000, 500, 250),
+    ~ pycnogrid:::prepare_target_cells(
+      source_polys = nyc_ct_small,
+      grid_type = "raster",
+      resolution = .x,
+      cell_inclusion = "intersect"
+    ) |>
+      mutate(
+        grid_type = "raster",
+        cell_resolution = .x,
+        zorder = 1 / cell_resolution
+      )
+  ),
+  hex_grids <- purrr::map_dfr(
+    list(1000, 500, 250),
+    ~ pycnogrid:::prepare_target_cells(
+      source_polys = nyc_ct_small,
+      grid_type = "hex",
+      resolution = .x,
+      cell_inclusion = "intersect"
+    ) |>
+      mutate(
+        grid_type = "hex",
+        cell_resolution = .x,
+        zorder = 1 / cell_resolution
+      )
+  )
+) |> mutate(grid_type = forcats::fct_relevel(grid_type, "raster", "hex")) |>
+  arrange(desc(zorder))
+
+tm_shape(sample_local_grids) +
+  tm_lines(
+    col = "cell_resolution",
+    col.scale = tm_scale_categorical(),
+    col.free = TRUE,
+    col.legend = tm_legend(title = "resolution", frame = FALSE)
+  ) +
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_facets_wrap(by = "grid_type",
+            #ncol = 2,
+            free.coords = FALSE) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(
+    panel.label.frame = FALSE,
+    panel.label.bg = FALSE,
+    frame = FALSE,
+    bg.color = "grey90"
+  )
+```
+
 
 ### Pycnophylactic Interpolation
 
@@ -335,9 +396,12 @@ tm_shape(pycno_nyc_ct_small) + tm_fill(
   fill.legend = tm_legend(title = "Interpolated \nPopulation", frame = FALSE)
 ) +
   tm_shape(nyc_ct_small) + tm_lines(col = "grey45") +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  #tm_crs(nyc_laea) + 
-  tm_layout(frame = FALSE)
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(
+    frame = FALSE,
+    bg.color = "grey90"
+  )
 ```
 
 The results for other grid types can be seen in @fig-pycno_nyc_ct_small_resolutions:
@@ -348,8 +412,8 @@ The results for other grid types can be seen in @fig-pycno_nyc_ct_small_resoluti
 #| fig-height: 8
 #| fig-width: 10
 #| echo: false
-grid_list <- list("h3", "isea3h", "isea4h", "a5", "s2", "raster")
-resolution_list <- list(10, 20, 16, 16, 16, 100)
+grid_list <- list("h3", "isea3h", "isea4h", "a5", "s2", "raster", "hex")
+resolution_list <- list(10, 20, 16, 16, 16, 100, 100)
 
 pycno_nyc_ct_small_resolutions <- purrr::map2_dfr(
   grid_list, resolution_list, ~ to_grid(
@@ -361,7 +425,7 @@ pycno_nyc_ct_small_resolutions <- purrr::map2_dfr(
     mutate(grid_type = .x, resolution = .y, facet_label = paste0(grid_type, " at resolution ", resolution))
 )
 
-tm_shape(pycno_nyc_ct_small_resolutions |> filter(grid_type != "h3" & grid_type != "isea4h")) + tm_fill(
+tm_shape(pycno_nyc_ct_small_resolutions |> filter(grid_type != "h3" & grid_type != "isea4h" & grid_type != "hex")) + tm_fill(
   fill = "pycno_populationE",
   fill.scale = tm_scale_intervals(
     values = "viridis",
@@ -376,8 +440,9 @@ tm_shape(pycno_nyc_ct_small_resolutions |> filter(grid_type != "h3" & grid_type 
   tm_facets(by = "facet_label", ncol = 2,
                  free.coords = TRUE) +
   tm_shape(nyc_ct_small) + tm_lines(col = "grey45") +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE)
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
 ```
 
 The summary statistics of the population variable for the different grid specifications is shown in @tbl-grid_descriptives. While the different grid types and resolutions necessarily produce different mean population values across the target cells, the total population spread over the target cells is intact.
@@ -395,6 +460,9 @@ pycno_nyc_ct_small_resolutions |>
     mean_pop = mean(pycno_populationE), 
     sum_pop = sum(pycno_populationE)
     ) |> 
+  ungroup() |> 
+  mutate(grid_type = forcats::fct_relevel(grid_type, "h3", "isea3h", "isea4h", "a5", "s2", "raster", "hex")) |> 
+  arrange(grid_type) |> 
   gt::gt() |> 
   gt::cols_label(
     grid_type = "grid type",
@@ -463,8 +531,9 @@ tm_shape(pycno_nyc_ct_small_combinations) + tm_fill(
                  columns = "allocation",
                  free.coords = FALSE) +
   tm_shape(nyc_ct_small) + tm_lines(col = "grey45") +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE)
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
 ```
 
 The second customization involves setting the number of neighbours through the `nb_order` parameter. Here the default is `1`, which results in the spatial weights matrix accounting for spatial relationships between a given target cell and its first-order neighbours with Queen contiguity. Increasing the order of the neighbourhood includes target cells from a larger neighbourhood which this has the effect of further smoothing out the spatial patterns of the interpolated values in the target cells. This can be seen in @fig-pycno_nyc_ct_small_nb_order.
@@ -504,12 +573,9 @@ tm_shape(pycno_nyc_ct_small_neighbourss) + tm_fill(
             ncol = 2,
             free.coords = TRUE) +
   tm_shape(nyc_ct_small) + tm_lines(col = "grey45") +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_layout(
-    panel.label.frame = FALSE,
-    panel.label.bg = FALSE,
-    frame = FALSE
-  )
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
 ```
 
 ## Detailed Example
@@ -567,12 +633,9 @@ tm_shape(source_polys) +
           fill = "blue",
           fill_alpha = .1) +
   tm_text("target_label_id", col = "blue") +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_layout(
-    panel.label.frame = FALSE,
-    panel.label.bg = FALSE,
-    frame = FALSE
-  )
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
 ```
 
 Within this scenario, the three source zones are indexed as $i = 1, \ldots, n = 3$ and have the following observed populations:
@@ -939,12 +1002,9 @@ tm_shape(subset_results) + tm_fill(
   tm_lines(col = "grey35",
           col_alpha = .8) +
   tm_facets(by = "type", free.coords = FALSE) +
-  tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_layout(
-    panel.label.frame = FALSE,
-    panel.label.bg = FALSE,
-    frame = FALSE
-  )
+  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
+  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
+  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
 ```
 
 ## Conclusion
@@ -954,3 +1014,5 @@ tm_shape(subset_results) + tm_fill(
 While the preservation of mass or volume inherent in the source count data is central to the pycnophylactic smoothing approach, a core aspect of `{pycnogrid}` is the option to allocate and preserve mass while accounting for source zone and target cell areal intersections. The package also makes explicit several analytical choices that are often implicit in interpolation workflows. Users may select how target cells are included, how source values are allocated to cells, the neighbourhood order used for smoothing, and whether cells contribute to their own neighbourhood mean. These choices affect the implied spatial support and degree of smoothing, and should be selected with reference to the intended downstream application rather than treated as purely technical defaults.
 
 While pycnophylactic interpolation produces a smooth, mass-preserving representation that is consistent with the available source totals and the chosen target-grid structure, the outputs are best understood as analytically-useful plausible estimates rather than as observed values at a finer level of geography. Future work could extend `{pycnogrid}` through ancillary-data weighting [e.g. @tapp2010], alternative smoothing operators, and support for additional area or shape preserving DGGSs. Systematic evaluations of how grid geometry, resolution, hierarchy, and smoothing assumptions affect the robustness of downstream spatial analyses to the MAUP would also be valuable. To that end, by bringing pycnophylactic interpolation to contemporary vector-based spatial workflows and multiple grid systems, `{pycnogrid}` provides a practical foundation for creating comparable, mass-preserving gridded representations of aggregated spatial data.
+
+## References

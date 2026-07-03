@@ -8,7 +8,7 @@ to_grid(
   source,
   value_col,
   id_col = NULL,
-  grid_type = c("h3", "a5", "s2", "raster", "isea3h", "isea4h", "isea7h", "isea43h"),
+  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
   cell_allocation = c("area", "centroid"),
@@ -28,10 +28,10 @@ supplied as an unquoted column name or a character string.}
 \item{id_col}{Optional unique identifier column for source polygons.}
 
 \item{grid_type}{Grid system to interpolate to. One of \code{"h3"}, \code{"a5"},
-\code{"s2"}, \code{"isea3h"}, \code{"isea4h"}, \code{"isea7h"}, \code{"isea43h"},  or \code{"raster"}.}
+\code{"s2"}, \code{"isea3h"}, \code{"isea4h"},  \code{"raster"}, or \code{"hex"}.}
 
 \item{resolution}{Grid resolution. For H3, A5, S2, and ISEA grids this is the grid
-level. For raster grids this is the cell size in metres.}
+level. For local raster and hex grids this is the cell size in the linear units of the input projected CRS.}
 
 \item{cell_inclusion}{Method used to determine which grid cells are included.
 One of \code{"intersect"} or \code{"centroid"}.}

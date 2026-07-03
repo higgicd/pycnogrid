@@ -10,7 +10,7 @@
 #' more output cells and may substantially increase computation time.
 #'
 #' @inheritParams to_grid
-#' @param resolution Raster cell size in metres.
+#' @param resolution Raster cell size specified in the linear units of the input projected CRS.
 #' @param ... Additional arguments passed to [to_grid()].
 #'
 #' @return An `sf` object containing raster grid-cell polygons and

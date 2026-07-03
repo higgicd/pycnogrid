@@ -1,11 +1,12 @@
 # tests
 ## is expected output generated with defaults?
-test_that("to_h3 returns expected sf output", {
-  out <- to_h3(
+test_that("to_isea returns expected sf output", {
+  out <- to_isea(
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 9,
+    resolution = 18,
+    aperture = 3,
     max_iter = 20
   )
 
@@ -13,7 +14,7 @@ test_that("to_h3 returns expected sf output", {
   expect_true(inherits(out, "data.frame"))
 
   expect_true(all(c(
-    "h3",
+    "cell_id",
     "pycno_populationE",
     "pycno_density",
     "pycno_coverage",
@@ -25,16 +26,16 @@ test_that("to_h3 returns expected sf output", {
   expect_false(is.na(sf::st_crs(out)))
 })
 
-
 ## mass preservation test
-test_that("to_h3 approximately preserves mass", {
+test_that("to_isea approximately preserves mass", {
   input_total <- sum(nyc_ct_small$populationE, na.rm = TRUE)
 
-  out <- to_h3(
+  out <- to_isea(
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 9,
+    resolution = 18,
+    aperture = 3,
     max_iter = 20
   )
 
@@ -48,16 +49,18 @@ test_that("to_h3 approximately preserves mass", {
 })
 
 ## errors/warnings
-test_that("to_h3 errors on negative values", {
+test_that("to_isea errors on negative values", {
   bad <- nyc_ct_small
   bad$populationE[1] <- -1
 
   expect_error(
-    to_h3(
+    to_isea(
       bad,
       value_col = populationE,
       id_col = id,
-      resolution = 9
+      resolution = 18,
+      aperture = 3,
+      max_iter = 20
     )
   )
 })

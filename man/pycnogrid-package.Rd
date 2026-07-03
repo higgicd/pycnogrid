@@ -6,7 +6,14 @@
 \alias{pycnogrid-package}
 \title{pycnogrid}
 \description{
-Provides tools for pycnophylactic interpolation of polygon totals to discrete global grid systems while preserving mass. The initial release supports interpolation to H3 grids using duckh3, returning either H3 cell identifiers or simple feature geometries.
+Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems while preserving mass.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://higgicd.github.io/pycnogrid/}
+}
+
 }
 \author{
 \strong{Maintainer}: Christopher Higgins \email{cd.higgins@utoronto.ca}

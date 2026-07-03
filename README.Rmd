@@ -18,9 +18,9 @@ knitr::opts_chunk$set(
 
 `{pycnogrid}` provides tools for interpolating more aggregate polygon-level extensive data (e.g. population, employment, or event counts) to a range of alternative grid types using pycnophylactic interpolation.
 
-Often administrative and statistical reporting units do not align with the geographic supports needed for analysis. They can also introduce sensitivity to the scale and zoning of spatial units, which are central to the modifiable areal unit problem (MAUP). Tobler's pycnophylactic interpolation method can potentially help to address this mismatch by transferring polygon totals to an alternative regular grid while preserving represented source totals and smoothing estimates across neighbouring cells.
+Often administrative and statistical reporting units do not align with the geographic supports needed for analysis. They can also introduce sensitivity to the scale and zoning of spatial units, which are central to the modifiable areal unit problem (MAUP). Waldo Tobler's pycnophylactic interpolation method can potentially help to address this mismatch by transferring polygon totals to an alternative regular grid while preserving represented source totals and smoothing estimates across neighbouring cells.
 
-Existing implementations of [Tobler's pycnophylactic interpolation](https://doi.org/10.1080%2F01621459.1979.10481647) include the `{pycno}` [package](https://doi.org/10.32614/CRAN.package.pycno) for R and the `{tobler}` [module](https://doi.org/10.5281/ZENODO.3386576) within the larger Python Spatial Analysis Library (PySAL). These implementations focus on transferring source data to target raster cells. {pynogrid} extends Tobler’s pycnophylactic interpolation approach beyond regular raster lattices and supports a range of discrete global grid systems (DGGSs), including H3, A5, S2, and ISEA grids, as well as rasters and other local grids. The flexibility of the underlying interpolation approach makes it possible to create spatially smooth, mass-preserving representations of aggregate data with area or shape preserving geographic supports.
+Existing implementations of Tobler's pycnophylactic interpolation include the `{pycno}` [package](https://doi.org/10.32614/CRAN.package.pycno) for R and the `{tobler}` [module](https://doi.org/10.5281/ZENODO.3386576) within the larger Python Spatial Analysis Library (PySAL). These implementations focus on transferring source data to target raster cells. {pynogrid} extends Tobler’s pycnophylactic interpolation approach beyond regular raster lattices and supports a range of discrete global grid systems (DGGSs), including H3, A5, S2, and ISEA grids, as well as rasters and other local grids. The flexibility of the underlying interpolation approach makes it possible to create spatially smooth, mass-preserving representations of aggregate data with area or shape preserving geographic supports.
 
 For a full introduction to the interpolation workflow, grid options, and output interpretation, see the [getting started vignette](https://higgicd.github.io/pycnogrid/articles/getting_started.html).
 
@@ -55,8 +55,8 @@ out <- nyc_ct_small |>
 
 The returned object is an {sf} object containing the target-cell geometries, the interpolated count, an estimated density, and the proportion of each cell covered by the source geography. The map below shows the interpolated population counts:
 
-```{r fig-pycno-nyc-ct-small, fig.cap="Census tract population counts interpolated to an H3 grid.", echo=FALSE, message=FALSE}
-tm_shape(out) + tm_fill(
+```{r make_out_map, eval=FALSE, include=FALSE}
+out_map <- tm_shape(out) + tm_fill(
   fill = "pycno_populationE",
   fill.scale = tm_scale_intervals(
     values = "viridis",
@@ -70,6 +70,12 @@ tm_shape(out) + tm_fill(
   tm_shape(nyc_ct_small) + tm_lines(col = "grey45") +
   tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
   tm_layout(frame = FALSE)
+
+tmap_save(out_map, "./man/figures/out_map.jpg")
+```
+
+```{r fig-out_map, fig.cap="Census tract population counts interpolated to an H3 grid.", echo=FALSE, message=FALSE}
+knitr::include_graphics("./man/figures/out_map.jpg")
 ```
 
 ## How it works

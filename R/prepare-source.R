@@ -106,7 +106,7 @@ validate_grid_args <- function(grid_type = NULL,
                                include_self,
                                missing_policy = NULL) {
   if (!is.null(grid_type)) {
-    grid_type <- match.arg(grid_type, c("h3", "a5", "s2", "raster", "isea3h", "isea4h", "isea7h", "isea43h"))
+    grid_type <- match.arg(grid_type, c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"))
   }
 
   if (!is.null(cell_inclusion)) {

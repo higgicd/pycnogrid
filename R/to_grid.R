@@ -8,9 +8,9 @@
 #'   supplied as an unquoted column name or a character string.
 #' @param id_col Optional unique identifier column for source polygons.
 #' @param grid_type Grid system to interpolate to. One of `"h3"`, `"a5"`,
-#'   `"s2"`, `"isea3h"`, `"isea4h"`, `"isea7h"`, `"isea43h"`,  or `"raster"`.
+#'   `"s2"`, `"isea3h"`, `"isea4h"`,  `"raster"`, or `"hex"`.
 #' @param resolution Grid resolution. For H3, A5, S2, and ISEA grids this is the grid
-#'   level. For raster grids this is the cell size in metres.
+#'   level. For local raster and hex grids this is the cell size in the linear units of the input projected CRS.
 #' @param cell_inclusion Method used to determine which grid cells are included.
 #'   One of `"intersect"` or `"centroid"`.
 #' @param cell_allocation Method used to allocate source values to grid cells.
@@ -30,7 +30,7 @@
 to_grid <- function(source,
                     value_col,
                     id_col = NULL,
-                    grid_type = c("h3", "a5", "s2", "raster", "isea3h", "isea4h", "isea7h", "isea43h"),
+                    grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
                     resolution,
                     cell_inclusion = c("intersect", "centroid"),
                     cell_allocation = c("area", "centroid"),

@@ -48,14 +48,13 @@ prepare_target_cells <- function(source_polys,
       cell_inclusion,
       aperture = "7"
     )
-  } #else if (grid_type == "isea43h") {
-    #target_cells <- prepare_isea_cells(
-    #  source_polys,
-    #  resolution,
-    #  cell_inclusion,
-    #  aperture = "4/3"
-    #)
-  #}
+  } else if (grid_type == "hex") {
+    target_cells <- prepare_hex_cells(
+      source_polys,
+      resolution,
+      cell_inclusion
+    )
+  }
 
   n_target <- nrow(target_cells)
 
@@ -99,22 +98,46 @@ prepare_a5_cells <- function(source_polys, resolution, cell_inclusion) {
     sf::st_transform(crs = 4326)
 
   if (cell_inclusion == "intersect") {
-    a5_cells <- a5R::a5_grid(sf::st_geometry(source_polys_ll), resolution = resolution) |>
-      unique()
+    # a5_grid removed from a5r as of v0.5...
+    #a5_cell_ids <- a5R::a5_grid(sf::st_geometry(source_polys_ll), resolution = resolution) |>
+    #  unique()
 
-  } else {
-    a5_cells <- a5R::a5_polygon_to_cells(sf::st_geometry(source_polys_ll), resolution = resolution) |>
+    # so make a buffer based on cell circumradius
+    grid_cell_area <- a5R::a5_cell_area(resolution = resolution)
+    grid_sqrt_area <- sqrt(grid_cell_area) * 1.1
+
+    source_polys_bbox_ll <- source_polys |>
+      sf::st_buffer(dist = grid_sqrt_area) |>
+      sf::st_transform(crs = 4326) |>
+      sf::st_bbox() |>
+      sf::st_as_sfc()
+
+    a5_cell_ids <- a5R::a5_polygon_to_cells(source_polys_bbox_ll, resolution = resolution) |>
       a5R::a5_uncompact(resolution = resolution) |>
       unique()
+
+    a5_cells <- tibble::tibble(a5 = as.character(a5_cell_ids)) |>
+      dplyr::mutate(geometry = sf::st_as_sfc(a5R::a5_cell_to_boundary(a5_cell_ids))) |>
+      sf::st_as_sf() |>
+      sf::st_transform(sf::st_crs(source_polys)) |>
+      sf::st_filter(sf::st_geometry(source_polys),
+                    .predicate = sf::st_intersects) |>
+      dplyr::mutate(.tid = dplyr::row_number())
+
+  } else {
+    a5_cell_ids <- a5R::a5_polygon_to_cells(sf::st_geometry(source_polys_ll), resolution = resolution) |>
+      a5R::a5_uncompact(resolution = resolution) |>
+      unique()
+
+    a5_cells <- tibble::tibble(a5 = as.character(a5_cell_ids)) |>
+      dplyr::mutate(
+        geometry = sf::st_as_sfc(a5R::a5_cell_to_boundary(a5_cell_ids)),
+        .tid = dplyr::row_number()
+      ) |>
+      sf::st_as_sf()
   }
 
-  tibble::tibble(a5 = as.character(a5_cells)) |>
-    dplyr::mutate(
-      geometry = sf::st_as_sfc(a5R::a5_cell_to_boundary(a5_cells)),
-      .tid = dplyr::row_number()
-    ) |>
-    sf::st_as_sf()
-
+  a5_cells
 }
 
 prepare_s2_cells <- function(source_polys,
@@ -191,7 +214,8 @@ prepare_raster_cells <- function(source_polys,
   ) |>
     sf::st_as_sf() |>
     dplyr::mutate(
-      raster_cell = dplyr::row_number(),
+      cell_id = dplyr::row_number(),
+      cell_id = as.character(cell_id),
       .tid = dplyr::row_number()
     )
 }
@@ -213,7 +237,8 @@ prepare_isea_cells <- function(source_polys,
   if (cell_inclusion == "intersect") {
     # hexify::grid_rect does not fully cover source_polys
     # so make a buffer half the grid width in metres
-    grid_half_width_m <- grid@diagonal_km * 1000
+    # with 1.1 multiplier for safety
+    grid_half_width_m <- (grid@diagonal_km * 1000) * 1.1
 
     source_polys_bbox_ll <- source_polys |>
       sf::st_buffer(dist = grid_half_width_m) |>
@@ -224,7 +249,8 @@ prepare_isea_cells <- function(source_polys,
       bbox = source_polys_bbox_ll,
       grid = grid
     ) |>
-      sf::st_filter(sf::st_geometry(source_polys_ll), .predicate = sf::st_intersects) |>
+      sf::st_transform(sf::st_crs(source_polys)) |>
+      sf::st_filter(sf::st_geometry(source_polys), .predicate = sf::st_intersects) |>
       unique()
 
     #isea_cells <- hexify::grid_rect(
@@ -250,6 +276,32 @@ prepare_isea_cells <- function(source_polys,
     )
 }
 
-#prepare_sf_cells <- function(source_polys, resolution, cell_inclusion) {
-#
-#}
+prepare_hex_cells <- function(source_polys, resolution, cell_inclusion) {
+  hex_cells <- sf::st_make_grid(
+    source_polys,
+    cellsize = resolution,
+    square = FALSE,
+    flat_topped = FALSE
+  )
+
+  hex_grid <- sf::st_sf(
+    cell_id = as.character(seq_along(hex_cells)),
+    geometry = hex_cells
+  )
+
+  if (cell_inclusion == "intersect") {
+    hex_grid <- hex_grid |>
+      sf::st_filter(source_polys, .predicate = sf::st_intersects)
+
+  } else {
+    hex_centres <- sf::st_centroid(hex_grid) |>
+      sf::st_filter(source_polys, .predicate = sf::st_intersects)
+
+    hex_grid <- hex_grid |>
+      dplyr::semi_join(hex_centres, by = "cell_id")
+  }
+
+  hex_grid |>
+    dplyr::mutate(.tid = dplyr::row_number())
+
+}

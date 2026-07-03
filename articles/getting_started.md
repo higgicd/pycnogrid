@@ -205,29 +205,26 @@ scalable spatial computation ([Table 1](#tbl-grids)).
 Table 1: Supported target grid systems and their principal geometric and
 hierarchical properties
 
-Sample discrete global and local grids generated at different resolution
-levels to cover the census tracts for Lower Manhattan from
+Sample discrete global grids generated at different resolution levels to
+cover the census tracts for Lower Manhattan from
 [Figure 1](#fig-sample_population_count) are shown in
-[Figure 2](#fig-sample_dggs_grids) and
-[Figure 3](#fig-sample_local_grids).
-
-Among the DGGSs, the H3 grid system is a global-scale spatial indexing
-system developed by Uber to support routing and mobility analytics. It
-is a hierarchical hexagonal (mostly – twelve pentagonal cells are
-required to accommodate the topology of a spherical surface) DGGS built
-on an icosahedral projection of the Earth with 16 resolution levels. H3
-offers scalable hierarchical spatial indexing as each cell at a given
-level of the hierarchy can be sub-divided into a set of 7 child sells,
-although the cell tesselations rotate slightly at each resolution level.
-Compared to raster cells, the hexagonal tesselation also offers
-consistent neighbourhood relationships and more isotropic traversal
-pathways between neighbouring cells with approximately equal distances
-to all first-order neighbours. Because H3 is built on a gnomonic
-projection, hexagons tend to preserve their shape in projected spatial
-analytical workflows. However, because of this projection, H3 cells
-distort globally and are not equal area. While they may be approximately
-equal at the urban scale, cells compared at the global scale can differ
-in area quite significantly. Support for H3 in
+[Figure 2](#fig-sample_dggs_grids). Among the DGGSs, the H3 grid system
+is a global-scale spatial indexing system developed by Uber to support
+routing and mobility analytics. It is a hierarchical hexagonal (mostly –
+twelve pentagonal cells are required to accommodate the topology of a
+spherical surface) DGGS built on an icosahedral projection of the Earth
+with 16 resolution levels. H3 offers scalable hierarchical spatial
+indexing as each cell at a given level of the hierarchy can be
+sub-divided into a set of 7 child sells, although the cell tesselations
+rotate slightly at each resolution level. Compared to raster cells, the
+hexagonal tesselation also offers consistent neighbourhood relationships
+and more isotropic traversal pathways between neighbouring cells with
+approximately equal distances to all first-order neighbours. Because H3
+is built on a gnomonic projection, hexagons tend to preserve their shape
+in projected spatial analytical workflows. However, because of this
+projection, H3 cells distort globally and are not equal area. While they
+may be approximately equal at the urban scale, cells compared at the
+global scale can differ in area quite significantly. Support for H3 in
 [pycnogrid](https://higgicd.github.io/pycnogrid/) is offered through the
 [h3o](https://github.com/extendr/h3o) ([Parry 2025](#ref-h3o2025))
 package.

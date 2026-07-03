@@ -7,7 +7,7 @@
 to_isea(source, value_col, resolution, aperture = c(3, 4), ...)
 }
 \arguments{
-\item{source}{An \code{sf} polygon object.}
+\item{source}{An \code{sf} polygon object in a projected CRS.}
 
 \item{value_col}{Column containing the values to interpolate. May be
 supplied as an unquoted column name or a character string.}

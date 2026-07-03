@@ -7,12 +7,12 @@
 to_h3(source, value_col, resolution, ...)
 }
 \arguments{
-\item{source}{An \code{sf} polygon object.}
+\item{source}{An \code{sf} polygon object in a projected CRS.}
 
 \item{value_col}{Column containing the values to interpolate. May be
 supplied as an unquoted column name or a character string.}
 
-\item{resolution}{A5 resolution level (0--15). Higher values produce smaller cells
+\item{resolution}{H3 resolution level (0--15). Higher values produce smaller cells
 and many more output polygons. For typical urban analyses, values around
 9--12 are usually more practical.}
 

@@ -13,7 +13,7 @@ to_isea(source, value_col, resolution, aperture = c(3, 4), ...)
 
 - source:
 
-  An `sf` polygon object.
+  An `sf` polygon object in a projected CRS.
 
 - value_col:
 

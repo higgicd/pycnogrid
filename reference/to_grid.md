@@ -26,7 +26,7 @@ to_grid(
 
 - source:
 
-  An `sf` polygon object.
+  An `sf` polygon object in a projected CRS.
 
 - value_col:
 

@@ -173,13 +173,15 @@ The first part of a pycnophylactic workflow is to obtain more aggregate
 source data to be smoothed to a finer-resolution target grid.
 Pycnophylactic interpolation is designed for non-negative extensive
 variables – quantities such as counts that can meaningfully be divided
-among smaller areas and whose total should be preserved. For an example
-case, 2020 population data was obtained for census tracts in New York
-City using the {tidycensus} ([Walker and Herman
-2026](#ref-tidycensus2026)) package. A sub-sample of this data covering
-an area of Lower Manhattan is included in the package as `nyc_ct_small`
-([Figure 1](#fig-sample_population_count)). The census tracts in this
-area contain a total of 113,359 people.
+among smaller areas and whose total should be preserved. Due to the area
+and intersection calculations required for pycnophylactic smoothing, the
+source zones must be provided to the tool in a projected coordinate
+reference system. For an example case, 2020 population data was obtained
+for census tracts in New York City using the {tidycensus} ([Walker and
+Herman 2026](#ref-tidycensus2026)) package. A sub-sample of this data
+covering an area of Lower Manhattan is included in the package as
+`nyc_ct_small` ([Figure 1](#fig-sample_population_count)). The census
+tracts in this area contain a total of 113,359 people.
 
 ![](getting_started_files/figure-html/fig-sample_population_count-1.png)
 

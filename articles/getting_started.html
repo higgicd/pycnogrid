@@ -125,7 +125,7 @@
 <p>Together, these parameters define three main stages of the workflow: construction of the target grid, allocation of source totals to grid cells, and iterative pycnophylactic smoothing. The grid parameters determine the spatial support of the output surface, the allocation parameters determine the initial mass-preserving estimate, and the smoothing parameters control how values are redistributed across neighbouring cells while preserving the original source-zone totals. Additional functions, such as <code><a href="../reference/to_h3.html">to_h3()</a></code> and <code><a href="../reference/to_a5.html">to_a5()</a></code>, are grid-specific wrappers around <code><a href="../reference/to_grid.html">to_grid()</a></code>. The properties of the different grid systems are discussed further below.</p>
 <section class="level3"><h3 id="source-zone-data">Source Zone Data<a class="anchor" aria-label="anchor" href="#source-zone-data"></a>
 </h3>
-<p>The first part of a pycnophylactic workflow is to obtain more aggregate source data to be smoothed to a finer-resolution target grid. Pycnophylactic interpolation is designed for non-negative extensive variables – quantities such as counts that can meaningfully be divided among smaller areas and whose total should be preserved. For an example case, 2020 population data was obtained for census tracts in New York City using the {tidycensus} <span class="citation" data-cites="tidycensus2026">(<a href="#ref-tidycensus2026" role="doc-biblioref">Walker and Herman 2026</a>)</span> package. A sub-sample of this data covering an area of Lower Manhattan is included in the package as <code>nyc_ct_small</code> (<a href="#fig-sample_population_count" class="quarto-xref">Figure 1</a>). The census tracts in this area contain a total of 113,359 people.</p>
+<p>The first part of a pycnophylactic workflow is to obtain more aggregate source data to be smoothed to a finer-resolution target grid. Pycnophylactic interpolation is designed for non-negative extensive variables – quantities such as counts that can meaningfully be divided among smaller areas and whose total should be preserved. Due to the area and intersection calculations required for pycnophylactic smoothing, the source zones must be provided to the tool in a projected coordinate reference system. For an example case, 2020 population data was obtained for census tracts in New York City using the {tidycensus} <span class="citation" data-cites="tidycensus2026">(<a href="#ref-tidycensus2026" role="doc-biblioref">Walker and Herman 2026</a>)</span> package. A sub-sample of this data covering an area of Lower Manhattan is included in the package as <code>nyc_ct_small</code> (<a href="#fig-sample_population_count" class="quarto-xref">Figure 1</a>). The census tracts in this area contain a total of 113,359 people.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-sample_population_count" class="quarto-float quarto-figure quarto-figure-center">
@@ -147,23 +147,23 @@ Figure 1: Sample population count data for Lower Manhattan
 Table 1: Supported target grid systems and their principal geometric and hierarchical properties
 </figcaption><div aria-describedby="tbl-grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="vuwfkkzlmt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vuwfkkzlmt table {
+<div id="knvdiohyer" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#knvdiohyer table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vuwfkkzlmt thead, #vuwfkkzlmt tbody, #vuwfkkzlmt tfoot, #vuwfkkzlmt tr, #vuwfkkzlmt td, #vuwfkkzlmt th {
+#knvdiohyer thead, #knvdiohyer tbody, #knvdiohyer tfoot, #knvdiohyer tr, #knvdiohyer td, #knvdiohyer th {
   border-style: none;
 }
 
-#vuwfkkzlmt p {
+#knvdiohyer p {
   margin: 0;
   padding: 0;
 }
 
-#vuwfkkzlmt .gt_table {
+#knvdiohyer .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -189,12 +189,12 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-left-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_caption {
+#knvdiohyer .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vuwfkkzlmt .gt_title {
+#knvdiohyer .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -206,7 +206,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-width: 0;
 }
 
-#vuwfkkzlmt .gt_subtitle {
+#knvdiohyer .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -218,7 +218,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-top-width: 0;
 }
 
-#vuwfkkzlmt .gt_heading {
+#knvdiohyer .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -230,13 +230,13 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_bottom_border {
+#knvdiohyer .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_col_headings {
+#knvdiohyer .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -251,7 +251,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_col_heading {
+#knvdiohyer .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -271,7 +271,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   overflow-x: hidden;
 }
 
-#vuwfkkzlmt .gt_column_spanner_outer {
+#knvdiohyer .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -283,15 +283,15 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 4px;
 }
 
-#vuwfkkzlmt .gt_column_spanner_outer:first-child {
+#knvdiohyer .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vuwfkkzlmt .gt_column_spanner_outer:last-child {
+#knvdiohyer .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vuwfkkzlmt .gt_column_spanner {
+#knvdiohyer .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -303,11 +303,11 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   width: 100%;
 }
 
-#vuwfkkzlmt .gt_spanner_row {
+#knvdiohyer .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vuwfkkzlmt .gt_group_heading {
+#knvdiohyer .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -333,7 +333,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   text-align: left;
 }
 
-#vuwfkkzlmt .gt_empty_group_heading {
+#knvdiohyer .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -348,15 +348,15 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   vertical-align: middle;
 }
 
-#vuwfkkzlmt .gt_from_md > :first-child {
+#knvdiohyer .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vuwfkkzlmt .gt_from_md > :last-child {
+#knvdiohyer .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vuwfkkzlmt .gt_row {
+#knvdiohyer .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -375,7 +375,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   overflow-x: hidden;
 }
 
-#vuwfkkzlmt .gt_stub {
+#knvdiohyer .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -388,7 +388,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#vuwfkkzlmt .gt_stub_row_group {
+#knvdiohyer .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -402,15 +402,15 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   vertical-align: top;
 }
 
-#vuwfkkzlmt .gt_row_group_first td {
+#knvdiohyer .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vuwfkkzlmt .gt_row_group_first th {
+#knvdiohyer .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vuwfkkzlmt .gt_summary_row {
+#knvdiohyer .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -420,16 +420,16 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#vuwfkkzlmt .gt_first_summary_row {
+#knvdiohyer .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_first_summary_row.thick {
+#knvdiohyer .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vuwfkkzlmt .gt_last_summary_row {
+#knvdiohyer .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -439,7 +439,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_grand_summary_row {
+#knvdiohyer .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -449,7 +449,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#vuwfkkzlmt .gt_first_grand_summary_row {
+#knvdiohyer .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -459,7 +459,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-top-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_last_grand_summary_row_top {
+#knvdiohyer .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -469,11 +469,11 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_striped {
+#knvdiohyer .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vuwfkkzlmt .gt_table_body {
+#knvdiohyer .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -482,7 +482,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_footnotes {
+#knvdiohyer .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -496,7 +496,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_footnote {
+#knvdiohyer .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -505,7 +505,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#vuwfkkzlmt .gt_sourcenotes {
+#knvdiohyer .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -519,7 +519,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#vuwfkkzlmt .gt_sourcenote {
+#knvdiohyer .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -527,72 +527,72 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#vuwfkkzlmt .gt_left {
+#knvdiohyer .gt_left {
   text-align: left;
 }
 
-#vuwfkkzlmt .gt_center {
+#knvdiohyer .gt_center {
   text-align: center;
 }
 
-#vuwfkkzlmt .gt_right {
+#knvdiohyer .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vuwfkkzlmt .gt_font_normal {
+#knvdiohyer .gt_font_normal {
   font-weight: normal;
 }
 
-#vuwfkkzlmt .gt_font_bold {
+#knvdiohyer .gt_font_bold {
   font-weight: bold;
 }
 
-#vuwfkkzlmt .gt_font_italic {
+#knvdiohyer .gt_font_italic {
   font-style: italic;
 }
 
-#vuwfkkzlmt .gt_super {
+#knvdiohyer .gt_super {
   font-size: 65%;
 }
 
-#vuwfkkzlmt .gt_footnote_marks {
+#knvdiohyer .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vuwfkkzlmt .gt_asterisk {
+#knvdiohyer .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vuwfkkzlmt .gt_indent_1 {
+#knvdiohyer .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vuwfkkzlmt .gt_indent_2 {
+#knvdiohyer .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vuwfkkzlmt .gt_indent_3 {
+#knvdiohyer .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vuwfkkzlmt .gt_indent_4 {
+#knvdiohyer .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vuwfkkzlmt .gt_indent_5 {
+#knvdiohyer .gt_indent_5 {
   text-indent: 25px;
 }
 
-#vuwfkkzlmt .katex-display {
+#knvdiohyer .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#vuwfkkzlmt div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#knvdiohyer div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -744,23 +744,23 @@ Figure 5: Census tract population counts interpolated to all four grid types
 Table 2: Population descriptive statistics for different grid types
 </figcaption><div aria-describedby="tbl-grid_descriptives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="oatofwuxjl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#oatofwuxjl table {
+<div id="tltslmikdb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tltslmikdb table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#oatofwuxjl thead, #oatofwuxjl tbody, #oatofwuxjl tfoot, #oatofwuxjl tr, #oatofwuxjl td, #oatofwuxjl th {
+#tltslmikdb thead, #tltslmikdb tbody, #tltslmikdb tfoot, #tltslmikdb tr, #tltslmikdb td, #tltslmikdb th {
   border-style: none;
 }
 
-#oatofwuxjl p {
+#tltslmikdb p {
   margin: 0;
   padding: 0;
 }
 
-#oatofwuxjl .gt_table {
+#tltslmikdb .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -786,12 +786,12 @@ Table 2: Population descriptive statistics for different grid types
   border-left-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_caption {
+#tltslmikdb .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#oatofwuxjl .gt_title {
+#tltslmikdb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -803,7 +803,7 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-width: 0;
 }
 
-#oatofwuxjl .gt_subtitle {
+#tltslmikdb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -815,7 +815,7 @@ Table 2: Population descriptive statistics for different grid types
   border-top-width: 0;
 }
 
-#oatofwuxjl .gt_heading {
+#tltslmikdb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -827,13 +827,13 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_bottom_border {
+#tltslmikdb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_col_headings {
+#tltslmikdb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -848,7 +848,7 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_col_heading {
+#tltslmikdb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -868,7 +868,7 @@ Table 2: Population descriptive statistics for different grid types
   overflow-x: hidden;
 }
 
-#oatofwuxjl .gt_column_spanner_outer {
+#tltslmikdb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -880,15 +880,15 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 4px;
 }
 
-#oatofwuxjl .gt_column_spanner_outer:first-child {
+#tltslmikdb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#oatofwuxjl .gt_column_spanner_outer:last-child {
+#tltslmikdb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#oatofwuxjl .gt_column_spanner {
+#tltslmikdb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -900,11 +900,11 @@ Table 2: Population descriptive statistics for different grid types
   width: 100%;
 }
 
-#oatofwuxjl .gt_spanner_row {
+#tltslmikdb .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#oatofwuxjl .gt_group_heading {
+#tltslmikdb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -930,7 +930,7 @@ Table 2: Population descriptive statistics for different grid types
   text-align: left;
 }
 
-#oatofwuxjl .gt_empty_group_heading {
+#tltslmikdb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -945,15 +945,15 @@ Table 2: Population descriptive statistics for different grid types
   vertical-align: middle;
 }
 
-#oatofwuxjl .gt_from_md > :first-child {
+#tltslmikdb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#oatofwuxjl .gt_from_md > :last-child {
+#tltslmikdb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#oatofwuxjl .gt_row {
+#tltslmikdb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -972,7 +972,7 @@ Table 2: Population descriptive statistics for different grid types
   overflow-x: hidden;
 }
 
-#oatofwuxjl .gt_stub {
+#tltslmikdb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -985,7 +985,7 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#oatofwuxjl .gt_stub_row_group {
+#tltslmikdb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -999,15 +999,15 @@ Table 2: Population descriptive statistics for different grid types
   vertical-align: top;
 }
 
-#oatofwuxjl .gt_row_group_first td {
+#tltslmikdb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#oatofwuxjl .gt_row_group_first th {
+#tltslmikdb .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#oatofwuxjl .gt_summary_row {
+#tltslmikdb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1017,16 +1017,16 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#oatofwuxjl .gt_first_summary_row {
+#tltslmikdb .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_first_summary_row.thick {
+#tltslmikdb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#oatofwuxjl .gt_last_summary_row {
+#tltslmikdb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1036,7 +1036,7 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_grand_summary_row {
+#tltslmikdb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1046,7 +1046,7 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#oatofwuxjl .gt_first_grand_summary_row {
+#tltslmikdb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1056,7 +1056,7 @@ Table 2: Population descriptive statistics for different grid types
   border-top-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_last_grand_summary_row_top {
+#tltslmikdb .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1066,11 +1066,11 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_striped {
+#tltslmikdb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#oatofwuxjl .gt_table_body {
+#tltslmikdb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1079,7 +1079,7 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_footnotes {
+#tltslmikdb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1093,7 +1093,7 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_footnote {
+#tltslmikdb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1102,7 +1102,7 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#oatofwuxjl .gt_sourcenotes {
+#tltslmikdb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1116,7 +1116,7 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#oatofwuxjl .gt_sourcenote {
+#tltslmikdb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1124,72 +1124,72 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#oatofwuxjl .gt_left {
+#tltslmikdb .gt_left {
   text-align: left;
 }
 
-#oatofwuxjl .gt_center {
+#tltslmikdb .gt_center {
   text-align: center;
 }
 
-#oatofwuxjl .gt_right {
+#tltslmikdb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#oatofwuxjl .gt_font_normal {
+#tltslmikdb .gt_font_normal {
   font-weight: normal;
 }
 
-#oatofwuxjl .gt_font_bold {
+#tltslmikdb .gt_font_bold {
   font-weight: bold;
 }
 
-#oatofwuxjl .gt_font_italic {
+#tltslmikdb .gt_font_italic {
   font-style: italic;
 }
 
-#oatofwuxjl .gt_super {
+#tltslmikdb .gt_super {
   font-size: 65%;
 }
 
-#oatofwuxjl .gt_footnote_marks {
+#tltslmikdb .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#oatofwuxjl .gt_asterisk {
+#tltslmikdb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#oatofwuxjl .gt_indent_1 {
+#tltslmikdb .gt_indent_1 {
   text-indent: 5px;
 }
 
-#oatofwuxjl .gt_indent_2 {
+#tltslmikdb .gt_indent_2 {
   text-indent: 10px;
 }
 
-#oatofwuxjl .gt_indent_3 {
+#tltslmikdb .gt_indent_3 {
   text-indent: 15px;
 }
 
-#oatofwuxjl .gt_indent_4 {
+#tltslmikdb .gt_indent_4 {
   text-indent: 20px;
 }
 
-#oatofwuxjl .gt_indent_5 {
+#tltslmikdb .gt_indent_5 {
   text-indent: 25px;
 }
 
-#oatofwuxjl .katex-display {
+#tltslmikdb .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#oatofwuxjl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#tltslmikdb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>

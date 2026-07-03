@@ -13,7 +13,7 @@ to_s2(source, value_col, resolution, ...)
 
 - source:
 
-  An `sf` polygon object.
+  An `sf` polygon object in a projected CRS.
 
 - value_col:
 

@@ -13,7 +13,7 @@ to_h3(source, value_col, resolution, ...)
 
 - source:
 
-  An `sf` polygon object.
+  An `sf` polygon object in a projected CRS.
 
 - value_col:
 
@@ -22,7 +22,7 @@ to_h3(source, value_col, resolution, ...)
 
 - resolution:
 
-  A5 resolution level (0–15). Higher values produce smaller cells and
+  H3 resolution level (0–15). Higher values produce smaller cells and
   many more output polygons. For typical urban analyses, values around
   9–12 are usually more practical.
 

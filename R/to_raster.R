@@ -15,6 +15,15 @@
 #'
 #' @return An `sf` object containing raster grid-cell polygons and
 #'   interpolated values.
+#'
+#' @examples
+#' out <- to_raster(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 500,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_raster <- function(source,
                   value_col,

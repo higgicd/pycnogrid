@@ -5,7 +5,12 @@
 \alias{nyc_ct_small}
 \title{Small New York City census tract example data}
 \format{
-An sf object.
+An sf object with the same columns as \code{nyc_ct}.
+}
+\source{
+American Community Survey 2023; LEHD LODES 2022. This product uses
+Census Bureau data but is not endorsed or certified by the
+Census Bureau.
 }
 \usage{
 nyc_ct_small

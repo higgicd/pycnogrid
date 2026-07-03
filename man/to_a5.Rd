@@ -33,3 +33,12 @@ be impractical for pycnophylactic interpolation.
 
 Calls \code{\link[=to_grid]{to_grid()}} with \code{grid_type = "a5"}.
 }
+\examples{
+out <- to_a5(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 14,
+  max_iter = 5
+)
+
+}

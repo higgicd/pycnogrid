@@ -13,6 +13,15 @@
 #'
 #' @return An `sf` object containing hexagonal grid-cell polygons and
 #'   interpolated values.
+#'
+#' @examples
+#' out <- to_hex(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 500,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_hex <- function(source,
                       value_col,

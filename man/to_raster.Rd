@@ -30,3 +30,12 @@ Raster grids divide the study area into regular cells of a fixed size. In
 returned as polygon grid cells in an \code{sf} object. Smaller cell sizes produce
 more output cells and may substantially increase computation time.
 }
+\examples{
+out <- to_raster(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 500,
+  max_iter = 5
+)
+
+}

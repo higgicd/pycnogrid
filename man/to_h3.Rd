@@ -33,3 +33,12 @@ resolutions may be impractical for large study areas.
 
 Calls \code{\link[=to_grid]{to_grid()}} with \code{grid_type = "h3"}.
 }
+\examples{
+out <- to_h3(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 9,
+  max_iter = 5
+)
+
+}

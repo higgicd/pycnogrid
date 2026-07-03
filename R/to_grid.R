@@ -26,6 +26,16 @@
 #'
 #' @return An `sf` object containing grid-cell geometries and interpolated
 #'   values.
+#'
+#' @examples
+#' out <- to_grid(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   grid_type = "h3",
+#'   resolution = 9,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_grid <- function(source,
                     value_col,

@@ -6,21 +6,23 @@
 \alias{pycnogrid-package}
 \title{pycnogrid}
 \description{
-Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems while preserving mass.
+Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) \doi{10.1080/01621459.1979.10481647}, preserving source-zone totals while smoothing values across neighboring target cells.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://higgicd.github.io/pycnogrid/}
+  \item \url{https://github.com/higgicd/pycnogrid}
+  \item Report bugs at \url{https://github.com/higgicd/pycnogrid/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Christopher Higgins \email{cd.higgins@utoronto.ca}
+\strong{Maintainer}: Christopher Higgins \email{cd.higgins@utoronto.ca} [copyright holder]
 
 Authors:
 \itemize{
-  \item Christopher Higgins \email{cd.higgins@utoronto.ca}
+  \item Christopher Higgins \email{cd.higgins@utoronto.ca} [copyright holder]
 }
 
 }

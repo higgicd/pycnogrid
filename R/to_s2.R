@@ -19,6 +19,15 @@
 #' @param ... Additional arguments passed to [to_grid()].
 #'
 #' @return An `sf` object containing S2 cells and interpolated values.
+#'
+#' @examples
+#' out <- to_s2(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 15,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_s2 <- function(source,
                   value_col,

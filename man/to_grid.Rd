@@ -60,3 +60,13 @@ values.
 Interpolates polygon counts to a regular or global discrete grid while
 preserving source-zone totals.
 }
+\examples{
+out <- to_grid(
+  source = nyc_ct_small,
+  value_col = populationE,
+  grid_type = "h3",
+  resolution = 9,
+  max_iter = 5
+)
+
+}

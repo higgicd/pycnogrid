@@ -18,6 +18,15 @@
 #' @param ... Additional arguments passed to [to_grid()].
 #'
 #' @return An `sf` object containing A5 cells and interpolated values.
+#'
+#' @examples
+#' out <- to_a5(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 14,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_a5 <- function(source,
                   value_col,

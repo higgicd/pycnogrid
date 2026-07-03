@@ -15,12 +15,19 @@
 #' }
 #'
 #' @source
-#' American Community Survey 2023; LEHD LODES 2022
+#' U.S. Census Bureau American Community Survey 2023 5-year estimates;
+#' LEHD LODES 2022. This product uses Census Bureau data but is not
+#' endorsed or certified by the Census Bureau.
 "nyc_ct"
 
 #' Small New York City census tract example data
 #'
 #' A small contiguous subset of NYC census tracts for examples and testing.
 #'
-#' @format An sf object.
+#' @format An sf object with the same columns as `nyc_ct`.
+#'
+#' @source
+#' American Community Survey 2023; LEHD LODES 2022. This product uses
+#' Census Bureau data but is not endorsed or certified by the
+#' Census Bureau.
 "nyc_ct_small"

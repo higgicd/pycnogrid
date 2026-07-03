@@ -34,3 +34,21 @@ refinement factor between successive resolutions: aperture 3, 4, or 7.
 Calls \code{\link[=to_grid]{to_grid()}} with \code{grid_type} set to \code{"isea3h"} or \code{"isea4h"}
 according to \code{aperture}.
 }
+\examples{
+out <- to_isea(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 18,
+  aperture = 3,
+  max_iter = 5
+)
+
+out <- to_isea(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 14,
+  aperture = 4,
+  max_iter = 5
+)
+
+}

@@ -18,6 +18,15 @@
 #' @param ... Additional arguments passed to [to_grid()].
 #'
 #' @return An `sf` object containing H3 cells and interpolated values.
+#'
+#' @examples
+#' out <- to_h3(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 9,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_h3 <- function(source,
                   value_col,

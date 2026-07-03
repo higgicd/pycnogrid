@@ -18,6 +18,24 @@
 #' @param ... Additional arguments passed to [to_grid()].
 #'
 #' @return An `sf` object containing ISEA cells and interpolated values.
+#'
+#' @examples
+#' out <- to_isea(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 18,
+#'   aperture = 3,
+#'   max_iter = 5
+#' )
+#'
+#' out <- to_isea(
+#'   source = nyc_ct_small,
+#'   value_col = populationE,
+#'   resolution = 14,
+#'   aperture = 4,
+#'   max_iter = 5
+#' )
+#'
 #' @export
 to_isea <- function(source,
                     value_col,

@@ -28,3 +28,12 @@ source-zone totals.
 Hex grids divide the study area into hexagonal cells of a fixed size. Smaller cell sizes produce
 more output cells and may substantially increase computation time.
 }
+\examples{
+out <- to_hex(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 500,
+  max_iter = 5
+)
+
+}

@@ -63,7 +63,7 @@ library(tmap)
 ``` r
 out <- nyc_ct_small |>
   pycnogrid::to_grid(
-    value_col = "populationE",
+    value_col = populationE,
     grid_type = "h3",
     resolution = 10
   )

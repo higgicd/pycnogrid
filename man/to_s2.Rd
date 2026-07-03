@@ -34,3 +34,12 @@ areas.
 
 Calls \code{\link[=to_grid]{to_grid()}} with \code{grid_type = "s2"}.
 }
+\examples{
+out <- to_s2(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 15,
+  max_iter = 5
+)
+
+}

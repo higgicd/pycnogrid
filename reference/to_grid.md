@@ -10,7 +10,7 @@ to_grid(
   source,
   value_col,
   id_col = NULL,
-  grid_type = c("h3", "a5", "s2", "raster", "isea3h", "isea4h", "isea7h", "isea43h"),
+  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
   cell_allocation = c("area", "centroid"),
@@ -40,12 +40,13 @@ to_grid(
 - grid_type:
 
   Grid system to interpolate to. One of `"h3"`, `"a5"`, `"s2"`,
-  `"isea3h"`, `"isea4h"`, `"isea7h"`, `"isea43h"`, or `"raster"`.
+  `"isea3h"`, `"isea4h"`, `"raster"`, or `"hex"`.
 
 - resolution:
 
   Grid resolution. For H3, A5, S2, and ISEA grids this is the grid
-  level. For raster grids this is the cell size in metres.
+  level. For local raster and hex grids this is the cell size in the
+  linear units of the input projected CRS.
 
 - cell_inclusion:
 

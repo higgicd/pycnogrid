@@ -15,6 +15,10 @@
   : Pycnophylactic interpolation to a grid
 - [`to_h3()`](https://higgicd.github.io/pycnogrid/reference/to_h3.md) :
   Pycnophylactic interpolation to an H3 grid
+- [`to_hex()`](https://higgicd.github.io/pycnogrid/reference/to_hex.md)
+  : Pycnophylactic interpolation to a local hexagonal grid
+- [`to_isea()`](https://higgicd.github.io/pycnogrid/reference/to_isea.md)
+  : Pycnophylactic interpolation to an ISEA grid
 - [`to_raster()`](https://higgicd.github.io/pycnogrid/reference/to_raster.md)
   : Pycnophylactic interpolation to a raster grid
 - [`to_s2()`](https://higgicd.github.io/pycnogrid/reference/to_s2.md) :

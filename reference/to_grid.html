@@ -49,7 +49,7 @@ preserving source-zone totals.</p>
 <span>  <span class="va">source</span>,</span>
 <span>  <span class="va">value_col</span>,</span>
 <span>  id_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  grid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h3"</span>, <span class="st">"a5"</span>, <span class="st">"s2"</span>, <span class="st">"raster"</span>, <span class="st">"isea3h"</span>, <span class="st">"isea4h"</span>, <span class="st">"isea7h"</span>, <span class="st">"isea43h"</span><span class="op">)</span>,</span>
+<span>  grid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"h3"</span>, <span class="st">"a5"</span>, <span class="st">"s2"</span>, <span class="st">"isea3h"</span>, <span class="st">"isea4h"</span>, <span class="st">"raster"</span>, <span class="st">"hex"</span><span class="op">)</span>,</span>
 <span>  <span class="va">resolution</span>,</span>
 <span>  cell_inclusion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"intersect"</span>, <span class="st">"centroid"</span><span class="op">)</span>,</span>
 <span>  cell_allocation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"area"</span>, <span class="st">"centroid"</span><span class="op">)</span>,</span>
@@ -80,12 +80,12 @@ supplied as an unquoted column name or a character string.</p></dd>
 
 <dt id="arg-grid-type">grid_type<a class="anchor" aria-label="anchor" href="#arg-grid-type"></a></dt>
 <dd><p>Grid system to interpolate to. One of <code>"h3"</code>, <code>"a5"</code>,
-<code>"s2"</code>, <code>"isea3h"</code>, <code>"isea4h"</code>, <code>"isea7h"</code>, <code>"isea43h"</code>,  or <code>"raster"</code>.</p></dd>
+<code>"s2"</code>, <code>"isea3h"</code>, <code>"isea4h"</code>,  <code>"raster"</code>, or <code>"hex"</code>.</p></dd>
 
 
 <dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
 <dd><p>Grid resolution. For H3, A5, S2, and ISEA grids this is the grid
-level. For raster grids this is the cell size in metres.</p></dd>
+level. For local raster and hex grids this is the cell size in the linear units of the input projected CRS.</p></dd>
 
 
 <dt id="arg-cell-inclusion">cell_inclusion<a class="anchor" aria-label="anchor" href="#arg-cell-inclusion"></a></dt>

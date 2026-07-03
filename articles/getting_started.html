@@ -84,7 +84,7 @@
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  source,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  value_col,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_col =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid_type =</span> <span class="fu">c</span>(<span class="st">"h3"</span>, <span class="st">"a5"</span>, <span class="st">"s2"</span>, <span class="st">"isea3h"</span>, <span class="st">"isea4h"</span>, <span class="st">"isea7h"</span>, <span class="st">"raster"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid_type =</span> <span class="fu">c</span>(<span class="st">"h3"</span>, <span class="st">"a5"</span>, <span class="st">"s2"</span>, <span class="st">"isea3h"</span>, <span class="st">"isea4h"</span>, <span class="st">"raster"</span>),</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  resolution,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cell_inclusion =</span> <span class="fu">c</span>(<span class="st">"intersect"</span>, <span class="st">"centroid"</span>),</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cell_allocation =</span> <span class="fu">c</span>(<span class="st">"area"</span>, <span class="st">"centroid"</span>),</span>
@@ -104,9 +104,9 @@
 <li>
 <code>id_col</code> is an optional column uniquely identifying each source polygon, if omitted, an internal identifier is created</li>
 <li>
-<code>grid_type</code> specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived polygon cells</li>
+<code>grid_type</code> specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived polygon cells</li>
 <li>
-<code>resolution</code> controls the size of the target grid cells. Its interpretation depends on the selected grid type</li>
+<code>resolution</code> controls the size of the target grid cells; its interpretation depends on the selected grid type</li>
 <li>
 <code>cell_inclusion</code> defines how candidate grid cells are selected for interpolation. With <code>"intersect"</code>, cells are included if they intersect a source polygon. With <code>"centroid"</code>, cells are included only when their centroid falls inside a source polygon.</li>
 <li>
@@ -140,30 +140,30 @@ Figure 1: Sample population count data for Lower Manhattan
 </div>
 </section><section class="level3"><h3 id="target-grid-systems">Target Grid Systems<a class="anchor" aria-label="anchor" href="#target-grid-systems"></a>
 </h3>
-<p>The choice of a target grid system is not merely a computational consideration as different grid systems prioritize different geometric and analytical properties, including equal-area representation, shape preservation, neighbourhood structure, hierarchical indexing, and scalable spatial computation (<a href="#tbl-grids" class="quarto-xref">Table 1</a>). Sample grids generated at different resolution levels to cover the census tracts for Lower Manhattan from <a href="#fig-sample_population_count" class="quarto-xref">Figure 1</a> are shown in <a href="#fig-sample_grids" class="quarto-xref">Figure 2</a>.</p>
+<p>The choice of a target grid system is not merely a computational consideration as different grid systems prioritize different geometric and analytical properties, including equal-area representation, shape preservation, neighbourhood structure, hierarchical indexing, and scalable spatial computation (<a href="#tbl-grids" class="quarto-xref">Table 1</a>).</p>
 <div class="cell">
 <div id="tbl-grids" class="cell quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-tbl"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table 1: Supported target grid systems and their principal geometric and hierarchical properties
 </figcaption><div aria-describedby="tbl-grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="stigfavpol" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#stigfavpol table {
+<div id="fankyfipso" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fankyfipso table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#stigfavpol thead, #stigfavpol tbody, #stigfavpol tfoot, #stigfavpol tr, #stigfavpol td, #stigfavpol th {
+#fankyfipso thead, #fankyfipso tbody, #fankyfipso tfoot, #fankyfipso tr, #fankyfipso td, #fankyfipso th {
   border-style: none;
 }
 
-#stigfavpol p {
+#fankyfipso p {
   margin: 0;
   padding: 0;
 }
 
-#stigfavpol .gt_table {
+#fankyfipso .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -189,12 +189,12 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-left-color: #D3D3D3;
 }
 
-#stigfavpol .gt_caption {
+#fankyfipso .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#stigfavpol .gt_title {
+#fankyfipso .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -206,7 +206,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-width: 0;
 }
 
-#stigfavpol .gt_subtitle {
+#fankyfipso .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -218,7 +218,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-top-width: 0;
 }
 
-#stigfavpol .gt_heading {
+#fankyfipso .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -230,13 +230,13 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#stigfavpol .gt_bottom_border {
+#fankyfipso .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#stigfavpol .gt_col_headings {
+#fankyfipso .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -251,7 +251,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#stigfavpol .gt_col_heading {
+#fankyfipso .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -271,7 +271,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   overflow-x: hidden;
 }
 
-#stigfavpol .gt_column_spanner_outer {
+#fankyfipso .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -283,15 +283,15 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 4px;
 }
 
-#stigfavpol .gt_column_spanner_outer:first-child {
+#fankyfipso .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#stigfavpol .gt_column_spanner_outer:last-child {
+#fankyfipso .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#stigfavpol .gt_column_spanner {
+#fankyfipso .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -303,11 +303,11 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   width: 100%;
 }
 
-#stigfavpol .gt_spanner_row {
+#fankyfipso .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#stigfavpol .gt_group_heading {
+#fankyfipso .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -333,7 +333,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   text-align: left;
 }
 
-#stigfavpol .gt_empty_group_heading {
+#fankyfipso .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -348,15 +348,15 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   vertical-align: middle;
 }
 
-#stigfavpol .gt_from_md > :first-child {
+#fankyfipso .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#stigfavpol .gt_from_md > :last-child {
+#fankyfipso .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#stigfavpol .gt_row {
+#fankyfipso .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -375,7 +375,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   overflow-x: hidden;
 }
 
-#stigfavpol .gt_stub {
+#fankyfipso .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -388,7 +388,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#stigfavpol .gt_stub_row_group {
+#fankyfipso .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -402,15 +402,15 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   vertical-align: top;
 }
 
-#stigfavpol .gt_row_group_first td {
+#fankyfipso .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#stigfavpol .gt_row_group_first th {
+#fankyfipso .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#stigfavpol .gt_summary_row {
+#fankyfipso .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -420,16 +420,16 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#stigfavpol .gt_first_summary_row {
+#fankyfipso .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#stigfavpol .gt_first_summary_row.thick {
+#fankyfipso .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#stigfavpol .gt_last_summary_row {
+#fankyfipso .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -439,7 +439,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-color: #D3D3D3;
 }
 
-#stigfavpol .gt_grand_summary_row {
+#fankyfipso .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -449,7 +449,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#stigfavpol .gt_first_grand_summary_row {
+#fankyfipso .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -459,7 +459,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-top-color: #D3D3D3;
 }
 
-#stigfavpol .gt_last_grand_summary_row_top {
+#fankyfipso .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -469,11 +469,11 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-color: #D3D3D3;
 }
 
-#stigfavpol .gt_striped {
+#fankyfipso .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#stigfavpol .gt_table_body {
+#fankyfipso .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -482,7 +482,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-bottom-color: #D3D3D3;
 }
 
-#stigfavpol .gt_footnotes {
+#fankyfipso .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -496,7 +496,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#stigfavpol .gt_footnote {
+#fankyfipso .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -505,7 +505,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#stigfavpol .gt_sourcenotes {
+#fankyfipso .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -519,7 +519,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   border-right-color: #D3D3D3;
 }
 
-#stigfavpol .gt_sourcenote {
+#fankyfipso .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -527,72 +527,72 @@ Table 1: Supported target grid systems and their principal geometric and hierar
   padding-right: 5px;
 }
 
-#stigfavpol .gt_left {
+#fankyfipso .gt_left {
   text-align: left;
 }
 
-#stigfavpol .gt_center {
+#fankyfipso .gt_center {
   text-align: center;
 }
 
-#stigfavpol .gt_right {
+#fankyfipso .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#stigfavpol .gt_font_normal {
+#fankyfipso .gt_font_normal {
   font-weight: normal;
 }
 
-#stigfavpol .gt_font_bold {
+#fankyfipso .gt_font_bold {
   font-weight: bold;
 }
 
-#stigfavpol .gt_font_italic {
+#fankyfipso .gt_font_italic {
   font-style: italic;
 }
 
-#stigfavpol .gt_super {
+#fankyfipso .gt_super {
   font-size: 65%;
 }
 
-#stigfavpol .gt_footnote_marks {
+#fankyfipso .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#stigfavpol .gt_asterisk {
+#fankyfipso .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#stigfavpol .gt_indent_1 {
+#fankyfipso .gt_indent_1 {
   text-indent: 5px;
 }
 
-#stigfavpol .gt_indent_2 {
+#fankyfipso .gt_indent_2 {
   text-indent: 10px;
 }
 
-#stigfavpol .gt_indent_3 {
+#fankyfipso .gt_indent_3 {
   text-indent: 15px;
 }
 
-#stigfavpol .gt_indent_4 {
+#fankyfipso .gt_indent_4 {
   text-indent: 20px;
 }
 
-#stigfavpol .gt_indent_5 {
+#fankyfipso .gt_indent_5 {
   text-indent: 25px;
 }
 
-#stigfavpol .katex-display {
+#fankyfipso .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#stigfavpol div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fankyfipso div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -608,15 +608,6 @@ Table 1: Supported target grid systems and their principal geometric and hierar
 </tr></thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="grid_system">Raster</td>
-<td class="gt_row gt_left" headers="cell_geometry">Rectangular cells in a projected CRS</td>
-<td class="gt_row gt_left" headers="area_property">Equal-area only when constructed in an appropriate projected CRS</td>
-<td class="gt_row gt_left" headers="extent_and_hierarchy">Usually regional or local; hierarchy is not intrinsic</td>
-<td class="gt_row gt_left" headers="subdivision_or_aperture">Resolution specified directly in map units</td>
-<td class="gt_row gt_left" headers="neighbour_topology">Four- or eight-neighbour structure, depending on rook or queen contiguity</td>
-<td class="gt_row gt_left" headers="analytical_implication">Simple and familiar benchmark, but geometric properties depend on the selected projection and resolution</td>
-</tr>
-<tr class="even">
 <td class="gt_row gt_left" headers="grid_system">H3</td>
 <td class="gt_row gt_left" headers="cell_geometry">Mostly hexagons, with twelve pentagons</td>
 <td class="gt_row gt_left" headers="area_property">Approximately equal-area</td>
@@ -625,16 +616,16 @@ Table 1: Supported target grid systems and their principal geometric and hierar
 <td class="gt_row gt_left" headers="neighbour_topology">Usually six edge-neighbours; pentagons have five</td>
 <td class="gt_row gt_left" headers="analytical_implication">Strong indexing and neighbourhood structure, particularly useful for mobility, accessibility, and spatial aggregation</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="grid_system">ISEA3H, ISEA4H, ISEA7H</td>
+<tr class="even">
+<td class="gt_row gt_left" headers="grid_system">ISEA3H, ISEA4H</td>
 <td class="gt_row gt_left" headers="cell_geometry">Mostly hexagons, with twelve pentagons on an icosahedral projection</td>
 <td class="gt_row gt_left" headers="area_property">Equal-area</td>
 <td class="gt_row gt_left" headers="extent_and_hierarchy">Global discrete grid with a nested hierarchy</td>
-<td class="gt_row gt_left" headers="subdivision_or_aperture">Aperture-3, Aperture-4, and Aperture-7 hierarchies</td>
+<td class="gt_row gt_left" headers="subdivision_or_aperture">Aperture-3 and Aperture-4 hierarchies, #, and Aperture-7 hierarchies</td>
 <td class="gt_row gt_left" headers="neighbour_topology">Usually six edge-neighbours; pentagons have five</td>
 <td class="gt_row gt_left" headers="analytical_implication">Equal-area hexagonal option with relatively fine-grained hierarchical scaling between resolutions</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td class="gt_row gt_left" headers="grid_system">A5</td>
 <td class="gt_row gt_left" headers="cell_geometry">Equal-area pentagonal cells</td>
 <td class="gt_row gt_left" headers="area_property">Equal-area</td>
@@ -643,7 +634,7 @@ Table 1: Supported target grid systems and their principal geometric and hierar
 <td class="gt_row gt_left" headers="neighbour_topology">Predominantly five edge-neighbours</td>
 <td class="gt_row gt_left" headers="analytical_implication">Provides a global equal-area alternative with strong indexing, although its pentagonal geometry may produce more directional variation than hexagonal grids</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td class="gt_row gt_left" headers="grid_system">S2</td>
 <td class="gt_row gt_left" headers="cell_geometry">Quadrilateral cells projected from the faces of a cube</td>
 <td class="gt_row gt_left" headers="area_property">Not equal-area</td>
@@ -651,6 +642,24 @@ Table 1: Supported target grid systems and their principal geometric and hierar
 <td class="gt_row gt_left" headers="subdivision_or_aperture">Quadtree subdivision: each cell has four children</td>
 <td class="gt_row gt_left" headers="neighbour_topology">Variable topology across cube-face boundaries</td>
 <td class="gt_row gt_left" headers="analytical_implication">Strong global indexing and web-mapping infrastructure, but cell areas vary substantially across locations</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="grid_system">Local Raster</td>
+<td class="gt_row gt_left" headers="cell_geometry">Rectangular cells in a projected CRS</td>
+<td class="gt_row gt_left" headers="area_property">Equal-area only when constructed in an appropriate projected CRS</td>
+<td class="gt_row gt_left" headers="extent_and_hierarchy">Usually regional or local; hierarchy is not intrinsic</td>
+<td class="gt_row gt_left" headers="subdivision_or_aperture">Resolution specified directly in map units</td>
+<td class="gt_row gt_left" headers="neighbour_topology">Four- or eight-neighbour structure, depending on rook or queen contiguity</td>
+<td class="gt_row gt_left" headers="analytical_implication">Simple and familiar benchmark, but geometric properties depend on the selected projection and resolution</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="grid_system">Local Hex</td>
+<td class="gt_row gt_left" headers="cell_geometry">Regular hexagonal cells in a projected CRS</td>
+<td class="gt_row gt_left" headers="area_property">Equal-area only when constructed in an appropriate projected CRS</td>
+<td class="gt_row gt_left" headers="extent_and_hierarchy">Usually regional or local; hierarchy is not intrinsic</td>
+<td class="gt_row gt_left" headers="subdivision_or_aperture">Resolution specified directly in map units</td>
+<td class="gt_row gt_left" headers="neighbour_topology">Usually six edge-neighbours in a complete tessellation</td>
+<td class="gt_row gt_left" headers="analytical_implication">Local hexagonal support with six symmetric first-order neighbours, but geometric properties depend on the selected projection and resolution</td>
 </tr>
 </tbody>
 </table>
@@ -660,19 +669,33 @@ Table 1: Supported target grid systems and their principal geometric and hierar
 </figure>
 </div>
 </div>
-<p>Of the currently supported grid types, raster grids are the most familiar, representing geographic space as a regular lattice of equally sized cells. Their simplicity has made them the dominant representation for continuous spatial phenomena and the traditional support for pycnophylactic interpolation. However, raster grids are inherently planar, which requires projection choices, and neighbourhood relationships depend on user-specified contiguity definitions (e.g., rook or queen adjacency). In terms of indexing, raster cells are not uniquely identified by a global index and any hierarchical relationships among cells of different resolutions would have to be manually specified. The neighbourhood structure is also anisotropic, with greater distances required to traverse cells diagonally than horizontally or vertically. Support for rasters in <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> is offered through the <a href="https://rspatial.org/" class="external-link">terra</a> <span class="citation" data-cites="terra2026">(<a href="#ref-terra2026" role="doc-biblioref">Hijmans et al. 2026</a>)</span> package.</p>
-<p>The H3 grid system is a global-scale spatial indexing system developed by Uber to support routing and mobility analytics. It is a hierarchical hexagonal (mostly – twelve pentagonal cells are required to accommodate the topology of a spherical surface) DGGS built on an icosahedral projection of the Earth with 16 resolution levels. H3 offers scalable hierarchical spatial indexing as each cell at a given level of the hierarchy can be sub-divided into a set of 7 child sells, although the cell tesselations rotate slightly at each resolution level. Compared to raster cells, the hexagonal tesselation also offers consistent neighbourhood relationships and more isotropic traversal pathways between neighbouring cells with approximately equal distances to all first-order neighbours. Because H3 is built on a gnomonic projection, hexagons tend to preserve their shape in projected spatial analytical workflows. However, because of this projection, H3 cells distort globally and are not equal area. While they may be approximately equal at the urban scale, cells compared at the global scale can differ in area quite significantly. Support for H3 in <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> is offered through the <a href="https://github.com/extendr/h3o" class="external-link">h3o</a> <span class="citation" data-cites="h3o2025">(<a href="#ref-h3o2025" role="doc-biblioref">Parry 2025</a>)</span> package.</p>
-<p>The Icosahedral Snyder Equal Area (ISEA) grid system partitions the globe into equal area hexagons with 31 supported resolution levels. Similar to H3, twelve pentagonal cells are required. In contrast to H3, where cells are approximately equal area, ISEA grids prioritize identical cell areas with more aligned nesting. This comes at the cost of shape preservation, with ISEA hexagons appearing more elongated than H3 when represented in conventional geographic or local projected coordinate systems. The ISEA grid supports several different apertures, including Aperture-3, 4, 7, and 4/3 mixed. At aperture-3, parent cells divide into 3 child cells, while at aperture 7 the ISEA grid behaves similar to H3 with each cell splitting into 7 across resolution levels. Support for ISEA grids is offered through the <a href="https://gillescolling.com/hexify/" class="external-link">hexify</a> <span class="citation" data-cites="hexify2026">(<a href="#ref-hexify2026" role="doc-biblioref">Colling 2026</a>)</span> package.</p>
+<p>Sample discrete global and local grids generated at different resolution levels to cover the census tracts for Lower Manhattan from <a href="#fig-sample_population_count" class="quarto-xref">Figure 1</a> are shown in <a href="#fig-sample_dggs_grids" class="quarto-xref">Figure 2</a> and <a href="#fig-sample_local_grids" class="quarto-xref">Figure 3</a>.</p>
+<p>Among the DGGSs, the H3 grid system is a global-scale spatial indexing system developed by Uber to support routing and mobility analytics. It is a hierarchical hexagonal (mostly – twelve pentagonal cells are required to accommodate the topology of a spherical surface) DGGS built on an icosahedral projection of the Earth with 16 resolution levels. H3 offers scalable hierarchical spatial indexing as each cell at a given level of the hierarchy can be sub-divided into a set of 7 child sells, although the cell tesselations rotate slightly at each resolution level. Compared to raster cells, the hexagonal tesselation also offers consistent neighbourhood relationships and more isotropic traversal pathways between neighbouring cells with approximately equal distances to all first-order neighbours. Because H3 is built on a gnomonic projection, hexagons tend to preserve their shape in projected spatial analytical workflows. However, because of this projection, H3 cells distort globally and are not equal area. While they may be approximately equal at the urban scale, cells compared at the global scale can differ in area quite significantly. Support for H3 in <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> is offered through the <a href="https://github.com/extendr/h3o" class="external-link">h3o</a> <span class="citation" data-cites="h3o2025">(<a href="#ref-h3o2025" role="doc-biblioref">Parry 2025</a>)</span> package.</p>
+<p>The Icosahedral Snyder Equal Area (ISEA) grid system partitions the globe into equal area hexagons with 31 supported resolution levels. Similar to H3, twelve pentagonal cells are required. In contrast to H3, where cells are approximately equal area, ISEA grids prioritize identical cell areas with more aligned nesting. This comes at the cost of shape preservation, with ISEA hexagons appearing more elongated than H3 when represented in conventional geographic or local projected coordinate systems. The ISEA grid supports several different apertures, including Aperture-3, 4, 7, and 4/3 mixed. At Aperture-3, parent cells divide into 3 child cells, while at Aperture-7 the ISEA grid behaves similar to H3 with each cell splitting into 7 across resolution levels. Support for ISEA grids is currently limited to Aperture-3 and 4 and offered through the <a href="https://gillescolling.com/hexify/" class="external-link">hexify</a> <span class="citation" data-cites="hexify2026">(<a href="#ref-hexify2026" role="doc-biblioref">Colling 2026</a>)</span> package.</p>
 <p>The A5 grid system is a recent DGGS that is explicitly designed to be equal area across the globe. Based on pentagons and 31 different resolution levels, A5 cells at a given resolution sub-divide into 5 child cells. The primary motivation behind A5 is spatial analysis as the equal area properties of the grid system greatly simplify comparisons of densities, rates, and other aggregated quantities over space. However, the subdivision of parent into child cells is not regular with cell shapes becoming more elongated at higher resolutions, meaning the distance between cell centroids is not uniform. With these slightly elongated pentagonal shapes, A5 cells are more anisotropic than H3 cells, although the extent to which impacts traversal pathways across the equal area cell topology has not yet studied. Support for the A5 grid system is offered through the <a href="https://github.com/belian-earth/a5R" class="external-link">a5R</a> <span class="citation" data-cites="a5R2026">(<a href="#ref-a5R2026" role="doc-biblioref">Graham 2026</a>)</span> package.</p>
 <p>S2 was developed by Google for global-scale spatial indexing and geometric computation. S2 begins by projecting the Earth onto the flat planes of a cube. Within a 31-level resolution hierarchy, each cell sub-divides into 4 child cells. While use of H3 and A5 might be motivated by neighbourhood regularity and equal-area representation, respectively, S2 emphasizes hierarchical spatial indexing and efficient spherical geometry operations. Consequently, the use of S2 within {pycnogrid} may be attractive when interpolated data are intended for integration with large-scale geospatial databases, distributed computing environments, or workflows that already rely on S2 indexing. Support for S2 in <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> is offered through the <a href="https://r-spatial.github.io/s2/" class="external-link">s2</a> <span class="citation" data-cites="s22025">(<a href="#ref-s22025" role="doc-biblioref">Dunnington et al. 2025</a>)</span> package.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-sample_grids" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-sample_grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="getting_started_files/figure-html/fig-sample_grids-1.png" width="864">
+<div id="fig-sample_dggs_grids" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-sample_dggs_grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="getting_started_files/figure-html/fig-sample_dggs_grids-1.png" width="864">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample_grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 2: Sample grid hierarchies at different resolutions
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample_dggs_grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 2: Sample DGGS hierarchies at different resolutions
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Of the supported local grid types in <a href="#fig-sample_local_grids" class="quarto-xref">Figure 3</a>, raster grids are the most familiar, representing geographic space as a regular lattice of equally sized cells. Their simplicity has made them the dominant representation for continuous spatial phenomena and the traditional support for pycnophylactic interpolation. However, raster grids are inherently planar, which requires projection choices, and neighbourhood relationships depend on user-specified contiguity definitions (e.g., rook or queen adjacency). In terms of indexing, raster cells are not uniquely identified by a global index and any hierarchical relationships among cells of different resolutions would have to be manually specified. The neighbourhood structure is also anisotropic, with greater distances required to traverse cells diagonally than horizontally or vertically. Support for rasters in <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> is offered through the <a href="https://rspatial.org/" class="external-link">terra</a> <span class="citation" data-cites="terra2026">(<a href="#ref-terra2026" role="doc-biblioref">Hijmans et al. 2026</a>)</span> package.</p>
+<p>Finally, users can also generate local regular hexagonal tessellations. Unlike the global DGGS options, these grids are defined within the coordinate reference system of the input data and have no intrinsic global index or hierarchical structure. Their area and shape properties therefore depend on selecting an appropriate projected CRS, while their alignment and resolution are specified directly in the map units of that CRS. Built on the {sf} <span class="citation" data-cites="pebesma2018">(<a href="#ref-pebesma2018" role="doc-biblioref">Pebesma 2018</a>)</span> package, this option provides a familiar local hexagonal support for analyses focused on a particular region or study area.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sample_local_grids" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-sample_local_grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="getting_started_files/figure-html/fig-sample_local_grids-1.png" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample_local_grids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 3: Sample local grid hierarchies at different resolutions
 </figcaption></figure>
 </div>
 </div>
@@ -689,7 +712,7 @@ Figure 2: Sample grid hierarchies at different resolutions
 <span>    resolution <span class="op">=</span> <span class="fl">10</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
-<p>The results of this interpolation are shown in <a href="#fig-pycno_nyc_ct_small" class="quarto-xref">Figure 3</a> below:</p>
+<p>The results of this interpolation are shown in <a href="#fig-pycno_nyc_ct_small" class="quarto-xref">Figure 4</a> below:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-pycno_nyc_ct_small" class="quarto-float quarto-figure quarto-figure-center">
@@ -697,12 +720,12 @@ Figure 2: Sample grid hierarchies at different resolutions
 <img src="getting_started_files/figure-html/fig-pycno_nyc_ct_small-1.png" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pycno_nyc_ct_small-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 3: Census tract population counts interpolated to an H3 grid
+Figure 4: Census tract population counts interpolated to an H3 grid
 </figcaption></figure>
 </div>
 </div>
 </div>
-<p>The results for other grid types can be seen in <a href="#fig-pycno_nyc_ct_small_resolutions" class="quarto-xref">Figure 4</a>:</p>
+<p>The results for other grid types can be seen in <a href="#fig-pycno_nyc_ct_small_resolutions" class="quarto-xref">Figure 5</a>:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-pycno_nyc_ct_small_resolutions" class="quarto-float quarto-figure quarto-figure-center">
@@ -710,7 +733,7 @@ Figure 3: Census tract population counts interpolated to an H3 grid
 <img src="getting_started_files/figure-html/fig-pycno_nyc_ct_small_resolutions-1.png" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pycno_nyc_ct_small_resolutions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 4: Census tract population counts interpolated to all four grid types
+Figure 5: Census tract population counts interpolated to all four grid types
 </figcaption></figure>
 </div>
 </div>
@@ -722,23 +745,23 @@ Figure 4: Census tract population counts interpolated to all four grid types
 Table 2: Population descriptive statistics for different grid types
 </figcaption><div aria-describedby="tbl-grid_descriptives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="ndhcjwtxur" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ndhcjwtxur table {
+<div id="ixhiahkudc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ixhiahkudc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ndhcjwtxur thead, #ndhcjwtxur tbody, #ndhcjwtxur tfoot, #ndhcjwtxur tr, #ndhcjwtxur td, #ndhcjwtxur th {
+#ixhiahkudc thead, #ixhiahkudc tbody, #ixhiahkudc tfoot, #ixhiahkudc tr, #ixhiahkudc td, #ixhiahkudc th {
   border-style: none;
 }
 
-#ndhcjwtxur p {
+#ixhiahkudc p {
   margin: 0;
   padding: 0;
 }
 
-#ndhcjwtxur .gt_table {
+#ixhiahkudc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -764,12 +787,12 @@ Table 2: Population descriptive statistics for different grid types
   border-left-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_caption {
+#ixhiahkudc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ndhcjwtxur .gt_title {
+#ixhiahkudc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -781,7 +804,7 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-width: 0;
 }
 
-#ndhcjwtxur .gt_subtitle {
+#ixhiahkudc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -793,7 +816,7 @@ Table 2: Population descriptive statistics for different grid types
   border-top-width: 0;
 }
 
-#ndhcjwtxur .gt_heading {
+#ixhiahkudc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -805,13 +828,13 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_bottom_border {
+#ixhiahkudc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_col_headings {
+#ixhiahkudc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -826,7 +849,7 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_col_heading {
+#ixhiahkudc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -846,7 +869,7 @@ Table 2: Population descriptive statistics for different grid types
   overflow-x: hidden;
 }
 
-#ndhcjwtxur .gt_column_spanner_outer {
+#ixhiahkudc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -858,15 +881,15 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 4px;
 }
 
-#ndhcjwtxur .gt_column_spanner_outer:first-child {
+#ixhiahkudc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ndhcjwtxur .gt_column_spanner_outer:last-child {
+#ixhiahkudc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ndhcjwtxur .gt_column_spanner {
+#ixhiahkudc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -878,11 +901,11 @@ Table 2: Population descriptive statistics for different grid types
   width: 100%;
 }
 
-#ndhcjwtxur .gt_spanner_row {
+#ixhiahkudc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ndhcjwtxur .gt_group_heading {
+#ixhiahkudc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -908,7 +931,7 @@ Table 2: Population descriptive statistics for different grid types
   text-align: left;
 }
 
-#ndhcjwtxur .gt_empty_group_heading {
+#ixhiahkudc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -923,15 +946,15 @@ Table 2: Population descriptive statistics for different grid types
   vertical-align: middle;
 }
 
-#ndhcjwtxur .gt_from_md > :first-child {
+#ixhiahkudc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ndhcjwtxur .gt_from_md > :last-child {
+#ixhiahkudc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ndhcjwtxur .gt_row {
+#ixhiahkudc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -950,7 +973,7 @@ Table 2: Population descriptive statistics for different grid types
   overflow-x: hidden;
 }
 
-#ndhcjwtxur .gt_stub {
+#ixhiahkudc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -963,7 +986,7 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#ndhcjwtxur .gt_stub_row_group {
+#ixhiahkudc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -977,15 +1000,15 @@ Table 2: Population descriptive statistics for different grid types
   vertical-align: top;
 }
 
-#ndhcjwtxur .gt_row_group_first td {
+#ixhiahkudc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ndhcjwtxur .gt_row_group_first th {
+#ixhiahkudc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ndhcjwtxur .gt_summary_row {
+#ixhiahkudc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -995,16 +1018,16 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#ndhcjwtxur .gt_first_summary_row {
+#ixhiahkudc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_first_summary_row.thick {
+#ixhiahkudc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ndhcjwtxur .gt_last_summary_row {
+#ixhiahkudc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1014,7 +1037,7 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_grand_summary_row {
+#ixhiahkudc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1024,7 +1047,7 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#ndhcjwtxur .gt_first_grand_summary_row {
+#ixhiahkudc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1034,7 +1057,7 @@ Table 2: Population descriptive statistics for different grid types
   border-top-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_last_grand_summary_row_top {
+#ixhiahkudc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1044,11 +1067,11 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_striped {
+#ixhiahkudc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ndhcjwtxur .gt_table_body {
+#ixhiahkudc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1057,7 +1080,7 @@ Table 2: Population descriptive statistics for different grid types
   border-bottom-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_footnotes {
+#ixhiahkudc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1071,7 +1094,7 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_footnote {
+#ixhiahkudc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1080,7 +1103,7 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#ndhcjwtxur .gt_sourcenotes {
+#ixhiahkudc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1094,7 +1117,7 @@ Table 2: Population descriptive statistics for different grid types
   border-right-color: #D3D3D3;
 }
 
-#ndhcjwtxur .gt_sourcenote {
+#ixhiahkudc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1102,78 +1125,78 @@ Table 2: Population descriptive statistics for different grid types
   padding-right: 5px;
 }
 
-#ndhcjwtxur .gt_left {
+#ixhiahkudc .gt_left {
   text-align: left;
 }
 
-#ndhcjwtxur .gt_center {
+#ixhiahkudc .gt_center {
   text-align: center;
 }
 
-#ndhcjwtxur .gt_right {
+#ixhiahkudc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ndhcjwtxur .gt_font_normal {
+#ixhiahkudc .gt_font_normal {
   font-weight: normal;
 }
 
-#ndhcjwtxur .gt_font_bold {
+#ixhiahkudc .gt_font_bold {
   font-weight: bold;
 }
 
-#ndhcjwtxur .gt_font_italic {
+#ixhiahkudc .gt_font_italic {
   font-style: italic;
 }
 
-#ndhcjwtxur .gt_super {
+#ixhiahkudc .gt_super {
   font-size: 65%;
 }
 
-#ndhcjwtxur .gt_footnote_marks {
+#ixhiahkudc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ndhcjwtxur .gt_asterisk {
+#ixhiahkudc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ndhcjwtxur .gt_indent_1 {
+#ixhiahkudc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ndhcjwtxur .gt_indent_2 {
+#ixhiahkudc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ndhcjwtxur .gt_indent_3 {
+#ixhiahkudc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ndhcjwtxur .gt_indent_4 {
+#ixhiahkudc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ndhcjwtxur .gt_indent_5 {
+#ixhiahkudc .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ndhcjwtxur .katex-display {
+#ixhiahkudc .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ndhcjwtxur div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ixhiahkudc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
 <table class="table gt_table cell caption-top" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings header">
-<th id="grid_type" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">grid type</th>
+<th id="grid_type" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">grid type</th>
 <th id="resolution" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">grid resolution</th>
 <th id="cell_count" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">grid cell count</th>
 <th id="mean_pop" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mean cell population</th>
@@ -1181,45 +1204,52 @@ Table 2: Population descriptive statistics for different grid types
 </tr></thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="grid_type">a5</td>
-<td class="gt_row gt_right" headers="resolution">16</td>
-<td class="gt_row gt_right" headers="cell_count">635</td>
-<td class="gt_row gt_right" headers="mean_pop">178.5181</td>
-<td class="gt_row gt_right" headers="sum_pop">113359</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="grid_type">h3</td>
+<td class="gt_row gt_center" headers="grid_type">h3</td>
 <td class="gt_row gt_right" headers="resolution">10</td>
 <td class="gt_row gt_right" headers="cell_count">336</td>
 <td class="gt_row gt_right" headers="mean_pop">337.3780</td>
 <td class="gt_row gt_right" headers="sum_pop">113359</td>
 </tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers="grid_type">isea3h</td>
+<tr class="even">
+<td class="gt_row gt_center" headers="grid_type">isea3h</td>
 <td class="gt_row gt_right" headers="resolution">20</td>
 <td class="gt_row gt_right" headers="cell_count">351</td>
 <td class="gt_row gt_right" headers="mean_pop">322.9601</td>
 <td class="gt_row gt_right" headers="sum_pop">113359</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="grid_type">isea4h</td>
+<tr class="odd">
+<td class="gt_row gt_center" headers="grid_type">isea4h</td>
 <td class="gt_row gt_right" headers="resolution">16</td>
 <td class="gt_row gt_right" headers="cell_count">427</td>
 <td class="gt_row gt_right" headers="mean_pop">265.4778</td>
 <td class="gt_row gt_right" headers="sum_pop">113359</td>
 </tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="grid_type">a5</td>
+<td class="gt_row gt_right" headers="resolution">16</td>
+<td class="gt_row gt_right" headers="cell_count">635</td>
+<td class="gt_row gt_right" headers="mean_pop">178.5181</td>
+<td class="gt_row gt_right" headers="sum_pop">113359</td>
+</tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="grid_type">raster</td>
+<td class="gt_row gt_center" headers="grid_type">s2</td>
+<td class="gt_row gt_right" headers="resolution">16</td>
+<td class="gt_row gt_right" headers="cell_count">312</td>
+<td class="gt_row gt_right" headers="mean_pop">363.3301</td>
+<td class="gt_row gt_right" headers="sum_pop">113359</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="grid_type">raster</td>
 <td class="gt_row gt_right" headers="resolution">100</td>
 <td class="gt_row gt_right" headers="cell_count">504</td>
 <td class="gt_row gt_right" headers="mean_pop">224.9187</td>
 <td class="gt_row gt_right" headers="sum_pop">113359</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_left" headers="grid_type">s2</td>
-<td class="gt_row gt_right" headers="resolution">16</td>
-<td class="gt_row gt_right" headers="cell_count">312</td>
-<td class="gt_row gt_right" headers="mean_pop">363.3301</td>
+<tr class="odd">
+<td class="gt_row gt_center" headers="grid_type">hex</td>
+<td class="gt_row gt_right" headers="resolution">100</td>
+<td class="gt_row gt_right" headers="cell_count">574</td>
+<td class="gt_row gt_right" headers="mean_pop">197.4895</td>
 <td class="gt_row gt_right" headers="sum_pop">113359</td>
 </tr>
 </tbody>
@@ -1237,7 +1267,7 @@ Table 2: Population descriptive statistics for different grid types
 <li><p>with <code>cell_inclusion = "centroid"</code> and <code>cell_allocation = "area"</code>, only target cells whose centroids fall within the source layer are retained, but the retained cells receive source values according to their actual areas of overlap. While this avoids retaining cells that merely touch a source boundary, the resulting grid may not fully cover the source polygons, leading to a truncation in the spatial support offered by the target cells. The area-based allocation nevertheless helps to preserve source values in the system based on the areal overlap of source polygons and target cells.</p></li>
 <li><p>with <code>cell_inclusion = "centroid"</code> and <code>cell_allocation = "centroid"</code>, target cells are both selected and assigned according to centroid location. Each retained cell is associated with the source polygon containing its centroid, producing the simplest and most discrete source-to-grid assignment with the strongest concentrations of source values within the target cells. However, this approach is the most sensitive to grid resolution and alignment relative to the source polygons, risking truncated spatial support of the source layers within the target cell tessellation, the extrapolation of values beyond the source extent, and the potential loss of source values if no cell centroids fall within the original polygon boundaries.</p></li>
 </ul>
-<p>The smoothed results using the default and other cell inclusion and allocation settings are shown in <a href="#fig-pycno_nyc_ct_small_combinations" class="quarto-xref">Figure 5</a> below.</p>
+<p>The smoothed results using the default and other cell inclusion and allocation settings are shown in <a href="#fig-pycno_nyc_ct_small_combinations" class="quarto-xref">Figure 6</a> below.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-pycno_nyc_ct_small_combinations" class="quarto-float quarto-figure quarto-figure-center">
@@ -1245,12 +1275,12 @@ Table 2: Population descriptive statistics for different grid types
 <img src="getting_started_files/figure-html/fig-pycno_nyc_ct_small_combinations-1.png" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pycno_nyc_ct_small_combinations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 5: Interpolated population counts with varying inclusion and allocation parameters
+Figure 6: Interpolated population counts with varying inclusion and allocation parameters
 </figcaption></figure>
 </div>
 </div>
 </div>
-<p>The second customization involves setting the number of neighbours through the <code>nb_order</code> parameter. Here the default is <code>1</code>, which results in the spatial weights matrix accounting for spatial relationships between a given target cell and its first-order neighbours with Queen contiguity. Increasing the order of the neighbourhood includes target cells from a larger neighbourhood which this has the effect of further smoothing out the spatial patterns of the interpolated values in the target cells. This can be seen in <a href="#fig-pycno_nyc_ct_small_nb_order" class="quarto-xref">Figure 6</a>.</p>
+<p>The second customization involves setting the number of neighbours through the <code>nb_order</code> parameter. Here the default is <code>1</code>, which results in the spatial weights matrix accounting for spatial relationships between a given target cell and its first-order neighbours with Queen contiguity. Increasing the order of the neighbourhood includes target cells from a larger neighbourhood which this has the effect of further smoothing out the spatial patterns of the interpolated values in the target cells. This can be seen in <a href="#fig-pycno_nyc_ct_small_nb_order" class="quarto-xref">Figure 7</a>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-pycno_nyc_ct_small_nb_order" class="quarto-float quarto-figure quarto-figure-center">
@@ -1258,14 +1288,14 @@ Figure 5: Interpolated population counts with varying inclusion and allocation 
 <img src="getting_started_files/figure-html/fig-pycno_nyc_ct_small_nb_order-1.png" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pycno_nyc_ct_small_nb_order-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 6: Interpolated population counts with increasing neighbourhood order
+Figure 7: Interpolated population counts with increasing neighbourhood order
 </figcaption></figure>
 </div>
 </div>
 </div>
 </section></section><section class="level2"><h2 id="detailed-example">Detailed Example<a class="anchor" aria-label="anchor" href="#detailed-example"></a>
 </h2>
-<p>To explore how the smoothing algorithm works, the code below selects a subset of the <code>nyc_ct_small</code> census tracts and generates an H3 grid at <code>resolution = 9</code>. To limit the number of cells generated for this example, the <code>cell_inclusion</code> criteria is set to <code>"centroid"</code> so the target grid consists only of cells whose centroids fall within the source polygon geometries (<a href="#fig-nyc_ct_subset" class="quarto-xref">Figure 7</a>):</p>
+<p>To explore how the smoothing algorithm works, the code below selects a subset of the <code>nyc_ct_small</code> census tracts and generates an H3 grid at <code>resolution = 9</code>. To limit the number of cells generated for this example, the <code>cell_inclusion</code> criteria is set to <code>"centroid"</code> so the target grid consists only of cells whose centroids fall within the source polygon geometries (<a href="#fig-nyc_ct_subset" class="quarto-xref">Figure 8</a>):</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-nyc_ct_subset" class="quarto-float quarto-figure quarto-figure-center">
@@ -1273,7 +1303,7 @@ Figure 6: Interpolated population counts with increasing neighbourhood order
 <img src="getting_started_files/figure-html/fig-nyc_ct_subset-1.png" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nyc_ct_subset-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 7: Source zone subset and target cells with centroid-based inclusion criteria
+Figure 8: Source zone subset and target cells with centroid-based inclusion criteria
 </figcaption></figure>
 </div>
 </div>
@@ -1417,7 +1447,7 @@ d_{j}^{(t+1)} = \tilde{d}_{j}^{(t+1)} q_{j}^{(t+1)}
     {\max\!\left(d_j^{(t)},\delta\right)}
 </annotation></semantics></math></p>
 <p>with <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi><mo>=</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>12</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\delta=10^{-12}</annotation></semantics></math> used to prevent any division by zero in the denominator. Iteration stops when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ϵ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\epsilon^{(t+1)}</annotation></semantics></math> is less than the convergence tolerance, which is set at a default of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup><annotation encoding="application/x-tex">10^{-4}</annotation></semantics></math>. For the present case, the error from the first iteration is 0.0254, suggesting further rounds of smoothing are required to reach convergence.</p>
-<p>The final results of the interpolation are shown in <a href="#fig-pycno_nyc_ct_subset" class="quarto-xref">Figure 8</a>:</p>
+<p>The final results of the interpolation are shown in <a href="#fig-pycno_nyc_ct_subset" class="quarto-xref">Figure 9</a>:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-pycno_nyc_ct_subset" class="quarto-float quarto-figure quarto-figure-center">
@@ -1425,7 +1455,7 @@ d_{j}^{(t+1)} = \tilde{d}_{j}^{(t+1)} q_{j}^{(t+1)}
 <img src="getting_started_files/figure-html/fig-pycno_nyc_ct_subset-1.png" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pycno_nyc_ct_subset-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 8: Source zone and interpolated population values
+Figure 9: Source zone and interpolated population values
 </figcaption></figure>
 </div>
 </div>
@@ -1435,6 +1465,8 @@ Figure 8: Source zone and interpolated population values
 <p><a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> offers a flexible implementation of Tobler’s pycnophylactic interpolation for redistributing polygon-based count data to discrete global and raster grid systems. Building on existing implementations of the concept, the smoothing algorithm that underpins the package expresses the interpolation through the lens of neighbourhoods and spatial weights, enabling the pycnophylactic approach to be applied to a range of different grid systems. At present, these grid systems include H3, A5, S2, and ISEA grids, as well as traditional raster arrays.</p>
 <p>While the preservation of mass or volume inherent in the source count data is central to the pycnophylactic smoothing approach, a core aspect of <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> is the option to allocate and preserve mass while accounting for source zone and target cell areal intersections. The package also makes explicit several analytical choices that are often implicit in interpolation workflows. Users may select how target cells are included, how source values are allocated to cells, the neighbourhood order used for smoothing, and whether cells contribute to their own neighbourhood mean. These choices affect the implied spatial support and degree of smoothing, and should be selected with reference to the intended downstream application rather than treated as purely technical defaults.</p>
 <p>While pycnophylactic interpolation produces a smooth, mass-preserving representation that is consistent with the available source totals and the chosen target-grid structure, the outputs are best understood as analytically-useful plausible estimates rather than as observed values at a finer level of geography. Future work could extend <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> through ancillary-data weighting <span class="citation" data-cites="tapp2010">(e.g. <a href="#ref-tapp2010" role="doc-biblioref">Tapp 2010</a>)</span>, alternative smoothing operators, and support for additional area or shape preserving DGGSs. Systematic evaluations of how grid geometry, resolution, hierarchy, and smoothing assumptions affect the robustness of downstream spatial analyses to the MAUP would also be valuable. To that end, by bringing pycnophylactic interpolation to contemporary vector-based spatial workflows and multiple grid systems, <a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> provides a practical foundation for creating comparable, mass-preserving gridded representations of aggregated spatial data.</p>
+</section><section class="level2 unnumbered"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-anselin1988" class="csl-entry" role="listitem">
 Anselin, Luc. 1988. <em>Spatial Econometrics: Methods and Models</em>. Springer Netherlands. <a href="https://doi.org/10.1007/978-94-015-7799-1" class="external-link">https://doi.org/10.1007/978-94-015-7799-1</a>.

@@ -99,7 +99,7 @@ pcynogrid::to_grid(
   source,
   value_col,
   id_col = NULL,
-  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "isea7h", "raster"),
+  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
   cell_allocation = c("area", "centroid"),
@@ -122,9 +122,9 @@ where
 - `id_col` is an optional column uniquely identifying each source
   polygon, if omitted, an internal identifier is created
 - `grid_type` specifies the target grid system. Supported options are
-  H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived
+  H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived
   polygon cells
-- `resolution` controls the size of the target grid cells. Its
+- `resolution` controls the size of the target grid cells; its
   interpretation depends on the selected grid type
 - `cell_inclusion` defines how candidate grid cells are selected for
   interpolation. With `"intersect"`, cells are included if they
@@ -191,56 +191,43 @@ The choice of a target grid system is not merely a computational
 consideration as different grid systems prioritize different geometric
 and analytical properties, including equal-area representation, shape
 preservation, neighbourhood structure, hierarchical indexing, and
-scalable spatial computation ([Table 1](#tbl-grids)). Sample grids
-generated at different resolution levels to cover the census tracts for
-Lower Manhattan from [Figure 1](#fig-sample_population_count) are shown
-in [Figure 2](#fig-sample_grids).
+scalable spatial computation ([Table 1](#tbl-grids)).
 
 | Grid System | Cell Geometry | Area Property | Extent and Hierarchy | Subdivision / Aperture | Neighbour Topology | Analytical Implication |
 |----|----|----|----|----|----|----|
-| Raster | Rectangular cells in a projected CRS | Equal-area only when constructed in an appropriate projected CRS | Usually regional or local; hierarchy is not intrinsic | Resolution specified directly in map units | Four- or eight-neighbour structure, depending on rook or queen contiguity | Simple and familiar benchmark, but geometric properties depend on the selected projection and resolution |
 | H3 | Mostly hexagons, with twelve pentagons | Approximately equal-area | Global discrete grid with a nested hierarchy | Aperture-7 hierarchy with alternating cell orientation across resolutions | Usually six edge-neighbours; pentagons have five | Strong indexing and neighbourhood structure, particularly useful for mobility, accessibility, and spatial aggregation |
-| ISEA3H, ISEA4H, ISEA7H | Mostly hexagons, with twelve pentagons on an icosahedral projection | Equal-area | Global discrete grid with a nested hierarchy | Aperture-3, Aperture-4, and Aperture-7 hierarchies | Usually six edge-neighbours; pentagons have five | Equal-area hexagonal option with relatively fine-grained hierarchical scaling between resolutions |
+| ISEA3H, ISEA4H | Mostly hexagons, with twelve pentagons on an icosahedral projection | Equal-area | Global discrete grid with a nested hierarchy | Aperture-3 and Aperture-4 hierarchies, \#, and Aperture-7 hierarchies | Usually six edge-neighbours; pentagons have five | Equal-area hexagonal option with relatively fine-grained hierarchical scaling between resolutions |
 | A5 | Equal-area pentagonal cells | Equal-area | Global discrete grid with a hierarchical structure | Five-way initial refinement, followed by four-way refinement | Predominantly five edge-neighbours | Provides a global equal-area alternative with strong indexing, although its pentagonal geometry may produce more directional variation than hexagonal grids |
 | S2 | Quadrilateral cells projected from the faces of a cube | Not equal-area | Global discrete grid with a nested hierarchy | Quadtree subdivision: each cell has four children | Variable topology across cube-face boundaries | Strong global indexing and web-mapping infrastructure, but cell areas vary substantially across locations |
+| Local Raster | Rectangular cells in a projected CRS | Equal-area only when constructed in an appropriate projected CRS | Usually regional or local; hierarchy is not intrinsic | Resolution specified directly in map units | Four- or eight-neighbour structure, depending on rook or queen contiguity | Simple and familiar benchmark, but geometric properties depend on the selected projection and resolution |
+| Local Hex | Regular hexagonal cells in a projected CRS | Equal-area only when constructed in an appropriate projected CRS | Usually regional or local; hierarchy is not intrinsic | Resolution specified directly in map units | Usually six edge-neighbours in a complete tessellation | Local hexagonal support with six symmetric first-order neighbours, but geometric properties depend on the selected projection and resolution |
 
 Table 1: Supported target grid systems and their principal geometric and
 hierarchical properties
 
-Of the currently supported grid types, raster grids are the most
-familiar, representing geographic space as a regular lattice of equally
-sized cells. Their simplicity has made them the dominant representation
-for continuous spatial phenomena and the traditional support for
-pycnophylactic interpolation. However, raster grids are inherently
-planar, which requires projection choices, and neighbourhood
-relationships depend on user-specified contiguity definitions (e.g.,
-rook or queen adjacency). In terms of indexing, raster cells are not
-uniquely identified by a global index and any hierarchical relationships
-among cells of different resolutions would have to be manually
-specified. The neighbourhood structure is also anisotropic, with greater
-distances required to traverse cells diagonally than horizontally or
-vertically. Support for rasters in
-[pycnogrid](https://higgicd.github.io/pycnogrid/) is offered through the
-[terra](https://rspatial.org/) ([Hijmans et al. 2026](#ref-terra2026))
-package.
+Sample discrete global and local grids generated at different resolution
+levels to cover the census tracts for Lower Manhattan from
+[Figure 1](#fig-sample_population_count) are shown in
+[Figure 2](#fig-sample_dggs_grids) and
+[Figure 3](#fig-sample_local_grids).
 
-The H3 grid system is a global-scale spatial indexing system developed
-by Uber to support routing and mobility analytics. It is a hierarchical
-hexagonal (mostly – twelve pentagonal cells are required to accommodate
-the topology of a spherical surface) DGGS built on an icosahedral
-projection of the Earth with 16 resolution levels. H3 offers scalable
-hierarchical spatial indexing as each cell at a given level of the
-hierarchy can be sub-divided into a set of 7 child sells, although the
-cell tesselations rotate slightly at each resolution level. Compared to
-raster cells, the hexagonal tesselation also offers consistent
-neighbourhood relationships and more isotropic traversal pathways
-between neighbouring cells with approximately equal distances to all
-first-order neighbours. Because H3 is built on a gnomonic projection,
-hexagons tend to preserve their shape in projected spatial analytical
-workflows. However, because of this projection, H3 cells distort
-globally and are not equal area. While they may be approximately equal
-at the urban scale, cells compared at the global scale can differ in
-area quite significantly. Support for H3 in
+Among the DGGSs, the H3 grid system is a global-scale spatial indexing
+system developed by Uber to support routing and mobility analytics. It
+is a hierarchical hexagonal (mostly – twelve pentagonal cells are
+required to accommodate the topology of a spherical surface) DGGS built
+on an icosahedral projection of the Earth with 16 resolution levels. H3
+offers scalable hierarchical spatial indexing as each cell at a given
+level of the hierarchy can be sub-divided into a set of 7 child sells,
+although the cell tesselations rotate slightly at each resolution level.
+Compared to raster cells, the hexagonal tesselation also offers
+consistent neighbourhood relationships and more isotropic traversal
+pathways between neighbouring cells with approximately equal distances
+to all first-order neighbours. Because H3 is built on a gnomonic
+projection, hexagons tend to preserve their shape in projected spatial
+analytical workflows. However, because of this projection, H3 cells
+distort globally and are not equal area. While they may be approximately
+equal at the urban scale, cells compared at the global scale can differ
+in area quite significantly. Support for H3 in
 [pycnogrid](https://higgicd.github.io/pycnogrid/) is offered through the
 [h3o](https://github.com/extendr/h3o) ([Parry 2025](#ref-h3o2025))
 package.
@@ -253,12 +240,12 @@ identical cell areas with more aligned nesting. This comes at the cost
 of shape preservation, with ISEA hexagons appearing more elongated than
 H3 when represented in conventional geographic or local projected
 coordinate systems. The ISEA grid supports several different apertures,
-including Aperture-3, 4, 7, and 4/3 mixed. At aperture-3, parent cells
-divide into 3 child cells, while at aperture 7 the ISEA grid behaves
+including Aperture-3, 4, 7, and 4/3 mixed. At Aperture-3, parent cells
+divide into 3 child cells, while at Aperture-7 the ISEA grid behaves
 similar to H3 with each cell splitting into 7 across resolution levels.
-Support for ISEA grids is offered through the
-[hexify](https://gillescolling.com/hexify/) ([Colling
-2026](#ref-hexify2026)) package.
+Support for ISEA grids is currently limited to Aperture-3 and 4 and
+offered through the [hexify](https://gillescolling.com/hexify/)
+([Colling 2026](#ref-hexify2026)) package.
 
 The A5 grid system is a recent DGGS that is explicitly designed to be
 equal area across the globe. Based on pentagons and 31 different
@@ -290,9 +277,41 @@ S2 in [pycnogrid](https://higgicd.github.io/pycnogrid/) is offered
 through the [s2](https://r-spatial.github.io/s2/) ([Dunnington et al.
 2025](#ref-s22025)) package.
 
-![](getting_started_files/figure-html/fig-sample_grids-1.png)
+![](getting_started_files/figure-html/fig-sample_dggs_grids-1.png)
 
-Figure 2: Sample grid hierarchies at different resolutions
+Figure 2: Sample DGGS hierarchies at different resolutions
+
+Of the supported local grid types in
+[Figure 3](#fig-sample_local_grids), raster grids are the most familiar,
+representing geographic space as a regular lattice of equally sized
+cells. Their simplicity has made them the dominant representation for
+continuous spatial phenomena and the traditional support for
+pycnophylactic interpolation. However, raster grids are inherently
+planar, which requires projection choices, and neighbourhood
+relationships depend on user-specified contiguity definitions (e.g.,
+rook or queen adjacency). In terms of indexing, raster cells are not
+uniquely identified by a global index and any hierarchical relationships
+among cells of different resolutions would have to be manually
+specified. The neighbourhood structure is also anisotropic, with greater
+distances required to traverse cells diagonally than horizontally or
+vertically. Support for rasters in
+[pycnogrid](https://higgicd.github.io/pycnogrid/) is offered through the
+[terra](https://rspatial.org/) ([Hijmans et al. 2026](#ref-terra2026))
+package.
+
+Finally, users can also generate local regular hexagonal tessellations.
+Unlike the global DGGS options, these grids are defined within the
+coordinate reference system of the input data and have no intrinsic
+global index or hierarchical structure. Their area and shape properties
+therefore depend on selecting an appropriate projected CRS, while their
+alignment and resolution are specified directly in the map units of that
+CRS. Built on the {sf} ([Pebesma 2018](#ref-pebesma2018)) package, this
+option provides a familiar local hexagonal support for analyses focused
+on a particular region or study area.
+
+![](getting_started_files/figure-html/fig-sample_local_grids-1.png)
+
+Figure 3: Sample local grid hierarchies at different resolutions
 
 ### Pycnophylactic Interpolation
 
@@ -310,18 +329,18 @@ pycno_nyc_ct_small <- nyc_ct_small |>
 ```
 
 The results of this interpolation are shown in
-[Figure 3](#fig-pycno_nyc_ct_small) below:
+[Figure 4](#fig-pycno_nyc_ct_small) below:
 
 ![](getting_started_files/figure-html/fig-pycno_nyc_ct_small-1.png)
 
-Figure 3: Census tract population counts interpolated to an H3 grid
+Figure 4: Census tract population counts interpolated to an H3 grid
 
 The results for other grid types can be seen in
-[Figure 4](#fig-pycno_nyc_ct_small_resolutions):
+[Figure 5](#fig-pycno_nyc_ct_small_resolutions):
 
 ![](getting_started_files/figure-html/fig-pycno_nyc_ct_small_resolutions-1.png)
 
-Figure 4: Census tract population counts interpolated to all four grid
+Figure 5: Census tract population counts interpolated to all four grid
 types
 
 The summary statistics of the population variable for the different grid
@@ -332,12 +351,13 @@ over the target cells is intact.
 
 | grid type | grid resolution | grid cell count | mean cell population | total population |
 |----|----|----|----|----|
-| a5 | 16 | 635 | 178.5181 | 113359 |
 | h3 | 10 | 336 | 337.3780 | 113359 |
 | isea3h | 20 | 351 | 322.9601 | 113359 |
 | isea4h | 16 | 427 | 265.4778 | 113359 |
-| raster | 100 | 504 | 224.9187 | 113359 |
+| a5 | 16 | 635 | 178.5181 | 113359 |
 | s2 | 16 | 312 | 363.3301 | 113359 |
+| raster | 100 | 504 | 224.9187 | 113359 |
+| hex | 100 | 574 | 197.4895 | 113359 |
 
 Table 2: Population descriptive statistics for different grid types
 
@@ -397,11 +417,11 @@ them.
 
 The smoothed results using the default and other cell inclusion and
 allocation settings are shown in
-[Figure 5](#fig-pycno_nyc_ct_small_combinations) below.
+[Figure 6](#fig-pycno_nyc_ct_small_combinations) below.
 
 ![](getting_started_files/figure-html/fig-pycno_nyc_ct_small_combinations-1.png)
 
-Figure 5: Interpolated population counts with varying inclusion and
+Figure 6: Interpolated population counts with varying inclusion and
 allocation parameters
 
 The second customization involves setting the number of neighbours
@@ -412,11 +432,11 @@ contiguity. Increasing the order of the neighbourhood includes target
 cells from a larger neighbourhood which this has the effect of further
 smoothing out the spatial patterns of the interpolated values in the
 target cells. This can be seen in
-[Figure 6](#fig-pycno_nyc_ct_small_nb_order).
+[Figure 7](#fig-pycno_nyc_ct_small_nb_order).
 
 ![](getting_started_files/figure-html/fig-pycno_nyc_ct_small_nb_order-1.png)
 
-Figure 6: Interpolated population counts with increasing neighbourhood
+Figure 7: Interpolated population counts with increasing neighbourhood
 order
 
 ## Detailed Example
@@ -426,11 +446,11 @@ subset of the `nyc_ct_small` census tracts and generates an H3 grid at
 `resolution = 9`. To limit the number of cells generated for this
 example, the `cell_inclusion` criteria is set to `"centroid"` so the
 target grid consists only of cells whose centroids fall within the
-source polygon geometries ([Figure 7](#fig-nyc_ct_subset)):
+source polygon geometries ([Figure 8](#fig-nyc_ct_subset)):
 
 ![](getting_started_files/figure-html/fig-nyc_ct_subset-1.png)
 
-Figure 7: Source zone subset and target cells with centroid-based
+Figure 8: Source zone subset and target cells with centroid-based
 inclusion criteria
 
 Within this scenario, the three source zones are indexed as
@@ -712,11 +732,11 @@ present case, the error from the first iteration is 0.0254, suggesting
 further rounds of smoothing are required to reach convergence.
 
 The final results of the interpolation are shown in
-[Figure 8](#fig-pycno_nyc_ct_subset):
+[Figure 9](#fig-pycno_nyc_ct_subset):
 
 ![](getting_started_files/figure-html/fig-pycno_nyc_ct_subset-1.png)
 
-Figure 8: Source zone and interpolated population values
+Figure 9: Source zone and interpolated population values
 
 ## Conclusion
 
@@ -759,6 +779,8 @@ workflows and multiple grid systems,
 [pycnogrid](https://higgicd.github.io/pycnogrid/) provides a practical
 foundation for creating comparable, mass-preserving gridded
 representations of aggregated spatial data.
+
+## References
 
 Anselin, Luc. 1988. *Spatial Econometrics: Methods and Models*. Springer
 Netherlands. <https://doi.org/10.1007/978-94-015-7799-1>.

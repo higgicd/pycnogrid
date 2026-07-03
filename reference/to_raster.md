@@ -22,7 +22,8 @@ to_raster(source, value_col, resolution, ...)
 
 - resolution:
 
-  Raster cell size in metres.
+  Raster cell size specified in the linear units of the input projected
+  CRS.
 
 - ...:
 

@@ -49,3 +49,25 @@ Calls
 [`to_grid()`](https://higgicd.github.io/pycnogrid/reference/to_grid.md)
 with `grid_type` set to `"isea3h"` or `"isea4h"` according to
 `aperture`.
+
+## Examples
+
+``` r
+out <- to_isea(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 18,
+  aperture = 3,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.001357.
+
+out <- to_isea(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 14,
+  aperture = 4,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002818.
+```

@@ -42,3 +42,15 @@ In `pycnogrid`, interpolation is performed using a raster grid, but
 results are returned as polygon grid cells in an `sf` object. Smaller
 cell sizes produce more output cells and may substantially increase
 computation time.
+
+## Examples
+
+``` r
+out <- to_raster(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 500,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0001608.
+```

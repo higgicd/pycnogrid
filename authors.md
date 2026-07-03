@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Christopher Higgins**. Author, maintainer.
+- **Christopher Higgins**. Author, maintainer, copyright holder.
 
 ## Citation
 

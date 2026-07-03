@@ -30,7 +30,9 @@ An sf object with:
 
 ## Source
 
-American Community Survey 2023; LEHD LODES 2022
+U.S. Census Bureau American Community Survey 2023 5-year estimates; LEHD
+LODES 2022. This product uses Census Bureau data but is not endorsed or
+certified by the Census Bureau.
 
 ## Details
 

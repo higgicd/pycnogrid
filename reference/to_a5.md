@@ -45,3 +45,15 @@ resolutions may be impractical for pycnophylactic interpolation.
 Calls
 [`to_grid()`](https://higgicd.github.io/pycnogrid/reference/to_grid.md)
 with `grid_type = "a5"`.
+
+## Examples
+
+``` r
+out <- to_a5(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 14,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0008351.
+```

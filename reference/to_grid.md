@@ -84,3 +84,16 @@ to_grid(
 ## Value
 
 An `sf` object containing grid-cell geometries and interpolated values.
+
+## Examples
+
+``` r
+out <- to_grid(
+  source = nyc_ct_small,
+  value_col = populationE,
+  grid_type = "h3",
+  resolution = 9,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0008279.
+```

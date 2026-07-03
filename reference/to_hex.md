@@ -40,3 +40,15 @@ values.
 Hex grids divide the study area into hexagonal cells of a fixed size.
 Smaller cell sizes produce more output cells and may substantially
 increase computation time.
+
+## Examples
+
+``` r
+out <- to_hex(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 500,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002596.
+```

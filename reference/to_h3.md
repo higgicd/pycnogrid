@@ -45,3 +45,15 @@ high resolutions may be impractical for large study areas.
 Calls
 [`to_grid()`](https://higgicd.github.io/pycnogrid/reference/to_grid.md)
 with `grid_type = "h3"`.
+
+## Examples
+
+``` r
+out <- to_h3(
+  source = nyc_ct_small,
+  value_col = populationE,
+  resolution = 9,
+  max_iter = 5
+)
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0008279.
+```

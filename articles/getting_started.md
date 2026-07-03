@@ -321,7 +321,7 @@ In this example case, an H3 grid at a resolution of 10 is used:
 
 pycno_nyc_ct_small <- nyc_ct_small |>
   pycnogrid::to_grid(
-    value_col = "populationE",
+    value_col = populationE,
     grid_type = "h3",
     resolution = 10
   )

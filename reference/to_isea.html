@@ -88,6 +88,28 @@ refinement factor between successive resolutions: aperture 3, 4, or 7.</p>
 according to <code>aperture</code>.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">to_isea</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  source <span class="op">=</span> <span class="va">nyc_ct_small</span>,</span></span>
+<span class="r-in"><span>  value_col <span class="op">=</span> <span class="va">populationE</span>,</span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">18</span>,</span></span>
+<span class="r-in"><span>  aperture <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  max_iter <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.001357.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">to_isea</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  source <span class="op">=</span> <span class="va">nyc_ct_small</span>,</span></span>
+<span class="r-in"><span>  value_col <span class="op">=</span> <span class="va">populationE</span>,</span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">14</span>,</span></span>
+<span class="r-in"><span>  aperture <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>  max_iter <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002818.</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

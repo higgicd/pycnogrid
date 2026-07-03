@@ -1,4 +1,4 @@
-# `{pycnogrid}`: Flexible pycnophylactic interpolation to disgrete global and local grid systems
+# `{pycnogrid}`: Flexible pycnophylactic interpolation to discrete global and local grid systems
 
 ## Introduction
 

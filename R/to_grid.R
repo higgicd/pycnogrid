@@ -3,7 +3,7 @@
 #' Interpolates polygon counts to a regular or global discrete grid while
 #' preserving source-zone totals.
 #'
-#' @param source An `sf` polygon object.
+#' @param source An `sf` polygon object in a projected CRS.
 #' @param value_col Column containing the values to interpolate. May be
 #'   supplied as an unquoted column name or a character string.
 #' @param id_col Optional unique identifier column for source polygons.

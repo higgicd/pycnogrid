@@ -47,6 +47,9 @@ vignette](https://higgicd.github.io/pycnogrid/articles/getting_started.html).
 You can install the development version of `{pycnogrid}` from GitHub:
 
 ``` r
+# from CRAN
+install.packages("pycnogrid")
+
 # install.packages("remotes")
 remotes::install_github("higgicd/pycnogrid")
 ```

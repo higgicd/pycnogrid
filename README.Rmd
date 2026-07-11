@@ -31,6 +31,9 @@ For a full introduction to the interpolation workflow, grid options, and output 
 You can install the development version of `{pycnogrid}` from GitHub:
 
 ``` r
+# from CRAN
+install.packages("pycnogrid")
+
 # install.packages("remotes")
 remotes::install_github("higgicd/pycnogrid")
 ```

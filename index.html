@@ -56,7 +56,7 @@
 <div class="page-header"><h1 id="pycnogrid">pycnogrid<a class="anchor" aria-label="anchor" href="#pycnogrid"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <p><a href="https://higgicd.github.io/pycnogrid/">pycnogrid</a> provides tools for interpolating more aggregate polygon-level extensive data (e.g. population, employment, or event counts) to a range of alternative grid types using pycnophylactic interpolation.</p>
 <p>Often administrative and statistical reporting units do not align with the geographic supports needed for analysis. They can also introduce sensitivity to the scale and zoning of spatial units, which are central to the modifiable areal unit problem (MAUP). Waldo Tobler’s pycnophylactic interpolation method can potentially help to address this mismatch by transferring polygon totals to an alternative regular grid while preserving represented source totals and smoothing estimates across neighbouring cells.</p>
 <p>Existing implementations of Tobler’s pycnophylactic interpolation include the <code>{pycno}</code> <a href="https://doi.org/10.32614/CRAN.package.pycno" class="external-link">package</a> for R and the <code>{tobler}</code> <a href="https://doi.org/10.5281/ZENODO.3386576" class="external-link">module</a> within the larger Python Spatial Analysis Library (PySAL). These implementations focus on transferring source data to target raster cells. {pycnogrid} extends Tobler’s pycnophylactic interpolation approach beyond regular raster lattices and supports a range of discrete global grid systems (DGGSs), including H3, A5, S2, and ISEA grids, as well as rasters and other local grids. The flexibility of the underlying interpolation approach makes it possible to create spatially smooth, mass-preserving representations of aggregate data with area or shape preserving geographic supports.</p>
@@ -175,6 +175,7 @@ Census tract population counts interpolated to an H3 grid.
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=pycnogrid" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/higgicd/pycnogrid/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/higgicd/pycnogrid/issues" class="external-link">Report a bug</a></li>
 </ul>
@@ -203,7 +204,13 @@ Census tract population counts interpolated to an H3 grid.
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=pycnogrid" class="external-link"><img src="https://www.r-pkg.org/badges/version/pycnogrid" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=pycnogrid" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/pycnogrid" alt="Downloads"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
@@ -214,7 +221,7 @@ Census tract population counts interpolated to an H3 grid.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

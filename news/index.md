@@ -2,6 +2,8 @@
 
 ## pycnogrid 0.2.0
 
+CRAN release: 2026-07-10
+
 - Added
   [`to_grid()`](https://higgicd.github.io/pycnogrid/reference/to_grid.md)
   as the main interface for pycnophylactic interpolation to multiple

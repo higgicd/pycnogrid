@@ -34,8 +34,8 @@ vignette](https://higgicd.github.io/pycnogrid/articles/getting_started.html).
 
 ## Installation
 
-You can install the development version of
-[pycnogrid](https://higgicd.github.io/pycnogrid/) from GitHub:
+You can install [pycnogrid](https://higgicd.github.io/pycnogrid/) from
+CRAN or GitHub:
 
 ``` r
 

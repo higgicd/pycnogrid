@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/pycnogrid)](https://CRAN.R-project.org/package=pycnogrid)
+[![Downloads](https://cranlogs.r-pkg.org/badges/pycnogrid)](https://cran.r-project.org/package=pycnogrid)
 <!-- badges: end -->
 
 `{pycnogrid}` provides tools for interpolating more aggregate

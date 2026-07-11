@@ -39,6 +39,9 @@ You can install the development version of
 
 ``` r
 
+# from CRAN
+install.packages("pycnogrid")
+
 # install.packages("remotes")
 remotes::install_github("higgicd/pycnogrid")
 ```

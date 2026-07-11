@@ -8,6 +8,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/pycnogrid)](https://CRAN.R-project.org/package=pycnogrid)
 [![Downloads](https://cranlogs.r-pkg.org/badges/pycnogrid)](https://cran.r-project.org/package=pycnogrid)
+[![R-CMD-check](https://github.com/higgicd/pycnogrid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/higgicd/pycnogrid/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `{pycnogrid}` provides tools for interpolating more aggregate
@@ -44,7 +45,7 @@ vignette](https://higgicd.github.io/pycnogrid/articles/getting_started.html).
 
 ## Installation
 
-You can install the development version of `{pycnogrid}` from GitHub:
+You can install `{pycnogrid}` from CRAN or GitHub:
 
 ``` r
 # from CRAN

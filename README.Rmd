@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/pycnogrid)](https://CRAN.R-project.org/package=pycnogrid)
 [![Downloads](https://cranlogs.r-pkg.org/badges/pycnogrid)](https://cran.r-project.org/package=pycnogrid)
+[![R-CMD-check](https://github.com/higgicd/pycnogrid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/higgicd/pycnogrid/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `{pycnogrid}` provides tools for interpolating more aggregate polygon-level extensive data (e.g. population, employment, or event counts) to a range of alternative grid types using pycnophylactic interpolation.
@@ -28,7 +29,7 @@ For a full introduction to the interpolation workflow, grid options, and output 
 
 ## Installation
 
-You can install the development version of `{pycnogrid}` from GitHub:
+You can install `{pycnogrid}` from CRAN or GitHub:
 
 ``` r
 # from CRAN

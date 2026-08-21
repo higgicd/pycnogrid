@@ -1,7 +1,7 @@
 # Pycnophylactic interpolation to an A5 grid
 
 Interpolates polygon counts to an A5 grid while preserving source-zone
-totals.
+totals when used with default centroid-based allocation.
 
 ## Usage
 
@@ -52,8 +52,8 @@ with `grid_type = "a5"`.
 out <- to_a5(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 14,
+  resolution = 15,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0008351.
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.006208.
 ```

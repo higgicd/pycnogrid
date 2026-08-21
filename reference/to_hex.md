@@ -1,7 +1,7 @@
 # Pycnophylactic interpolation to a local hexagonal grid
 
 Interpolates polygon counts to a local hexagonal grid while preserving
-source-zone totals.
+source-zone totals when used with default centroid-based allocation.
 
 ## Usage
 
@@ -47,8 +47,8 @@ increase computation time.
 out <- to_hex(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 500,
+  resolution = 250,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002596.
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.002637.
 ```

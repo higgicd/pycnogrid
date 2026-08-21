@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Flexible Pycnophylactic Interpolation to Discrete Global and Local Grid Systems">
-<meta name="description" content="Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) &lt;doi:10.1080/01621459.1979.10481647&gt;, preserving source-zone totals while smoothing values across neighboring target cells.">
-<meta property="og:description" content="Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) &lt;doi:10.1080/01621459.1979.10481647&gt;, preserving source-zone totals while smoothing values across neighboring target cells.">
+<meta name="description" content="Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) &lt;doi:10.1080/01621459.1979.10481647&gt;. Centroid-based allocation preserves represented source-zone totals while smoothing values across neighboring target cells. Fractional area-based allocation is experimental and preserves the overall represented total but may not preserve individual source-zone totals.">
+<meta property="og:description" content="Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) &lt;doi:10.1080/01621459.1979.10481647&gt;. Centroid-based allocation preserves represented source-zone totals while smoothing values across neighboring target cells. Fractional area-based allocation is experimental and preserves the overall represented total but may not preserve individual source-zone totals.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">pycnogrid</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,7 +103,7 @@ Census tract population counts interpolated to an H3 grid.
 <li>creates a target grid covering the source geography;</li>
 <li>allocates each source total to intersecting target cells;</li>
 <li>smooths estimated densities across neighbouring cells; and</li>
-<li>repeatedly rescales the estimates so that the original source totals are preserved.</li>
+<li>repeatedly rescales the estimates so that represented source zone totals are preserved under centroid-based cell assignment.</li>
 </ol>
 <p>The resulting grid can be used in downstream mapping, accessibility, spatial modelling, and sensitivity analyses.</p>
 <div class="section level3">
@@ -118,13 +118,13 @@ Census tract population counts interpolated to an H3 grid.
 <li>
 <code>id_col</code> is an optional column uniquely identifying each source polygon, if omitted, an internal identifier is created</li>
 <li>
-<code>grid_type</code> specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived polygon cells</li>
+<code>grid_type</code> specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived polygon cells</li>
 <li>
 <code>resolution</code> controls the size of the target grid cells. Its interpretation depends on the selected grid type</li>
 <li>
 <code>cell_inclusion</code> defines how candidate grid cells are selected for interpolation. With “intersect”, cells are included if they intersect a source polygon. With “centroid”, cells are included only when their centroid falls inside a source polygon.</li>
 <li>
-<code>cell_allocation</code> defines how source totals are allocated to grid cells. With “area”, values are allocated in proportion to the area of overlap between source polygons and grid cells. With “centroid”, each grid cell is assigned to the source polygon containing its centroid.</li>
+<code>cell_allocation</code> defines how source totals are allocated. <code>"centroid"</code> is the default and assigns each cell to one source polygon, preserving represented source-zone totals. <code>"area"</code> uses fractional overlap areas and is experimental; it preserves the overall represented total but may not preserve each individual source-zone total.</li>
 <li>
 <code>nb_order</code> specifies the neighbourhood order used during smoothing. A value of 1 uses immediately adjacent cells, while larger values extend the smoothing neighbourhood outwards from a given cell.</li>
 <li>
@@ -136,7 +136,7 @@ Census tract population counts interpolated to an H3 grid.
 <li>
 <code>missing_policy</code> determines how the function handles source polygons that receive no target grid cells, which might arise due to a mismatch in source polygon sizes and target grid cell resolutions. “abort” stops with an error, “warn” returns a warning, and “ignore” proceeds silently.</li>
 </ul>
-<p>For most applications, <code>cell_inclusion = "intersect"</code> and <code>cell_allocation = "area"</code> provide the most geographically complete initial representation because all source–target intersections are retained and source totals are allocated according to their area of overlap.</p>
+<p>For analyses requiring strict source-zone preservation, use <code>cell_allocation = "centroid"</code>. Fractional area allocation may provide more complete boundary representation, but it is experimental in version 0.2.1.</p>
 </div>
 <div class="section level3">
 <h3 id="interpreting-the-output">Interpreting the output<a class="anchor" aria-label="anchor" href="#interpreting-the-output"></a>
@@ -149,10 +149,10 @@ Census tract population counts interpolated to an H3 grid.
 <span><span class="co">#&gt; $ h3                &lt;chr&gt; "8a2a100d2db7fff", "8a2a100d2d97fff", "8a2a100d2d87f…</span></span>
 <span><span class="co">#&gt; $ geometry          &lt;POLYGON [m]&gt; POLYGON ((585062.6 4511955,..., POLYGON ((58…</span></span>
 <span><span class="co">#&gt; $ .tid              &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…</span></span>
-<span><span class="co">#&gt; $ pycno_populationE &lt;dbl&gt; 103.085325, 183.514968, 32.247510, 11.821690, 41.908…</span></span>
-<span><span class="co">#&gt; $ pycno_density     &lt;dbl&gt; 0.0068098960, 0.0121233098, 0.0021303414, 0.00078095…</span></span>
-<span><span class="co">#&gt; $ pycno_coverage    &lt;dbl&gt; 1.0000000, 1.0000000, 1.0000000, 1.0000000, 1.000000…</span></span>
-<span><span class="co">#&gt; $ pycno_iter        &lt;int&gt; 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, …</span></span></code></pre></div>
+<span><span class="co">#&gt; $ pycno_populationE &lt;dbl&gt; 231.557990, 302.494228, 44.673391, 17.728479, 49.194…</span></span>
+<span><span class="co">#&gt; $ pycno_density     &lt;dbl&gt; 1.529690e-02, 1.998328e-02, 2.951222e-03, 1.171166e-…</span></span>
+<span><span class="co">#&gt; $ pycno_coverage    &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…</span></span>
+<span><span class="co">#&gt; $ pycno_iter        &lt;int&gt; 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, …</span></span></code></pre></div>
 <p>with:</p>
 <ul>
 <li>

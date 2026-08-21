@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pycnogrid</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,12 @@
       <small>Source: <a href="https://github.com/higgicd/pycnogrid/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.1" id="pycnogrid-021">pycnogrid 0.2.1<a class="anchor" aria-label="anchor" href="#pycnogrid-021"></a></h2>
+<ul><li>Changed the default <code>cell_allocation</code> from <code>"area"</code> to <code>"centroid"</code>. Centroid allocation preserves represented source-zone totals because each target cell is assigned to one source polygon.</li>
+<li>Marked <code>cell_allocation = "area"</code> as experimental. Fractional area allocation preserves the overall represented total but may not preserve individual source-zone totals when target cells overlap multiple sources.</li>
+<li>Added regression tests for individual source-zone preservation, including zero-valued source zones.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="pycnogrid-020">pycnogrid 0.2.0<a class="anchor" aria-label="anchor" href="#pycnogrid-020"></a></h2><p class="text-muted">CRAN release: 2026-07-10</p>
 <ul><li>Added <code><a href="../reference/to_grid.html">to_grid()</a></code> as the main interface for pycnophylactic interpolation to multiple grid systems.</li>

@@ -1,7 +1,7 @@
 # Pycnophylactic interpolation to a raster grid
 
 Interpolates polygon counts to a regular raster grid while preserving
-source-zone totals.
+source-zone totals when used with default centroid-based allocation.
 
 ## Usage
 
@@ -49,8 +49,8 @@ computation time.
 out <- to_raster(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 500,
+  resolution = 250,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0001608.
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002211.
 ```

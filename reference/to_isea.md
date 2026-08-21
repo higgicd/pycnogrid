@@ -1,7 +1,8 @@
 # Pycnophylactic interpolation to an ISEA grid
 
 Interpolates polygon counts to an ISEA discrete global grid while
-preserving source-zone totals.
+preserving source-zone totals when used with default centroid-based
+allocation.
 
 ## Usage
 
@@ -56,18 +57,18 @@ with `grid_type` set to `"isea3h"` or `"isea4h"` according to
 out <- to_isea(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 18,
+  resolution = 19,
   aperture = 3,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.001357.
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.00291.
 
 out <- to_isea(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 14,
+  resolution = 15,
   aperture = 4,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002818.
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.001659.
 ```

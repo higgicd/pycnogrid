@@ -1,7 +1,9 @@
 # Pycnophylactic interpolation to a grid
 
-Interpolates polygon counts to a regular or global discrete grid while
-preserving source-zone totals.
+Interpolates polygon counts to a regular or global discrete grid.
+Centroid allocation preserves represented source-zone totals while
+smoothing densities across neighboring target cells. Areal allocation
+preserves global totals.
 
 ## Usage
 
@@ -13,7 +15,7 @@ to_grid(
   grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
-  cell_allocation = c("area", "centroid"),
+  cell_allocation = c("centroid", "area"),
   nb_order = 1,
   max_iter = 500,
   tolerance = 1e-04,
@@ -55,8 +57,12 @@ to_grid(
 
 - cell_allocation:
 
-  Method used to allocate source values to grid cells. One of `"area"`
-  or `"centroid"`.
+  Method used to allocate source values to grid cells. `"centroid"`, the
+  default, assigns each target cell to the source polygon containing its
+  centroid and preserves represented source-zone totals. `"area"` uses
+  fractional source-cell overlap areas. Area allocation is experimental:
+  it preserves the overall represented total but may not preserve each
+  individual source-zone total.
 
 - nb_order:
 
@@ -85,6 +91,17 @@ to_grid(
 
 An `sf` object containing grid-cell geometries and interpolated values.
 
+## Details
+
+With `cell_allocation = "centroid"`, each represented target cell
+belongs to one source polygon. The correction step therefore preserves
+the total associated with each represented source zone.
+
+With `cell_allocation = "area"`, target cells may overlap several source
+polygons. The current fractional correction preserves the overall
+represented total but does not guarantee preservation of every
+individual source-zone total. This mode is experimental.
+
 ## Examples
 
 ``` r
@@ -95,5 +112,4 @@ out <- to_grid(
   resolution = 9,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0008279.
 ```

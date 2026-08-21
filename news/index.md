@@ -1,5 +1,17 @@
 # Changelog
 
+## pycnogrid 0.2.1
+
+- Changed the default `cell_allocation` from `"area"` to `"centroid"`.
+  Centroid allocation preserves represented source-zone totals because
+  each target cell is assigned to one source polygon.
+- Marked `cell_allocation = "area"` as experimental. Fractional area
+  allocation preserves the overall represented total but may not
+  preserve individual source-zone totals when target cells overlap
+  multiple sources.
+- Added regression tests for individual source-zone preservation,
+  including zero-valued source zones.
+
 ## pycnogrid 0.2.0
 
 CRAN release: 2026-07-10

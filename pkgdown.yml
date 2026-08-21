@@ -3,7 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   getting_started: getting_started.html
-last_built: 2026-07-11T03:50Z
+last_built: 2026-08-21T21:56Z
 urls:
   reference: https://higgicd.github.io/pycnogrid/reference
   article: https://higgicd.github.io/pycnogrid/articles

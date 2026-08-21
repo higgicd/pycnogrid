@@ -1,7 +1,7 @@
 # Pycnophylactic interpolation to an S2 grid
 
 Interpolates polygon counts to an S2 grid while preserving source-zone
-totals.
+totals when used with default centroid-based allocation.
 
 ## Usage
 
@@ -56,5 +56,5 @@ out <- to_s2(
   resolution = 15,
   max_iter = 5
 )
-#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.001023.
+#> Warning: Pycnophylactic smoothing did not converge within `max_iter = 5`. Final relative mean change was 0.0002154.
 ```

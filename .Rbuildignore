@@ -4,7 +4,7 @@
 ^\.claude$
 ^README\.Rmd$
 ^vignettes/\.quarto$
-^vignettes/*_files$
+^vignettes/.*_files$
 ^data-raw$
 ^LICENSE\.md$
 ^doc$

@@ -6,7 +6,7 @@
 \alias{pycnogrid-package}
 \title{pycnogrid}
 \description{
-Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) \doi{10.1080/01621459.1979.10481647}, preserving source-zone totals while smoothing values across neighboring target cells.
+Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) \doi{10.1080/01621459.1979.10481647}. Centroid-based allocation preserves represented source-zone totals while smoothing values across neighboring target cells. Fractional area-based allocation is experimental and preserves the overall represented total but may not preserve individual source-zone totals.
 }
 \seealso{
 Useful links:

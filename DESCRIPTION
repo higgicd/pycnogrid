@@ -1,6 +1,6 @@
 Package: pycnogrid
 Title: Flexible Pycnophylactic Interpolation to Discrete Global and Local Grid Systems
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     person(
         given = "Christopher",
@@ -8,7 +8,7 @@ Authors@R:
         email = "cd.higgins@utoronto.ca",
         role = c("aut", "cre", "cph")
     )
-Description: Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) <doi:10.1080/01621459.1979.10481647>, preserving source-zone totals while smoothing values across neighboring target cells.
+Description: Provides tools for pycnophylactic interpolation of polygon totals to discrete global and local grid systems. The method follows Tobler (1979) <doi:10.1080/01621459.1979.10481647>. Centroid-based allocation preserves represented source-zone totals while smoothing values across neighboring target cells. Fractional area-based allocation is experimental and preserves the overall represented total but may not preserve individual source-zone totals.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

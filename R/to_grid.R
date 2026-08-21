@@ -1,7 +1,9 @@
 #' Pycnophylactic interpolation to a grid
 #'
-#' Interpolates polygon counts to a regular or global discrete grid while
-#' preserving source-zone totals.
+#' Interpolates polygon counts to a regular or global discrete grid.
+#' Centroid allocation preserves represented source-zone totals while
+#' smoothing densities across neighboring target cells. Areal allocation
+#' preserves global totals.
 #'
 #' @param source An `sf` polygon object in a projected CRS.
 #' @param value_col Column containing the values to interpolate. May be
@@ -14,7 +16,11 @@
 #' @param cell_inclusion Method used to determine which grid cells are included.
 #'   One of `"intersect"` or `"centroid"`.
 #' @param cell_allocation Method used to allocate source values to grid cells.
-#'   One of `"area"` or `"centroid"`.
+#'   `"centroid"`, the default, assigns each target cell to the source polygon
+#'   containing its centroid and preserves represented source-zone totals.
+#'   `"area"` uses fractional source-cell overlap areas. Area allocation is
+#'   experimental: it preserves the overall represented total but may not
+#'   preserve each individual source-zone total.
 #' @param nb_order Neighbourhood order used for smoothing. A value of `1` uses
 #'   first-order neighbours; larger values include higher-order neighbours.
 #' @param max_iter Maximum number of pycnophylactic smoothing iterations. If
@@ -23,6 +29,16 @@
 #' @param include_self Logical. Should each cell include itself when smoothing?
 #' @param missing_policy How to handle source polygons that receive no grid
 #'   cells. One of `"abort"`, `"warn"`, or `"ignore"`.
+#'
+#' @details
+#' With `cell_allocation = "centroid"`, each represented target cell belongs
+#' to one source polygon. The correction step therefore preserves the total
+#' associated with each represented source zone.
+#'
+#' With `cell_allocation = "area"`, target cells may overlap several source
+#' polygons. The current fractional correction preserves the overall
+#' represented total but does not guarantee preservation of every individual
+#' source-zone total. This mode is experimental.
 #'
 #' @return An `sf` object containing grid-cell geometries and interpolated
 #'   values.
@@ -43,7 +59,7 @@ to_grid <- function(source,
                     grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
                     resolution,
                     cell_inclusion = c("intersect", "centroid"),
-                    cell_allocation = c("area", "centroid"),
+                    cell_allocation = c("centroid", "area"),
                     nb_order = 1,
                     max_iter = 500,
                     tolerance = 1e-4,
@@ -76,6 +92,20 @@ to_grid <- function(source,
   resolution <- args$resolution
   cell_inclusion <- args$cell_inclusion
   cell_allocation <- args$cell_allocation
+
+  if (identical(cell_allocation, "area")) {
+    rlang::warn(
+      paste0(
+        "`cell_allocation = \"area\"` is experimental. It preserves the ",
+        "overall represented total but may not preserve individual source-zone ",
+        "totals when target cells overlap multiple source polygons. Use ",
+        "`cell_allocation = \"centroid\"` when strict source-zone preservation ",
+        "is required."
+      ),
+      class = "pycnogrid_area_allocation_experimental"
+    )
+  }
+
   nb_order <- args$nb_order
   max_iter <- args$max_iter
   tolerance <- args$tolerance

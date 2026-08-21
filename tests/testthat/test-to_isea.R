@@ -5,7 +5,7 @@ test_that("to_isea returns expected sf output", {
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 18,
+    resolution = 19,
     aperture = 3,
     max_iter = 20
   )
@@ -34,7 +34,7 @@ test_that("to_isea approximately preserves mass", {
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 18,
+    resolution = 19,
     aperture = 3,
     max_iter = 20
   )
@@ -58,7 +58,7 @@ test_that("to_isea errors on negative values", {
       bad,
       value_col = populationE,
       id_col = id,
-      resolution = 18,
+      resolution = 19,
       aperture = 3,
       max_iter = 20
     )

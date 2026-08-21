@@ -91,11 +91,9 @@ For a polygon layer containing source totals, `{pycnogrid}`:
 1. creates a target grid covering the source geography;
 2. allocates each source total to intersecting target cells;
 3. smooths estimated densities across neighbouring cells; and
-4. repeatedly rescales the estimates so that the original source totals are
-    preserved.
+4. repeatedly rescales the estimates so that represented source zone totals are preserved under centroid-based cell assignment.
 
-The resulting grid can be used in downstream mapping, accessibility, spatial
-modelling, and sensitivity analyses.
+The resulting grid can be used in downstream mapping, accessibility, spatial modelling, and sensitivity analyses.
 
 ### Key arguments
 
@@ -104,17 +102,17 @@ The main function, `to_grid()`, provides several options for specifying the targ
 - `source` is the source {sf} polygon layer containing the totals to be interpolated. Given the geometry calculations performed by the tool, only inputs with projected coordinate reference systems are accepted.
 - `value_col` is the column in `source` containing the count variable to be smoothed and preserved
 - `id_col` is an optional column uniquely identifying each source polygon, if omitted, an internal identifier is created
-- `grid_type` specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived polygon cells
+- `grid_type` specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived polygon cells
 - `resolution` controls the size of the target grid cells. Its interpretation depends on the selected grid type
 - `cell_inclusion` defines how candidate grid cells are selected for interpolation. With "intersect", cells are included if they intersect a source polygon. With "centroid", cells are included only when their centroid falls inside a source polygon.
-- `cell_allocation` defines how source totals are allocated to grid cells. With "area", values are allocated in proportion to the area of overlap between source polygons and grid cells. With "centroid", each grid cell is assigned to the source polygon containing its centroid.
+- `cell_allocation` defines how source totals are allocated. `"centroid"` is the default and assigns each cell to one source polygon, preserving represented source-zone totals. `"area"` uses fractional overlap areas and is experimental; it preserves the overall represented total but may not preserve each individual source-zone total.
 - `nb_order` specifies the neighbourhood order used during smoothing. A value of 1 uses immediately adjacent cells, while larger values extend the smoothing neighbourhood outwards from a given cell.
 - `max_iter` sets the maximum number of smoothing iterations. If set to 0, the function returns the initial allocation without iterative smoothing.
 - `tolerance` defines the convergence threshold. Iteration stops when the relative change in estimated cell densities falls below this value.
 - `include_self` controls whether each cell includes its own current value when calculating the neighbourhood mean during smoothing.
 - `missing_policy` determines how the function handles source polygons that receive no target grid cells, which might arise due to a mismatch in source polygon sizes and target grid cell resolutions. "abort" stops with an error, "warn" returns a warning, and "ignore" proceeds silently.
 
-For most applications, `cell_inclusion = "intersect"` and `cell_allocation = "area"` provide the most geographically complete initial representation because all source–target intersections are retained and source totals are allocated according to their area of overlap.
+For analyses requiring strict source-zone preservation, use `cell_allocation = "centroid"`. Fractional area allocation may provide more complete boundary representation, but it is experimental in version 0.2.1.
 
 ### Interpreting the output
 

@@ -119,7 +119,7 @@ validate_grid_args <- function(grid_type = NULL,
   if (!is.null(cell_allocation)) {
     cell_allocation <- match.arg(
       cell_allocation,
-      c("area", "centroid")
+      c("centroid", "area")
     )
   }
 

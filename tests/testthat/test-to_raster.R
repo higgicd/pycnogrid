@@ -5,7 +5,7 @@ test_that("to_raster returns expected sf output", {
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 500,
+    resolution = 250,
     max_iter = 20
   )
 
@@ -33,7 +33,7 @@ test_that("to_raster approximately preserves mass", {
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 500,
+    resolution = 250,
     max_iter = 20
   )
 
@@ -56,7 +56,7 @@ test_that("to_raster errors on negative values", {
       bad,
       value_col = populationE,
       id_col = id,
-      resolution = 500
+      resolution = 250
     )
   )
 })

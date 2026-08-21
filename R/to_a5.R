@@ -1,7 +1,7 @@
 #' Pycnophylactic interpolation to an A5 grid
 #'
 #' Interpolates polygon counts to an A5 grid while preserving source-zone
-#' totals.
+#' totals when used with default centroid-based allocation.
 #'
 #' @details
 #' A5 is a hierarchical global discrete grid system in which each increase in
@@ -23,7 +23,7 @@
 #' out <- to_a5(
 #'   source = nyc_ct_small,
 #'   value_col = populationE,
-#'   resolution = 14,
+#'   resolution = 15,
 #'   max_iter = 5
 #' )
 #'

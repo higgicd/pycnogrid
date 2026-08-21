@@ -46,14 +46,14 @@ The primary function in {pycnogrid} is `to_grid()`, which takes the following pa
 ```{{r}}
 #| label: to_grid
 #| echo: true
-pcynogrid::to_grid(
+pycnogrid::to_grid(
   source,
   value_col,
   id_col = NULL,
-  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster"),
+  grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
-  cell_allocation = c("area", "centroid"),
+  cell_allocation = c("centroid", "area"),
   nb_order = 1,
   max_iter = 500,
   tolerance = 1e-4,
@@ -70,14 +70,21 @@ where
 - `grid_type` specifies the target grid system. Supported options are H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived polygon cells
 - `resolution` controls the size of the target grid cells; its interpretation depends on the selected grid type
 - `cell_inclusion` defines how candidate grid cells are selected for interpolation. With `"intersect"`, cells are included if they intersect a source polygon. With `"centroid"`, cells are included only when their centroid falls inside a source polygon.
-- `cell_allocation` defines how source totals are allocated to grid cells. With `"area"`, values are allocated in proportion to the area of overlap between source polygons and grid cells. With `"centroid"`, each grid cell is assigned to the source polygon containing its centroid.
+- `cell_allocation` defines how source totals are allocated to grid cells. With `"centroid"`, each grid cell is assigned to the source polygon containing its centroid. With `"area"`, values are allocated in proportion to the area of overlap between source polygons and grid cells.
+
+::: {.callout-warning}
+## Fractional area allocation
+
+As of version 0.2.1, `cell_allocation = "area"` is labelled experimental. It preserves the overall or global represented total but may not reproduce individual source-zone totals when cells cross source boundaries as some drift can occur due to the areal allocation of values and weights. Use centroid allocation when strict source-zone preservation is required.
+:::
+
 - `nb_order` specifies the neighbourhood order used during smoothing. A value of 1 uses immediately adjacent cells, while larger values extend the smoothing neighbourhood outwards from a given cell.
 - `max_iter` sets the maximum number of smoothing iterations. If set to 0, the function returns the initial allocation without iterative smoothing.
 - `tolerance` defines the convergence threshold. Iteration stops when the relative change in estimated cell densities falls below this value.
 - `include_self` controls whether each cell includes its own current value when calculating the neighbourhood mean during smoothing.
 - `missing_policy` determines how the function handles source polygons that receive no target grid cells, which might arise due to a mismatch in source polygon sizes and target grid cell resolutions. "abort" stops with an error, "warn" returns a warning, and "ignore" proceeds silently.
 
-Together, these parameters define three main stages of the workflow: construction of the target grid, allocation of source totals to grid cells, and iterative pycnophylactic smoothing. The grid parameters determine the spatial support of the output surface, the allocation parameters determine the initial mass-preserving estimate, and the smoothing parameters control how values are redistributed across neighbouring cells while preserving the original source-zone totals. Additional functions, such as `to_h3()` and `to_a5()`, are grid-specific wrappers around `to_grid()`. The properties of the different grid systems are discussed further below.
+Together, these parameters define three main stages of the workflow: construction of the target grid, allocation of source totals to grid cells, and iterative pycnophylactic smoothing. The grid parameters determine the spatial support of the output surface, the allocation parameters determine the initial mass-preserving estimate, and the smoothing parameters control how values are redistributed across neighbouring cells. Centroid-based allocation preserves the original source-zone totals with high accuracy while areal allocation preserves global totals but can result in some drift in source values (see the details below). Additional functions, such as `to_h3()` and `to_a5()`, are grid-specific wrappers around `to_grid()`. The properties of the different grid systems are discussed further below.
 
 ### Source Zone Data
 
@@ -372,7 +379,8 @@ pycno_nyc_ct_small <- nyc_ct_small |>
   pycnogrid::to_grid(
     value_col = populationE,
     grid_type = "h3",
-    resolution = 10
+    resolution = 10,
+    cell_allocation = "centroid"
   )
 ```
 
@@ -473,13 +481,13 @@ pycno_nyc_ct_small_resolutions |>
 
 The main customizations for `to_grid()` involve defining additional options to guide the pycnophylactic interpolation. First, the cell inclusion and allocation criteria impact how target cells are generated and how source values are allocated to them.
 
-- with `cell_inclusion = "intersect"` and `cell_allocation = "area"`, all cells intersecting the source polygons are retained, and source totals are allocated according to the area of overlap between source polygons and target cells. This is the most geographically complete and resolution robust representation of the source layer as the data from all source-target intersections are retained. Partially covered edge cells receive only the share of the source value associated with their covered area, avoiding the extrapolation of counts beyond source boundaries. These are the default settings.
+- with `cell_inclusion = "intersect"` and `cell_allocation = "centroid"`, all intersecting grid cells remain in the target grid, but source values are assigned only to cells whose centroids fall within a source polygon. Target cells whose centroids fall outside the source polygons do not receive any initial allocation of the source values. Compared to area-based allocation, this simpler allocation method is more sensitive to the grid resolution and the placement of target cell centroids. Values associated with any source polygons that have no assigned target cells, such as small or narrow polygons, will be omitted from the system. When `missing_policy = "abort"`, this will cause the tool to abort. These are the default settings.
 
-- with `cell_inclusion = "intersect"` and `cell_allocation = "centroid"`, all intersecting grid cells remain in the target grid, but source values are assigned only to cells whose centroids fall within a source polygon. Target cells whose centroids fall outside the source polygons do not receive any initial allocation of the source values, although the smoothing process may allocate some values to these cells. Compared to area-based allocation, this simpler allocation method is more sensitive to the grid resolution and the placement of target cell centroids. Values associated with any source polygons that have no assigned target cells, such as small or narrow polygons, will be omitted from the system. Moreover, by representing a source value over the full extent of a target cell, this allocation method can extend or extrapolate source values beyond the original source polygon boundaries.
+- with `cell_inclusion = "centroid"` and `cell_allocation = "centroid"`, target cells are both selected and assigned according to centroid location. Each retained cell is associated with the source polygon containing its centroid, producing the simplest and most discrete source-to-grid assignment with the strongest concentrations of source values within the target cells. However, as above, the centroid-based allocation approach is sensitive to grid resolution and alignment relative to the source polygons, risking truncated spatial support of the source layers within the target cell tessellation and the potential loss of source values if no cell centroids fall within the original polygon boundaries.
 
-- with `cell_inclusion = "centroid"` and `cell_allocation = "area"`, only target cells whose centroids fall within the source layer are retained, but the retained cells receive source values according to their actual areas of overlap. While this avoids retaining cells that merely touch a source boundary, the resulting grid may not fully cover the source polygons, leading to a truncation in the spatial support offered by the target cells. The area-based allocation nevertheless helps to preserve source values in the system based on the areal overlap of source polygons and target cells.
+- with `cell_inclusion = "intersect"` and `cell_allocation = "area"`, all cells intersecting the source polygons are retained, and source totals are initially allocated according to the area of overlap between source polygons and target cells. This is the most geographically complete and resolution robust representation of the source layer as the data from all source-target intersections are retained. Partially covered edge cells receive only the share of the source value associated with their covered area. At present, the smoothing can result in some drift of source zone totals wherein the interpolated values do not match the original source zone totals for a given zone after re-aggregation, although the global source total is reproduced.
 
-- with `cell_inclusion = "centroid"` and `cell_allocation = "centroid"`, target cells are both selected and assigned according to centroid location. Each retained cell is associated with the source polygon containing its centroid, producing the simplest and most discrete source-to-grid assignment with the strongest concentrations of source values within the target cells. However, this approach is the most sensitive to grid resolution and alignment relative to the source polygons, risking truncated spatial support of the source layers within the target cell tessellation, the extrapolation of values beyond the source extent, and the potential loss of source values if no cell centroids fall within the original polygon boundaries.
+- with `cell_inclusion = "centroid"` and `cell_allocation = "area"`, only target cells whose centroids fall within the source layer are retained, but the retained cells receive source values according to their actual areas of overlap. While this avoids retaining cells that merely touch a source boundary, the resulting grid may not fully cover the source polygons, leading to a truncation in the spatial support offered by the target cells. The area-based allocation nevertheless helps to preserve source values in the system based on the areal overlap of source polygons and target cells. At present, the smoothing can result in some drift of source zone totals wherein the interpolated values do not match the original source zone totals for a given zone after re-aggregation, although the global source total is reproduced.
 
 The smoothed results using the default and other cell inclusion and allocation settings are shown in @fig-pycno_nyc_ct_small_combinations below.
 
@@ -489,9 +497,10 @@ The smoothed results using the default and other cell inclusion and allocation s
 #| fig-height: 8
 #| fig-width: 8
 #| echo: false
+#| warning: false
 combinations <- tidyr::expand_grid(
   inclusion_list = list("intersect", "centroid"),
-  allocation_list = list("area", "centroid")
+  allocation_list = list("centroid", "area")
 )
 
 pycno_nyc_ct_small_combinations <- purrr::map2_dfr(
@@ -512,7 +521,10 @@ pycno_nyc_ct_small_combinations <- purrr::map2_dfr(
       allocation = paste0("allocation: ", .y)
     )
 ) |>
-  mutate(inclusion = forcats::fct_relevel(inclusion, "inclusion: intersect", "inclusion: centroid"))
+  mutate(
+    inclusion = forcats::fct_relevel(inclusion, "inclusion: intersect", "inclusion: centroid"),
+    allocation = forcats::fct_relevel(allocation, "allocation: centroid", "allocation: area")
+    )
 
 tm_shape(pycno_nyc_ct_small_combinations) + tm_fill(
   fill = "pycno_populationE",
@@ -576,441 +588,14 @@ tm_shape(pycno_nyc_ct_small_neighbourss) + tm_fill(
   tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
 ```
 
-## Detailed Example
-
-To explore how the smoothing algorithm works, the code below selects a subset of the `nyc_ct_small` census tracts and generates an H3 grid at `resolution = 9`. To limit the number of cells generated for this example, the `cell_inclusion` criteria is set to `"centroid"` so the target grid consists only of cells whose centroids fall within the source polygon geometries (@fig-nyc_ct_subset):
-
-```{r}
-#| label: fig-nyc_ct_subset
-#| fig-cap: "Source zone subset and target cells with centroid-based inclusion criteria"
-#| echo: false
-subset_ids <- c(
-  "36061005800", 
-  "36061008700",
-  "36061009100"
-  )
-
-nyc_ct_subset <- nyc_ct |> 
-  filter(id %in% subset_ids) |> 
-  mutate(source_id = paste0("S", row_number()))
-
-prepped_source <- pycnogrid:::prep_source(source = nyc_ct_subset,
-                                          value_col = "populationE",
-                                          id_col = "id")
-
-source_polys <- prepped_source |> 
-  purrr::pluck("source") |> 
-  mutate(source_label_id = paste0("S", .sid))
-  
-source_values <- prepped_source |> 
-  purrr::pluck("source_values")
-
-input_total_original <- prepped_source |> 
-  purrr::pluck("input_total_original")
-
-input_total_represented <- prepped_source |> 
-  purrr::pluck("input_total_represented")
-
-target_cells <- pycnogrid:::prepare_target_cells(
-  source_polys,
-  grid_type = "h3",
-  resolution = 9,
-  cell_inclusion = "centroid"
-  #cell_inclusion = "intersect"
-) |> 
-  mutate(target_label_id = paste0("T", .tid))
-
-
-tm_shape(source_polys) +
-  tm_fill(col = "grey35",
-          col_alpha = .8,
-          fill = "grey",
-          fill_alpha = .1) + tm_text("source_label_id", ymod = -1, angle = 330) +
-  tm_shape(target_cells) +
-  tm_fill(col = "blue",
-          fill = "blue",
-          fill_alpha = .1) +
-  tm_text("target_label_id", col = "blue") +
-  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
-  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
-```
-
-Within this scenario, the three source zones are indexed as $i = 1, \ldots, n = 3$ and have the following observed populations:
-
-$$
-\mathbf{y} =
-  \begin{bmatrix}
-  6445 \\
-  4412 \\
-  5712
-\end{bmatrix}
-$$
-
-with a total population $\sum_i y_i = 16569$.
-
-### Areal Interpolation
-
-These source population values will be interpolated to the five target H3 grid cells indexed as $j = 1, \ldots, m = 5$.. The first step is to determine the spatial relationships between the source zones and target cells. Using the default `cell_allocation` based on `"area"`, this relationship is represented by the calculation of an areal overlap matrix $\mathbf{A}$, where each element $a_{ij}$ is the area of intersection between a source zone $i$ and target cell $j$:
-
-$$
-a_{ij} = \mathrm{Area}(S_i \cap T_j)
-$$
-
-For the example source zones and target cells, these overlap areas (in $m^2$) are:
-
-```{r}
-#| echo: false
-#| warning: false
-
-# manually:
-inter_raw <- sf::st_intersection(source_polys, target_cells) |>
-  dplyr::mutate(.weight = as.numeric(sf::st_area(geometry))) |>
-  sf::st_drop_geometry() |>
-  dplyr::filter(.weight > 0) |>
-  dplyr::select(source_id, .tid, .weight)
-
-represented_sources <- inter_raw |>
-  dplyr::distinct(source_id)
-
-source_index <- source_values |>
-  dplyr::mutate(.sid = dplyr::row_number()) |>
-  dplyr::select(source_id, .sid)
-
-inter <- inter_raw |>
-  # semi join to drop any target cells that don't have any sources
-  dplyr::semi_join(source_values, by = "source_id") |>
-  # attach the numeric source index .sid.
-  dplyr::left_join(source_index, by = "source_id") |>
-  # Sum weights in case the same source-cell pair appears more than once,
-  # which can happen after geometric operations involving multipart polygons
-  # or multiple intersection fragments.
-  dplyr::group_by(.sid, .tid, source_id) |>
-  dplyr::summarise(.weight = sum(.weight, na.rm = TRUE), .groups = "drop")
-
-n_target <- nrow(target_cells)
-n_source <- nrow(source_values)
-
-A_matrix <- Matrix::sparseMatrix(
-  i = inter$.sid,
-  j = inter$.tid,
-  x = inter$.weight,
-  dims = c(n_source, n_target)
-)
-
-# row and column normalize the A_matrix overlap matrix
-# need some sparse matrix trickery here for row and column sums
-row_sums <- Matrix::rowSums(A_matrix)
-W_matrix <- Matrix::Diagonal(x = 1 / pmax(row_sums, .Machine$double.eps),
-                             n = n_source) %*% A_matrix
-
-col_sums <- as.numeric(Matrix::colSums(A_matrix))
-V_matrix <- A_matrix %*% Matrix::Diagonal(x = 1 / pmax(col_sums, .Machine$double.eps),
-                                          n = n_target)
-
-# cross-reference with package function:
-source_cell_weights <- pycnogrid:::prepare_source_cell_weights(
-  source_polys,
-  source_values,
-  target_cells,
-  grid_type = "h3",
-  resolution = 9,
-  cell_allocation = "area",
-  missing_policy = "warn",
-  input_total_original
-)
-
-#A_matrix == source_cell_weights$A_matrix
-#W_matrix == source_cell_weights$W_matrix
-#V_matrix == source_cell_weights$V_matrix
-```
-
-$$
-\mathbf{A}=
-  \begin{bmatrix}
-  98741.439 &  5558.235 &  2253.077 &  1419.009 & 36725.10 \\
-  1506.071 & 77478.171 & 83178.843 & 0 & 0 \\   
-   0 & 3919.766 & 0 & 95050.580 & 38363.57
-\end{bmatrix}
-$$
-
-The rows of $\mathbf{A}$ sum to the total area of each source zone covered by target cells within the source-target intersection, that is $c_i = \sum_j a_{ij}$. With some grid cells not perfectly overlapping the source zones due to the use of centroid-based cell inclusion criteria in this example, the total covered area $c_i$ is less than the total area of a zone as defined by its geometry.
-
-Similarly, the column sums of $\mathbf{A}$, calculated as $c_j = \sum_i a_{ij}$, reflect the covered area of each target cell, or the portion of each target cell lying within the source polygons. These column sums will inform the construction of a column-normalized matrix $\mathbf{V}$ below.
-
-Next, the overlap areas for each source zone are converted to areal interpolation weights by row-standardization:
-
-$$
-w_{ij} = \frac{a_{ij}}{c_i}
-$$
-
-The resulting source zone to target cell weight matrix is:
-
-$$
-\mathbf{W}=
-  \begin{bmatrix}
-  0.682 & 0.038 & 0.016 & 0.010 & 0.254 \\
-  0.009 & 0.478 & 0.513 & 0 & 0 \\   
-  0 & 0.029 & 0 & 0.692 & 0.279
-\end{bmatrix}
-$$
-
-Because each row of $\mathbf{W}$ sums to one (e.g. $\sum_j w_{ij}=1$), these weights ensure that the entire total from each source zone is distributed across the target cells while preserving the original total of the source values in the system.
-
-The initial target cell estimates are obtained by applying these weights to the source values in $\mathbf{y}$:
-
-```{r}
-#| echo: false
-y <- source_index |>
-  dplyr::left_join(source_values, by = "source_id") |>
-  dplyr::arrange(.sid) |>
-  dplyr::pull(source_value)
-
-# Calculate initial areal allocation
-x <- as.numeric(Matrix::t(W_matrix) %*% y)
-```
-
-$$ 
-\mathbf{x}^{(0)} = \mathbf{W}^{\top}\mathbf{y}
-$$
-
-which yields the areally-interpolated value estimates for each of the five target cells:
-
-$$
-\mathbf{x}^{(0)} =
-  \begin{bmatrix}
-    4439.057 \\
-    2518.565 \\
-    2363.417 \\
-    4016.554 \\
-    3231.407
-  \end{bmatrix}
-$$
-
-From this, the source zone value total allocated within the system remains unchanged:
-
-$$
-\sum_i^3 y_i = 16569 = \sum_j^5 x_j^{(0)}
-$$
-
-Because pycnophylactic interpolation works with densities, these allocated totals are converted to density estimates by dividing each target cell's allocated population by its covered area in the source zone-target cell intersection $c_j$ (which are the column sums of $A$):
-
-$$
-d_j^{(0)} = \frac{x_j^{(0)}}{c_j}
-$$
-
-Resulting in the vector of initial target cell densities:
-
-```{r}
-#| echo: false
-density <- x / col_sums
-```
-
-$$
-\mathbf d^{(0)} =
-  \begin{bmatrix}
-    0.0443 \\
-    0.0290 \\
-    0.0277 \\
-    0.0416 \\
-    0.0430
-  \end{bmatrix}
-$$
-
-These densities represent the estimated population density over the portion of each target cell covered by the source polygons. Using area-based cell allocation, density is calculated for cells that extend beyond the source-zone boundaries using only the covered area represented in the source-target intersection. By extension, when a source zone is not fully covered by target cells, as is the case when using centroid-based cell inclusion criteria in this analysis, the incomplete spatial support results in the entire source value total for a zone being distributed across the cells that intersect it. Consequently, the procedure preserves source totals within the represented spatial support, even when that support differs from the original source geometry.
-
-### Spatial Smoothing
-
-```{r}
-#| echo: false
-S_matrix <- pycnogrid:::build_smoothing_matrix(
-  target_cells = target_cells,
-  nb_order = 1,
-  include_self = TRUE
-  ) 
-```
-
-Once the initial density estimates have been obtained for the target cells, pycnophylactic smoothing proceeds iteratively. The first step is to define the neighbourhood relationships among target cells. Using a typical first-order Queen contiguity for the five target cells in this example, the neighbourhood structure is represented by the row-standardized sparse spatial weights matrix:
-
-$$
-\mathbf{S} = 
-  \begin{bmatrix}
-    0.20 & 0.20 & 0.20 & 0.20 & 0.20 \\
-    0.25 & 0.25 & 0.25 & 0.25 &  .   \\
-    0.33 & 0.33 & 0.33 &  .   &  .   \\        
-    0.25 & 0.25 &  .   & 0.25 & 0.25 \\
-    0.33 &  .   &  .   & 0.33 & 0.33
-  \end{bmatrix}
-$$
-
-Each row in $\mathbf{S}$ describes the cells contributing to the smoothed density estimate of a target cell. Because the matrix is row-standardized, each row sums to one and the smoothing operation computes a local weighted average of neighbouring densities.
-
-The first smoothing step ($t+1$) involves multiplying the initial density vector $\mathbf{d^{(t)}}$ by the spatial weights matrix $\mathbf{S}$:
-
-```{r}
-#| echo: false
-d_smooth <- as.numeric(S_matrix %*% density) 
-```
-
-$$
-\tilde{\mathbf{d}}^{(t + 1)} = \mathbf{S} \mathbf{d}^{(0)}
-$$
-
-Here, the $\tilde{\mathbf{d}}$ denotes these are the smoothed density estimates before correction. This operation reduces abrupt differences between neighbouring cells by replacing each cell’s density with the average density of its neighbourhood. For target zone 1:
-
-$$
-\tilde{d}_{1}^{(t+1)} = 0.20(0.0443) + 0.20(0.0290) + 0.20(0.0277) + 0.20(0.0416) + 0.20(0.0430)
-$$
-$$
-\tilde{d}_{1}^{(t+1)} = 0.0371
-$$
-
-However, smoothing alone does not always preserve the original source-zone totals. After smoothing, the implied source-zone total estimates are calculated by multiplying the 3 by 5 overlap matrix (which contains information on how much of each target cell's area is within the system defined by source zone-target cell spatial relationship) and the 5 by 1 column vector of smoothed densities:
-
-```{r}
-#| echo: false
-source_est <- as.numeric(A_matrix %*% density)
-```
-
-$$
-\tilde{\mathbf{y}}^{(t + 1)} = \mathbf{A} \tilde{\mathbf{d}}^{(t + 1)}
-$$
-
-The resulting source values contained within the 3 by 1 column vector $\tilde{\mathbf{y}}^{(t + 1)}$ generally differ from their observed source totals ($\mathbf{y}$). To restore the original source-zone populations, a correction factor is calculated for each source zone:
-
-```{r}
-#| echo: false
-r_ratio <- y / source_est
-```
-
-$$
-\mathbf{r} = \frac{\mathbf{y}}{\tilde{\mathbf{y}}^{(t + 1)}}
-$$
-
-Resulting in this column vector of ratios:
-
-$$
-\mathbf{r}^{(t + 1)} =
-  \begin{bmatrix}
-    1.034 \\
-    0.957 \\
-    0.998 
-  \end{bmatrix}
-$$
-
-The correction factor compares the observed source total to the total implied by the smoothed density surface. A value of $r_{i} = 1$ indicates that smoothing preserved the source-zone total exactly, so no adjustment is required. A value of $r_i > 1$ indicates that the smoothed density surface underestimates the observed population in source zone i, requiring the densities within that source zone to be increased. Conversely, a value of $r_i < 1$ indicates that smoothing overestimates the source-zone population, requiring the densities to be decreased.
-
-For example, $r_1^{(t+1)} = 1.034$ indicates that the smoothed density surface underestimates the population of source zone 1 by approximately 3.4% when aggregated back to the source geometry. Likewise, $r_2^{(t+1)} = 0.957$ indicates that the smoothed surface overestimates the population of source zone 2 by approximately 4.3%.
-
-These source-zone correction factors are then redistributed back to target cells according to their overlap relationships using a column standardized weights matrix $\mathbf{V}$, with $v_{ij} = \frac{a_{ij}}{c_j}$:
-
-```{r}
-#| echo: false
-q_correction <- as.numeric(Matrix::t(V_matrix) %*% r_ratio)
-```
-
-$$
-\mathbf{q}^{(t + 1)} = \mathbf{V}^\top \mathbf{r}^{(t + 1)}
-$$
-
-From this, each target cell receives a weighted average of the correction factors from the source zones that it intersects. These correction factors can now be applied to adjust the smoothed densities for each target cell for the first iteration:
-
-```{r}
-#| echo: false
-density_t_plus_one <- density * q_correction
-```
-
-$$
-\mathbf{d}^{(t+1)} = \tilde{\mathbf d}^{(t+1)} \odot \mathbf q^{(t+1)}
-$$
-
-Or, using scalar notation:
-
-$$
-d_{j}^{(t+1)} = \tilde{d}_{j}^{(t+1)} q_{j}^{(t+1)}
-$$
-
-In this way, pycnophylactic smoothing uses the original source zone polygons to ensure the total mass is preserved on the smoothed surface. The corrected densities form the starting point for the next iteration $t+2$. Smoothing and correction continue until the relative change in target-cell densities between successive iterations falls below a specified tolerance. In this case, the convergence criterion is defined by calculating the mean relative change in target cell densities across the current and previous iterations:
-
-```{r}
-#| echo: false
-abs_change <- abs(density_t_plus_one - density)
-denom <- pmax(abs(density), 1e-12)
-last_error <- mean(abs_change / denom, na.rm = TRUE)
-```
-
-$$
-\epsilon^{(t+1)}
-= \frac{1}{m} \sum_{j=1}^{m} 
-    \frac{\left| d_j^{(t+1)} - d_j^{(t)} \right|}
-    {\max\!\left(d_j^{(t)},\delta\right)}
-$$
-
-with $\delta=10^{-12}$ used to prevent any division by zero in the denominator. Iteration stops when $\epsilon^{(t+1)}$ is less than the convergence tolerance, which is set at a default of $10^{-4}$. For the present case, the error from the first iteration is `r round(last_error, 4)`, suggesting further rounds of smoothing are required to reach convergence.
-
-The final results of the interpolation are shown in @fig-pycno_nyc_ct_subset:
-
-```{r}
-#| label: fig-pycno_nyc_ct_subset
-#| fig-cap: "Source zone and interpolated population values"
-#| fig-width: 8
-#| fig-height: 4
-#| echo: false
-subset_results <- dplyr::bind_rows(nyc_ct_subset |> 
-  to_grid(
-  value_col = "populationE",
-  id_col = id,
-  grid_type = "h3",
-  resolution = 9,
-  #grid_type = "raster",
-  #resolution = 275,
-  cell_inclusion = "centroid",
-  cell_allocation = "area",
-  nb_order = 1
-) |> mutate(
-  label_id = paste0("T", .tid), 
-  population = pycno_populationE,
-  type = "target cells"
-  ),
-source_polys |> mutate(
-  population = .source_value, 
-  label_id = paste0("S", .sid),
-  type = "source zones")
-)
-
-subset_overlay <- dplyr::bind_rows(
-  source_polys |> mutate(
-  type = "target cells"),
-  target_cells |> mutate(type = "source zones")
-)
-
-tm_shape(subset_results) + tm_fill(
-  fill = "population",
-  fill.scale = tm_scale_ordinal(
-    values = "viridis",
-    label.format = tm_label_format(big.num.abbr = c("K" = 3))
-  ),
-  fill_alpha = .75,
-  fill.legend = tm_legend(title = "Population", frame = FALSE, position = tm_pos_in()),
-  fill.free = TRUE
-) +
-  #tm_text("label_id") +
-  tm_facets(by = "type", free.coords = FALSE) +
-  tm_shape(subset_overlay) +
-  tm_lines(col = "grey35",
-          col_alpha = .8) +
-  tm_facets(by = "type", free.coords = FALSE) +
-  #tm_basemap("CartoDB.PositronNoLabels", alpha = .5) +
-  tm_shape(nyc_ct) + tm_fill(fill = "grey97", zindex = 3) +
-  tm_layout(panel.label.frame = FALSE, panel.label.bg = FALSE, frame = FALSE, bg.color = "grey90")
-```
-
 ## Conclusion
 
-`{pycnogrid}` offers a flexible implementation of Tobler's pycnophylactic interpolation for redistributing polygon-based count data to discrete global and raster grid systems. Building on existing implementations of the concept, the smoothing algorithm that underpins the package expresses the interpolation through the lens of neighbourhoods and spatial weights, enabling the pycnophylactic approach to be applied to a range of different grid systems. At present, these grid systems include H3, A5, S2, and ISEA grids, as well as traditional raster arrays.
+`{pycnogrid}` provides a flexible implementation of pycnophylactic interpolation for redistributing polygon-based count data to discrete global and local grid systems. By expressing smoothing through neighbourhoods and spatial weights, the package extends the approach beyond regular raster lattices to H3, A5, S2, and ISEA grids, as well as raster and local hexagonal grids.
 
-While the preservation of mass or volume inherent in the source count data is central to the pycnophylactic smoothing approach, a core aspect of `{pycnogrid}` is the option to allocate and preserve mass while accounting for source zone and target cell areal intersections. The package also makes explicit several analytical choices that are often implicit in interpolation workflows. Users may select how target cells are included, how source values are allocated to cells, the neighbourhood order used for smoothing, and whether cells contribute to their own neighbourhood mean. These choices affect the implied spatial support and degree of smoothing, and should be selected with reference to the intended downstream application rather than treated as purely technical defaults.
+The package makes explicit several analytical choices that are often implicit in interpolation workflows. Users can control how target cells are included, how source values are allocated, the neighbourhood order used for smoothing, and whether cells contribute to their own neighbourhood means. With the default centroid-based allocation, each allocated target cell is assigned to one source zone, allowing the correction step to preserve represented source-zone totals under a discrete cell-ownership model. Fractional area allocation provides a more geographically complete treatment of source–target intersections, but it is experimental in version 0.2.1: it preserves the overall represented total but may not reproduce each individual source-zone total when target cells cross source boundaries.
 
-While pycnophylactic interpolation produces a smooth, mass-preserving representation that is consistent with the available source totals and the chosen target-grid structure, the outputs are best understood as analytically-useful plausible estimates rather than as observed values at a finer level of geography. Future work could extend `{pycnogrid}` through ancillary-data weighting [e.g. @tapp2010], alternative smoothing operators, and support for additional area or shape preserving DGGSs. Systematic evaluations of how grid geometry, resolution, hierarchy, and smoothing assumptions affect the robustness of downstream spatial analyses to the MAUP would also be valuable. To that end, by bringing pycnophylactic interpolation to contemporary vector-based spatial workflows and multiple grid systems, `{pycnogrid}` provides a practical foundation for creating comparable, mass-preserving gridded representations of aggregated spatial data.
+The resulting surfaces should be understood as analytically useful, plausible estimates rather than observations at a finer geographic scale. Grid geometry, resolution, inclusion rules, allocation method, and neighbourhood structure can all affect the resulting spatial distribution and should be selected with reference to the intended analysis. Moreover, by representing source values over target cells, this grid-based method can extend or extrapolate source values beyond the original source polygon boundaries, particularly when the allocation method is based on cell centroids.
+
+Future work could introduce an exact non-negative correction for fractional area allocation, ancillary-data weighting [e.g. @tapp2010], alternative smoothing operators, and support for additional area- or shape-preserving grid systems. In its current form, `{pycnogrid}` provides a practical framework for comparing smooth gridded representations across alternative spatial support systems while making their allocation assumptions and preservation guarantees explicit.
 
 ## References

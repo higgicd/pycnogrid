@@ -1,6 +1,6 @@
 ## Test environments
 
-* local macOS Tahoe 26.4, R 4.6.0
+* local macOS Tahoe 26.6.2, R 4.6.1
 * win-builder (release)
 * win-builder (devel)
 * mac-builder (release)

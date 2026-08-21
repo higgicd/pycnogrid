@@ -1,7 +1,7 @@
 #' Pycnophylactic interpolation to an H3 grid
 #'
 #' Interpolates polygon counts to an H3 grid while preserving source-zone
-#' totals.
+#' totals when used with default centroid-based allocation.
 #'
 #' @details
 #' H3 is a hierarchical global discrete grid system composed primarily of

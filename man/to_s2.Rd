@@ -23,7 +23,7 @@ An \code{sf} object containing S2 cells and interpolated values.
 }
 \description{
 Interpolates polygon counts to an S2 grid while preserving source-zone
-totals.
+totals when used with default centroid-based allocation.
 }
 \details{
 S2 is a hierarchical global discrete grid system based on recursively

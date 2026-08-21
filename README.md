@@ -98,8 +98,8 @@ For a polygon layer containing source totals, `{pycnogrid}`:
 1.  creates a target grid covering the source geography;
 2.  allocates each source total to intersecting target cells;
 3.  smooths estimated densities across neighbouring cells; and
-4.  repeatedly rescales the estimates so that the original source totals
-    are preserved.
+4.  repeatedly rescales the estimates so that represented source zone
+    totals are preserved under centroid-based cell assignment.
 
 The resulting grid can be used in downstream mapping, accessibility,
 spatial modelling, and sensitivity analyses.
@@ -117,7 +117,7 @@ the target geography and interpolation process:
 - `id_col` is an optional column uniquely identifying each source
   polygon, if omitted, an internal identifier is created
 - `grid_type` specifies the target grid system. Supported options are
-  H3, A5, S2, ISEA grids with aperture-3, 4, and 7, and raster-derived
+  H3, A5, S2, ISEA grids with aperture-3 and 4, and raster-derived
   polygon cells
 - `resolution` controls the size of the target grid cells. Its
   interpretation depends on the selected grid type
@@ -125,10 +125,12 @@ the target geography and interpolation process:
   interpolation. With “intersect”, cells are included if they intersect
   a source polygon. With “centroid”, cells are included only when their
   centroid falls inside a source polygon.
-- `cell_allocation` defines how source totals are allocated to grid
-  cells. With “area”, values are allocated in proportion to the area of
-  overlap between source polygons and grid cells. With “centroid”, each
-  grid cell is assigned to the source polygon containing its centroid.
+- `cell_allocation` defines how source totals are allocated.
+  `"centroid"` is the default and assigns each cell to one source
+  polygon, preserving represented source-zone totals. `"area"` uses
+  fractional overlap areas and is experimental; it preserves the overall
+  represented total but may not preserve each individual source-zone
+  total.
 - `nb_order` specifies the neighbourhood order used during smoothing. A
   value of 1 uses immediately adjacent cells, while larger values extend
   the smoothing neighbourhood outwards from a given cell.
@@ -146,11 +148,10 @@ the target geography and interpolation process:
   stops with an error, “warn” returns a warning, and “ignore” proceeds
   silently.
 
-For most applications, `cell_inclusion = "intersect"` and
-`cell_allocation = "area"` provide the most geographically complete
-initial representation because all source–target intersections are
-retained and source totals are allocated according to their area of
-overlap.
+For analyses requiring strict source-zone preservation, use
+`cell_allocation = "centroid"`. Fractional area allocation may provide
+more complete boundary representation, but it is experimental in version
+0.2.1.
 
 ### Interpreting the output
 
@@ -168,10 +169,10 @@ out |> glimpse()
 #> $ h3                <chr> "8a2a100d2db7fff", "8a2a100d2d97fff", "8a2a100d2d87f…
 #> $ geometry          <POLYGON [m]> POLYGON ((585062.6 4511955,..., POLYGON ((58…
 #> $ .tid              <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…
-#> $ pycno_populationE <dbl> 103.085325, 183.514968, 32.247510, 11.821690, 41.908…
-#> $ pycno_density     <dbl> 0.0068098960, 0.0121233098, 0.0021303414, 0.00078095…
-#> $ pycno_coverage    <dbl> 1.0000000, 1.0000000, 1.0000000, 1.0000000, 1.000000…
-#> $ pycno_iter        <int> 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, …
+#> $ pycno_populationE <dbl> 231.557990, 302.494228, 44.673391, 17.728479, 49.194…
+#> $ pycno_density     <dbl> 1.529690e-02, 1.998328e-02, 2.951222e-03, 1.171166e-…
+#> $ pycno_coverage    <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+#> $ pycno_iter        <int> 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, …
 ```
 
 with:

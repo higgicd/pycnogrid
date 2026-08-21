@@ -11,7 +11,7 @@ to_grid(
   grid_type = c("h3", "a5", "s2", "isea3h", "isea4h", "raster", "hex"),
   resolution,
   cell_inclusion = c("intersect", "centroid"),
-  cell_allocation = c("area", "centroid"),
+  cell_allocation = c("centroid", "area"),
   nb_order = 1,
   max_iter = 500,
   tolerance = 1e-04,
@@ -37,7 +37,11 @@ level. For local raster and hex grids this is the cell size in the linear units 
 One of \code{"intersect"} or \code{"centroid"}.}
 
 \item{cell_allocation}{Method used to allocate source values to grid cells.
-One of \code{"area"} or \code{"centroid"}.}
+\code{"centroid"}, the default, assigns each target cell to the source polygon
+containing its centroid and preserves represented source-zone totals.
+\code{"area"} uses fractional source-cell overlap areas. Area allocation is
+experimental: it preserves the overall represented total but may not
+preserve each individual source-zone total.}
 
 \item{nb_order}{Neighbourhood order used for smoothing. A value of \code{1} uses
 first-order neighbours; larger values include higher-order neighbours.}
@@ -57,8 +61,20 @@ An \code{sf} object containing grid-cell geometries and interpolated
 values.
 }
 \description{
-Interpolates polygon counts to a regular or global discrete grid while
-preserving source-zone totals.
+Interpolates polygon counts to a regular or global discrete grid.
+Centroid allocation preserves represented source-zone totals while
+smoothing densities across neighboring target cells. Areal allocation
+preserves global totals.
+}
+\details{
+With \code{cell_allocation = "centroid"}, each represented target cell belongs
+to one source polygon. The correction step therefore preserves the total
+associated with each represented source zone.
+
+With \code{cell_allocation = "area"}, target cells may overlap several source
+polygons. The current fractional correction preserves the overall
+represented total but does not guarantee preservation of every individual
+source-zone total. This mode is experimental.
 }
 \examples{
 out <- to_grid(

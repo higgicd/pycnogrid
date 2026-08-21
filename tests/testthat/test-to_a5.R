@@ -5,7 +5,7 @@ test_that("to_a5 returns expected sf output", {
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 14,
+    resolution = 15,
     max_iter = 20
   )
 
@@ -33,7 +33,7 @@ test_that("to_a5 approximately preserves mass", {
     nyc_ct_small,
     value_col = populationE,
     id_col = id,
-    resolution = 14,
+    resolution = 15,
     max_iter = 20
   )
 
@@ -56,7 +56,7 @@ test_that("to_a5 errors on negative values", {
       bad,
       value_col = populationE,
       id_col = id,
-      resolution = 14
+      resolution = 15
     )
   )
 })

@@ -1,7 +1,7 @@
 #' Pycnophylactic interpolation to a raster grid
 #'
 #' Interpolates polygon counts to a regular raster grid while preserving
-#' source-zone totals.
+#' source-zone totals when used with default centroid-based allocation.
 #'
 #' @details
 #' Raster grids divide the study area into regular cells of a fixed size. In
@@ -20,7 +20,7 @@
 #' out <- to_raster(
 #'   source = nyc_ct_small,
 #'   value_col = populationE,
-#'   resolution = 500,
+#'   resolution = 250,
 #'   max_iter = 5
 #' )
 #'

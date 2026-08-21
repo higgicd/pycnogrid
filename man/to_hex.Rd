@@ -22,7 +22,7 @@ interpolated values.
 }
 \description{
 Interpolates polygon counts to a local hexagonal grid while preserving
-source-zone totals.
+source-zone totals when used with default centroid-based allocation.
 }
 \details{
 Hex grids divide the study area into hexagonal cells of a fixed size. Smaller cell sizes produce
@@ -32,7 +32,7 @@ more output cells and may substantially increase computation time.
 out <- to_hex(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 500,
+  resolution = 250,
   max_iter = 5
 )
 

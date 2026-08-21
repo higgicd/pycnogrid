@@ -24,7 +24,7 @@ An \code{sf} object containing ISEA cells and interpolated values.
 }
 \description{
 Interpolates polygon counts to an ISEA discrete global grid while preserving
-source-zone totals.
+source-zone totals when used with default centroid-based allocation.
 }
 \details{
 ISEA grids are equal-area hierarchical discrete global grid systems based on
@@ -38,7 +38,7 @@ according to \code{aperture}.
 out <- to_isea(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 18,
+  resolution = 19,
   aperture = 3,
   max_iter = 5
 )
@@ -46,7 +46,7 @@ out <- to_isea(
 out <- to_isea(
   source = nyc_ct_small,
   value_col = populationE,
-  resolution = 14,
+  resolution = 15,
   aperture = 4,
   max_iter = 5
 )
